@@ -1,0 +1,10 @@
+<form action="{% url 'user:login' %}" method="post">
+    {% csrf_token %}
+    <br>
+        <legend><h1>Sign in.</h1></legend>
+        <!-- {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %} -->
+        <input type="username" name="username" id="username"> </br>
+        <input type="password" name="password" id="password">
+    </fieldset>
+<input type="submit" value="Log in.">
+</form>
