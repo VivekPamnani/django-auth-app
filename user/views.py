@@ -1,7 +1,7 @@
 from logging import exception
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.views import generic
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -48,7 +48,7 @@ def register(request):
         update_custom_fields(user)
     return redirect("https://www.psytoolkit.org/")
 
-def login(request):
+def signin(request):
     try:
         entered_username = request.POST['username']
         # entered_email = request.POST['email']  
@@ -56,8 +56,12 @@ def login(request):
     except:
         return render(request, 'user/login.html')
     else:
-        user = authenticate(username=entered_username, password=entered_pwd)
+        user = authenticate(request, username=entered_username, password=entered_pwd)
         if user is not None:
-            return HttpResponse("You are logged in")
+            login(request, user=user)
+            return HttpResponseRedirect('/user/home')
         else:
             return HttpResponse("Invalid attempt.")
+
+def home(request):
+    return render(request, 'user/home.html')
