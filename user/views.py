@@ -1,11 +1,15 @@
+from dataclasses import dataclass
 from logging import exception
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.views import generic
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+import datetime
+from django.utils import timezone
+import json
 
 
 # Create your views here.
@@ -65,3 +69,18 @@ def signin(request):
 
 def home(request):
     return render(request, 'user/home.html')
+
+def log_visit(request):
+    # return JsonResponse({'timezone': timezone.now(), 'datetime': datetime.datetime.now()})
+    old = "2022-05-28 00:00:00"
+    dt = datetime.datetime.strptime(old, '%Y-%m-%d %H:%M:%S')
+    windback = datetime.datetime.now() - datetime.timedelta(days=12, seconds=1)
+    if(dt > windback):
+        return HttpResponse('Sorry, you cannot attempt the experiment more than once in two weeks.')
+    else:
+        if request.user.is_authenticated:
+            user = request.user
+            return HttpResponse("The logged in user department is: %s" % user.participant.department)
+        return redirect('/user/home/')
+    return HttpResponse('%s' % windback)
+    # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
