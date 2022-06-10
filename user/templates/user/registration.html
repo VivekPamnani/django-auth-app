@@ -1,18 +1,37 @@
-<head>  
-    <meta charset="UTF-8">  
-    <title>login</title>  
-    {% load static %}  
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">  
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
-</head> 
-<form action="{% url 'user:register' %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend><h1>Sign up.</h1></legend>
-        <!-- {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %} -->
-        <input type="email" name="email" id="email">
-        <input type="text" name="username" id="kusername"> 
-        <input type="password" name="password" id="password">   
-    </fieldset>
-<br><input type="submit" value="Register">
-</form>
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>COVID-19 Study: Welcome! </title>
+  {% load static %}  
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+  <link rel="stylesheet" href="{% static 'login.css' %}">
+
+</head>
+
+<body>
+<!-- partial:index.partial.html -->
+<section class='login' id='login'>
+  <div class='head'>
+  <h1 class='company'>COVID-19 Study</h1>
+  </div>
+  <p class='msg'>Welcome</p>
+  <div class='form'>
+    <form action="{% url 'user:register' %}" method="post">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder='Email' class='text' id='email' required><br>
+        <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
+        <input type="password" name="password" placeholder='••••••••••••••' class='password'><br>
+        <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
+        <br>
+        <div style="text-align:center;">
+            <input class='btn-login' id='do-login' type="submit" value="Register"></input>
+        </div>
+        <!-- <a href="#" class='forgot'>Forgot?</a> -->
+    </form>
+  </div>
+</section>
+<!-- partial -->
+
+</body>
+</html>
