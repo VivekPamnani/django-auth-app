@@ -6,3 +6,5 @@ Note:
 * BASE_DIR in settings.py for STATICFILES
 * select username, sessions_completed, last_visit, visit_time_1, visit_time_2, visit_time_3, visit_time_4, visit_time_5, visit_time_6 from auth_user inner join user_participant on auth_user.id = user_participant.user_id;
 * Find a way to set session number in Psytoolkit (1 through 6) such that the output data reflects that.
+* Do something about naive datetime.datetime.now()
+* 

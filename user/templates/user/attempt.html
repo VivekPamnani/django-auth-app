@@ -1,0 +1,17 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Redirect..</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+</head> 
+
+
+<h1>{{ user.username }}</h1>
+
+Your OTP is {{ otp }} for visit {{ user.participant.sessions_completed }}.
+Hello there. <br>
+<!-- <a class="btn btn-info" href={{ url }}> Click here </a> -->
+<button class="btn btn-danger" onclick=" window.open('{{ url }}', '_blank')"> Click here </button>
+

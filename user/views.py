@@ -14,39 +14,12 @@ from user.models import codes
 import shortuuid
 import json
 
-
-# Create your views here.
-# def vote(request, question_id):
-#     question = get_object_or_404(Question, pk=question_id)
-#     try:
-#         selected_choice = question.choice_set.get(pk=request.POST['choice'])
-#     except (KeyError, choice.DoesNotExist):
-#         # Redisplay the question voting form.
-#         return render(request, 'polls/vote.html', {
-#             'question': question,
-#             'error_message': "You didn't select a choice.",
-#         })
-#     else:
-#         selected_choice.votes += 1
-#         selected_choice.save()
-#         # Always return an HttpResponseRedirect after successfully dealing
-#         # with POST data. This prevents data from being posted twice if a
-#         # user hits the Back button.
-#         return HttpResponseRedirect(reverse('polls:detail', args=(question.id,)))
-
 def index(request):
     return HttpResponse("this is the index page")
 
 def user_init(user):
     user.participant.department = "CSE"
     user.participant.sessions_completed = 0
-    # user.participant.visit_time_1 = datetime.timedelta()
-    # user.participant.visit_time_2 = datetime.timedelta()
-    # user.participant.visit_time_3 = datetime.timedelta()
-    # user.participant.visit_time_4 = datetime.timedelta()
-    # user.participant.visit_time_5 = datetime.timedelta()
-    # user.participant.visit_time_6 = datetime.timedelta()
-    # user.participant.last_visit = datetime.timedelta()
     user.save()
 
 def user_new_visit(user):
@@ -128,25 +101,48 @@ def log_visit(request):
                 otp = user_new_visit(user)
                 match user.participant.sessions_completed:
                     case 1:
-                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("Your OTP is %s." % otp)
+                        return render(request, 'user/attempt.html', {
+                            'user': user, 
+                            'otp': otp, 
+                            'url': "https://www.google.com"
+                        })
                     case 2:
-                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("Your OTP is %s." % otp)
+                        return render(request, 'user/attempt.html', {
+                            'user': user, 
+                            'otp': otp, 
+                            'url': "https://www.netflix.com"
+                        })
                     case 3:
-                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("Your OTP is %s." % otp)
+                        return render(request, 'user/attempt.html', {
+                            'user': user, 
+                            'otp': otp, 
+                            'url': "https://www.youtube.com"
+                        })
                     case 4:
-                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("Your OTP is %s." % otp)
+                        return render(request, 'user/attempt.html', {
+                            'user': user, 
+                            'otp': otp, 
+                            'url': "https://www.twitch.tv"
+                        })
                     case 5:
-                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("Your OTP is %s." % otp)
+                        return render(request, 'user/attempt.html', {
+                            'user': user, 
+                            'otp': otp, 
+                            'url': "https://www.msn.com"
+                        })
                     case 6:
-                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("Your OTP is %s." % otp)
+                        return render(request, 'user/attempt.html', {
+                            'user': user, 
+                            'otp': otp, 
+                            'url': "https://www.amazon.com"
+                        })
                     case default:
                         return HttpResponse("Something went wrong.")
+                        # return render(request, 'user/attempt.html', {
+                        #     'user': user, 
+                        #     'otp': otp, 
+                        #     'url': "https://www.flipkart.com"
+                        # })
             else:
                 return HttpResponse("You have completed all of your sessions and thus cannot attempt further tests.")
         else:
