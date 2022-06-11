@@ -1,8 +1,9 @@
 from dataclasses import dataclass
+from email.policy import default
 from logging import exception
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views import generic
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -34,9 +35,39 @@ import json
 def index(request):
     return HttpResponse("this is the index page")
 
-def update_custom_fields(user):
+def user_init(user):
     user.participant.department = "CSE"
+    user.participant.sessions_completed = 0
+    # user.participant.visit_time_1 = datetime.timedelta()
+    # user.participant.visit_time_2 = datetime.timedelta()
+    # user.participant.visit_time_3 = datetime.timedelta()
+    # user.participant.visit_time_4 = datetime.timedelta()
+    # user.participant.visit_time_5 = datetime.timedelta()
+    # user.participant.visit_time_6 = datetime.timedelta()
+    # user.participant.last_visit = datetime.timedelta()
     user.save()
+
+def user_new_visit(user):
+    user.participant.sessions_completed += 1
+    t = datetime.datetime.now()
+    user.participant.last_visit = t
+    match user.participant.sessions_completed:
+        case 1:
+            user.participant.visit_time_1 = t
+        case 2:
+            user.participant.visit_time_2 = t
+        case 3:
+            user.participant.visit_time_3 = t
+        case 4:
+            user.participant.visit_time_4 = t
+        case 5:
+            user.participant.visit_time_5 = t
+        case 6:
+            user.participant.visit_time_6 = t
+        case default:
+            return HttpResponse("Something went wrong.")
+    user.save()
+
 
 def register(request):
     try:
@@ -49,8 +80,13 @@ def register(request):
     else:
         user = User.objects.create_user(entered_username, entered_email, entered_pwd)
         user.save()
-        update_custom_fields(user)
-    return redirect("https://www.psytoolkit.org/")
+        user_init(user)
+    user = authenticate(request, username=entered_username, password=entered_pwd)
+    if user is not None:
+        login(request, user=user)
+        return redirect("/user/home/")
+    else:
+        return HttpResponse("Something went wrong.")
 
 def signin(request):
     try:
@@ -67,6 +103,10 @@ def signin(request):
         else:
             return HttpResponse("Invalid attempt.")
 
+def signout(request):
+    logout(request)
+    return redirect('/user/login/')
+
 def home(request):
     return render(request, 'user/home.html')
 
@@ -80,7 +120,32 @@ def log_visit(request):
     else:
         if request.user.is_authenticated:
             user = request.user
-            return HttpResponse("The logged in user department is: %s" % user.participant.department)
-        return redirect('/user/home/')
-    return HttpResponse('%s' % windback)
+            # col = "visit_time_" + user.participant.sessions_completed
+            if user.participant.sessions_completed < 6:
+                user_new_visit(user)
+                match user.participant.sessions_completed:
+                    case 1:
+                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                    case 2:
+                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                    case 3:
+                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                    case 4:
+                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                    case 5:
+                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                    case 6:
+                        # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                    case default:
+                        return HttpResponse("Something went wrong.")
+            else:
+                return HttpResponse("You have completed all of your sessions and thus cannot attempt further tests.")
+        else:
+            return redirect('/user/home/')
     # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
