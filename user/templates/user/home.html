@@ -9,6 +9,7 @@
 <body>
     <p>Click the button below to proceed to the experiment link.</p> </br>
     <form action="{% url 'user:visit' %}" method="GET">
+    {% csrf_token %}
         <button type="submit"
                 class="btn btn-primary">
                 Check It Out

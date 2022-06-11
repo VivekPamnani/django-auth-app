@@ -12,6 +12,7 @@ import datetime
 from django.utils import timezone
 from user.models import codes
 import shortuuid
+import pytz
 import json
 
 def index(request):
@@ -24,7 +25,7 @@ def user_init(user):
 
 def user_new_visit(user):
     user.participant.sessions_completed += 1
-    t = datetime.datetime.now()
+    t = timezone.now()
     user.participant.last_visit = t
     ob = codes.objects.create(otp=shortuuid.ShortUUID().random(length=12), session_num=user.participant.sessions_completed)
     match user.participant.sessions_completed:
@@ -87,64 +88,73 @@ def home(request):
     return render(request, 'user/home.html')
 
 def log_visit(request):
-    # return JsonResponse({'timezone': timezone.now(), 'datetime': datetime.datetime.now()})
-    old = "2022-05-28 00:00:00"
-    dt = datetime.datetime.strptime(old, '%Y-%m-%d %H:%M:%S')
-    windback = datetime.datetime.now() - datetime.timedelta(days=12, seconds=1)
-    if(dt > windback):
-        return HttpResponse('Sorry, you cannot attempt the experiment more than once in two weeks.')
-    else:
-        if request.user.is_authenticated:
-            user = request.user
-            # col = "visit_time_" + user.participant.sessions_completed
+    if request.user.is_authenticated:
+        user = request.user
+        utc = pytz.UTC
+        old = user.participant.last_visit
+        # dt = datetime.datetime.strptime(str(old), '%Y-%m-%d %H:%M:%S')
+        windback = timezone.now() - datetime.timedelta(days=14)
+        last_time = old#.replace(tzinfo=utc)
+        wind_time = windback#.replace(tzinfo=utc)
+        rem_time = last_time + datetime.timedelta(seconds=10) - timezone.now()
+        if(rem_time > datetime.timedelta()):
+            return HttpResponse('Sorry, you cannot attempt the experiment more than once in two weeks. Time until next attempt: %s' % rem_time)
+        else:
             if user.participant.sessions_completed < 6:
                 otp = user_new_visit(user)
-                match user.participant.sessions_completed:
-                    case 1:
-                        return render(request, 'user/attempt.html', {
-                            'user': user, 
-                            'otp': otp, 
-                            'url': "https://www.google.com"
-                        })
-                    case 2:
-                        return render(request, 'user/attempt.html', {
-                            'user': user, 
-                            'otp': otp, 
-                            'url': "https://www.netflix.com"
-                        })
-                    case 3:
-                        return render(request, 'user/attempt.html', {
-                            'user': user, 
-                            'otp': otp, 
-                            'url': "https://www.youtube.com"
-                        })
-                    case 4:
-                        return render(request, 'user/attempt.html', {
-                            'user': user, 
-                            'otp': otp, 
-                            'url': "https://www.twitch.tv"
-                        })
-                    case 5:
-                        return render(request, 'user/attempt.html', {
-                            'user': user, 
-                            'otp': otp, 
-                            'url': "https://www.msn.com"
-                        })
-                    case 6:
-                        return render(request, 'user/attempt.html', {
-                            'user': user, 
-                            'otp': otp, 
-                            'url': "https://www.amazon.com"
-                        })
-                    case default:
-                        return HttpResponse("Something went wrong.")
-                        # return render(request, 'user/attempt.html', {
-                        #     'user': user, 
-                        #     'otp': otp, 
-                        #     'url': "https://www.flipkart.com"
-                        # })
+                if request.method == "GET":
+                    return HttpResponseRedirect(reverse('user:visit_success', args=(), kwargs={'otp': otp}))
             else:
                 return HttpResponse("You have completed all of your sessions and thus cannot attempt further tests.")
-        else:
-            return redirect('/user/home/')
-    # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
+    else:
+        return redirect('/user/login/')
+
+def visit_success(request, otp):
+    if request.user.is_authenticated:
+        user = request.user
+        match user.participant.sessions_completed:
+            case 1:
+                return render(request, 'user/attempt.html', {
+                    'user': user, 
+                    'otp': otp, 
+                    'url': "https://www.google.com"
+                })
+            case 2:
+                return render(request, 'user/attempt.html', {
+                    'user': user, 
+                    'otp': otp, 
+                    'url': "https://www.netflix.com"
+                })
+            case 3:
+                return render(request, 'user/attempt.html', {
+                    'user': user, 
+                    'otp': otp, 
+                    'url': "https://www.youtube.com"
+                })
+            case 4:
+                return render(request, 'user/attempt.html', {
+                    'user': user, 
+                    'otp': otp, 
+                    'url': "https://www.twitch.tv"
+                })
+            case 5:
+                return render(request, 'user/attempt.html', {
+                    'user': user, 
+                    'otp': otp, 
+                    'url': "https://www.msn.com"
+                })
+            case 6:
+                return render(request, 'user/attempt.html', {
+                    'user': user, 
+                    'otp': otp, 
+                    'url': "https://www.amazon.com"
+                })
+            case default:
+                return HttpResponse("Something went wrong.")
+                # return render(request, 'user/attempt.html', {
+                #     'user': user, 
+                #     'otp': otp, 
+                #     'url': "https://www.flipkart.com"
+                # })
+    else:
+        return redirect('/user/login/')
