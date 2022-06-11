@@ -10,6 +10,8 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 import datetime
 from django.utils import timezone
+from user.models import codes
+import shortuuid
 import json
 
 
@@ -51,6 +53,7 @@ def user_new_visit(user):
     user.participant.sessions_completed += 1
     t = datetime.datetime.now()
     user.participant.last_visit = t
+    ob = codes.objects.create(otp=shortuuid.ShortUUID().random(length=12), session_num=user.participant.sessions_completed)
     match user.participant.sessions_completed:
         case 1:
             user.participant.visit_time_1 = t
@@ -67,7 +70,7 @@ def user_new_visit(user):
         case default:
             return HttpResponse("Something went wrong.")
     user.save()
-
+    return ob.otp
 
 def register(request):
     try:
@@ -122,26 +125,26 @@ def log_visit(request):
             user = request.user
             # col = "visit_time_" + user.participant.sessions_completed
             if user.participant.sessions_completed < 6:
-                user_new_visit(user)
+                otp = user_new_visit(user)
                 match user.participant.sessions_completed:
                     case 1:
                         # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                        return HttpResponse("Your OTP is %s." % otp)
                     case 2:
                         # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                        return HttpResponse("Your OTP is %s." % otp)
                     case 3:
                         # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                        return HttpResponse("Your OTP is %s." % otp)
                     case 4:
                         # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                        return HttpResponse("Your OTP is %s." % otp)
                     case 5:
                         # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                        return HttpResponse("Your OTP is %s." % otp)
                     case 6:
                         # return redirect('https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO')
-                        return HttpResponse("You have completed %d sessions." % user.participant.sessions_completed)
+                        return HttpResponse("Your OTP is %s." % otp)
                     case default:
                         return HttpResponse("Something went wrong.")
             else:
