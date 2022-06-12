@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -101,6 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CRONJOBS = [
+    ('* * * * *', 'mysite.user.cron.auto_email()', '>> ' + os.path.join(BASE_DIR,'log/debug7.log' + ' 2>&1 '))
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
@@ -117,10 +123,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 STATICFILES_DIRS = [
-    "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
+    # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
+    BASE_DIR/"/user/static",
 ]
 
 STATIC_URL = 'static/'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+# EMAIL_HOST_USER = "vivek.pamnani.iiitresearch@gmail.com"
+EMAIL_HOST_USER = "vivpamnani19990429@gmail.com"
+# EMAIL_HOST_PASSWORD = "R@taGooF"
+EMAIL_HOST_PASSWORD = "ycuueahwfjqbkixy"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
