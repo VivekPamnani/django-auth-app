@@ -21,4 +21,22 @@
                 Logout
         </button>
     </form>
+    <div class="row d-flex justify-content-center mt-100" id="progress_widget">
+        <div class="col-md-6">
+            <div class="progress blue">
+              <span class="progress-left" data-leftnum=0>
+                                <span class="progress-bar"></span>
+              </span>
+              <span class="progress-right" data-rightnum=2>
+                                <span class="progress-bar"></span>
+              </span>
+              <div class="progress-value">
+                <div>
+                    {{user.participant.sessions_completed}}/6<br>
+                    <span>completed</span>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
 </body>

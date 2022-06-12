@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 import datetime
 from django.utils import timezone
+import user
 from user.models import codes
 import shortuuid
 import pytz
@@ -19,7 +20,6 @@ def index(request):
     return HttpResponse("this is the index page")
 
 def user_init(user):
-    user.participant.department = "CSE"
     user.participant.sessions_completed = 0
     user.save()
 
@@ -85,7 +85,12 @@ def signout(request):
     return redirect('/user/login/')
 
 def home(request):
-    return render(request, 'user/home.html')
+    if request.user.is_authenticated:
+        user = request.user
+        progress_percentage = user.participant.sessions_completed / 6 * 100
+        return render(request, 'user/home.html', context={'user': user, 'percentage': int(progress_percentage)})
+    else:
+        return redirect('/user/login')
 
 def log_visit(request):
     if request.user.is_authenticated:
@@ -116,45 +121,45 @@ def visit_success(request, otp):
             case 1:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
-                    'otp': otp, 
-                    'url': "https://www.google.com"
+                    'otp' : otp, 
+                    'url' : "https://www.google.com"
                 })
             case 2:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
-                    'otp': otp, 
-                    'url': "https://www.netflix.com"
+                    'otp' : otp, 
+                    'url' : "https://www.netflix.com"
                 })
             case 3:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
-                    'otp': otp, 
-                    'url': "https://www.youtube.com"
+                    'otp' : otp, 
+                    'url' : "https://www.youtube.com"
                 })
             case 4:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
-                    'otp': otp, 
-                    'url': "https://www.twitch.tv"
+                    'otp' : otp, 
+                    'url' : "https://www.twitch.tv"
                 })
             case 5:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
-                    'otp': otp, 
-                    'url': "https://www.msn.com"
+                    'otp' : otp, 
+                    'url' : "https://www.msn.com"
                 })
             case 6:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
-                    'otp': otp, 
-                    'url': "https://www.amazon.com"
+                    'otp' : otp, 
+                    'url' : "https://www.amazon.com"
                 })
             case default:
                 return HttpResponse("Something went wrong.")
                 # return render(request, 'user/attempt.html', {
                 #     'user': user, 
-                #     'otp': otp, 
-                #     'url': "https://www.flipkart.com"
+                #     'otp' : otp, 
+                #     'url' : "https://www.flipkart.com"
                 # })
     else:
         return redirect('/user/login/')
