@@ -135,7 +135,7 @@ EMAIL_PORT = 587
 # EMAIL_HOST_USER = "vivek.pamnani.iiitresearch@gmail.com"
 EMAIL_HOST_USER = "vivpamnani19990429@gmail.com"
 # EMAIL_HOST_PASSWORD = "R@taGooF"
-EMAIL_HOST_PASSWORD = "ycuueahwfjqbkixy"
+EMAIL_HOST_PASSWORD = ""
 
 
 # Default primary key field type
