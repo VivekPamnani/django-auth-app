@@ -1,17 +1,58 @@
 <head>  
     <meta charset="UTF-8">  
-    <title>Redirect..</title>  
+    <title>Directions</title>  
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
     <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
     <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
 </head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"></a>
+    <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+        <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+    </li>
+    </ul>
+</nav>
 
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <h4 class="card-title"> Validation Code </h4>
+            <br>
+            <p class="card-subtitle">Please make a note of the following code and confirm. <br> You will be required to enter it on the experiment site as you finish your attempt.</p>
+            <br>
+            <div class="row justify-content-center" id="r1">
+                <div class="card-body">
+                    <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
+                    <h3 class="text-center">
+                        {{otp}}
+                    </h3>
+                </div>
+                <br>
+            </div>
+            <br>
+            <div class="row align-items-center">
+                <div class="text-center">
+                    <button class="btn btn-primary"
+                        onclick=" window.open('{{ url }}', '_blank')">
+                        I understand
+                    </button>
+                    <!-- Hello -->
+                </div>
+            </div>
+        </div>
+</main>
 
-<h1>{{ user.username }}</h1>
-
-Your OTP is {{ otp }} for visit {{ user.participant.sessions_completed }}.
-Hello there. <br>
-<!-- <a class="btn btn-info" href={{ url }}> Click here </a> -->
-<button class="btn btn-danger" onclick=" window.open('{{ url }}', '_blank')"> Click here </button>
-
+</body>

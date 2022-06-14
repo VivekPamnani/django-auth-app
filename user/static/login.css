@@ -1,12 +1,12 @@
 body {
-    background: #ABCDEF;
+    background: #fefafe;
     font-family: Assistant, sans-serif;
     display: flex;
     min-height: 90vh;
   }
   .login {
     color: white;
-    background: background: #136a8a;
+    background: #136a8a;
     background: 
       -webkit-linear-gradient(to right, #267871, #136a8a);
     background: 
@@ -75,10 +75,10 @@ body {
     color: white;
     transition: 0.5s;
   }
-  .login .forgot {
-    text-decoration: none;
+  .forgot {
+    text-decoration: underline;
     color: white;
-    float: right;
+    /* float: right; */
   }
   footer {
     position: absolute;

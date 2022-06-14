@@ -133,7 +133,7 @@ def log_visit(request):
                 if request.method == "GET":
                     return HttpResponseRedirect(reverse('user:visit_success', args=(), kwargs={'otp': otp}))
             else:
-                return HttpResponse("You have completed all of your sessions and thus cannot attempt further tests.")
+                return HttpResponse("You have completed all of your sessions and thus cannot attempt further tests. We thank you for your participation!")
     else:
         return redirect('/user/login/')
 
@@ -145,37 +145,37 @@ def visit_success(request, otp):
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.google.com"
+                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
                 })
             case 2:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.netflix.com"
+                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
                 })
             case 3:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.youtube.com"
+                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
                 })
             case 4:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.twitch.tv"
+                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
                 })
             case 5:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.msn.com"
+                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
                 })
             case 6:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.amazon.com"
+                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
                 })
             case default:
                 return HttpResponse("Something went wrong.")
