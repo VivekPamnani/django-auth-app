@@ -91,7 +91,20 @@ def home(request):
         progress_percentage = user.participant.sessions_completed / 6 * 100
         leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
         rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
-        return render(request, 'user/home.html', context={'user': user, 'percentage': int(progress_percentage), 'leftnum': leftnum, 'rightnum': rightnum})
+        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=2) - timezone.now().replace(microsecond=0)
+        # rem_time = rem_time.replace(microsecond=0)
+        if(rem_time <= datetime.timedelta()):
+            rem_time = datetime.timedelta()
+        return render(request, 
+                    'user/dashboard.html', 
+                    context={
+                        'user': user, 
+                        'percentage': int(progress_percentage), 
+                        'leftnum': leftnum, 
+                        'rightnum': rightnum, 
+                        'earned': 100 * user.participant.sessions_completed,
+                        'remtime': rem_time
+                    })
     else:
         return redirect('/user/login')
 
