@@ -133,7 +133,7 @@ EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "vivek.pamnani.iiit.research@outlook.com"
-EMAIL_HOST_PASSWORD = "ofiljwpvhwgbljlg"
+EMAIL_HOST_PASSWORD = ""
 
 
 # Default primary key field type
