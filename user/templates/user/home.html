@@ -1,6 +1,6 @@
 <head>  
     <meta charset="UTF-8">  
-    <title>login</title>  
+    <title>Home</title>  
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
     <link rel="stylesheet" href="{% static 'home.css' %}">
@@ -8,7 +8,7 @@
 </head> 
 <body>
     <p>Click the button below to proceed to the experiment link.</p> </br>
-    <form action="{% url 'user:visit' %}" method="GET">
+    <form action="{% url 'user:directions' %}" method="GET">
     {% csrf_token %}
         <button type="submit"
                 class="btn btn-primary">
@@ -24,10 +24,10 @@
     <div class="row d-flex justify-content-center mt-100" id="progress_widget">
         <div class="col-md-6">
             <div class="progress blue">
-              <span class="progress-left" data-leftnum=0>
+              <span class="progress-left" data-leftnum="{{leftnum}}">
                                 <span class="progress-bar"></span>
               </span>
-              <span class="progress-right" data-rightnum=2>
+              <span class="progress-right" data-rightnum="{{rightnum}}">
                                 <span class="progress-bar"></span>
               </span>
               <div class="progress-value">

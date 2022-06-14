@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
+from turtle import left
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -88,7 +89,16 @@ def home(request):
     if request.user.is_authenticated:
         user = request.user
         progress_percentage = user.participant.sessions_completed / 6 * 100
-        return render(request, 'user/home.html', context={'user': user, 'percentage': int(progress_percentage)})
+        leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
+        rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
+        return render(request, 'user/home.html', context={'user': user, 'percentage': int(progress_percentage), 'leftnum': leftnum, 'rightnum': rightnum})
+    else:
+        return redirect('/user/login')
+
+def directions(request):
+    if request.user.is_authenticated:
+        user = request.user
+        return render(request, 'user/directions.html')
     else:
         return redirect('/user/login')
 
