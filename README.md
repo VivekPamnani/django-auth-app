@@ -16,3 +16,10 @@ Note:
 4. `python3 manage.py runserver`
 
 *Note that you need Python3.10 for it to work.*
+
+
+### To do:
+1. instructions
+2. email verification
+3. testing
+4. hosting
