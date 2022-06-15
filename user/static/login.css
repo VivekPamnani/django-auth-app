@@ -1,16 +1,21 @@
 body {
     background: #fefafe;
-    font-family: Assistant, sans-serif;
-    display: flex;
-    min-height: 90vh;
-  }
-  .login {
-    color: white;
     background: #136a8a;
     background: 
       -webkit-linear-gradient(to right, #267871, #136a8a);
     background: 
       linear-gradient(to right, #267871, #136a8a);
+    font-family: Assistant, sans-serif;
+    display: flex;
+    min-height: 90vh;
+  }
+  .login {
+    color: #0a0a0a;
+    background: #fefafe;
+    /* background: 
+      -webkit-linear-gradient(to right, #267871, #136a8a);
+    background: 
+      linear-gradient(to right, #267871, #136a8a); */
     margin: auto;
     box-shadow: 
       0px 2px 10px rgba(0,0,0,0.2), 
@@ -33,35 +38,36 @@ body {
   .login .form input[type=text].text, input[type=email] {
     border: none;
     background: none;
-    box-shadow: 0px 2px 0px 0px white;
+    box-shadow: 0px 2px 0px 0px #7f7f7f;
     width: 100%;
-    color: white;
+    color: #0a0a0a;
     font-size: 1em;
     outline: none;
     margin-top: 10px;
     margin-bottom: 10px;
   }
   .login .form .text::placeholder {
-    color: #D3D3D3;
+    /* color: #D3D3D3; */
+    color: #9f9f9f
   }
   .login .form input[type=password].password {
     border: none;
     background: none;
-    box-shadow: 0px 2px 0px 0px white;
+    box-shadow: 0px 2px 0px 0px #7f7f7f;
     width: 100%;
-    color: white;
+    color: #0a0a0a;
     font-size: 1em;
     outline: none;
     margin-bottom: 15px;
     margin-top: 15px;
   }
   .login .form .password::placeholder {
-    color: #D3D3D3;
+    color: #9f9f9f;
   }
   .login .form .btn-login {
     background: none;
     text-decoration: none;
-    color: white;
+    color: #0a0a0a;
     /* box-shadow: 0px 0px 0px 2px white; */
     border-color: #136a8a;
     border-radius: 3px;
@@ -77,7 +83,7 @@ body {
   }
   .forgot {
     text-decoration: underline;
-    color: white;
+    color: #0a0a0a;
     /* float: right; */
   }
   footer {

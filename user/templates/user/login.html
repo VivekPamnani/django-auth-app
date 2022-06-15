@@ -5,7 +5,7 @@
   <title>COVID-19 Study: Welcome back! </title>
   {% load static %}  
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
-  <link rel="stylesheet" href="{% static 'login.css' %}">
+  <link rel="stylesheet" href="{% static 'login_inverse.css' %}">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
   <div class='head'>
   <h1 class='company'>COVID-19 Study</h1>
   </div>
-  <p class='msg'>Welcome back</p>
+  <p class='msg'>Welcome back!</p>
   <div class='form'>
     <form action="{% url 'user:login' %}" method="post">
         {% csrf_token %}
@@ -27,7 +27,7 @@
         </div>
         <br>
         <div>
-          Don't have an account?<a class='forgot' href="/user/register">Register.</a>
+          Don't have an account?<a class='forgot' href="/user/register"> Register. </a>
         </div>
         <!-- <a href="#" class='forgot'>Forgot?</a> -->
     </form>

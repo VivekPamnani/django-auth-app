@@ -15,7 +15,7 @@
   <div class='head'>
   <h1 class='company'>COVID-19 Study</h1>
   </div>
-  <p class='msg'>Welcome</p>
+  <p class='msg'>Welcome!</p>
   <div class='form'>
     <form action="{% url 'user:register' %}" method="post">
         {% csrf_token %}
@@ -29,7 +29,7 @@
         </div>
         <br>
         <div>
-          Already registered?<a class='forgot' href="/user/login">Login.</a>
+          Already registered?<a class='forgot' href="/user/login"> Login. </a>
         </div>
         <!-- <a href="#" class='forgot'>Forgot?</a> -->
     </form>
