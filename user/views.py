@@ -93,8 +93,8 @@ def home(request):
         rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
         rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=2) - timezone.now().replace(microsecond=0)
         # rem_time = rem_time.replace(microsecond=0)
-        if(rem_time <= datetime.timedelta()):
-            rem_time = datetime.timedelta()
+        # if(rem_time <= datetime.timedelta()):
+        #     rem_time = datetime.timedelta()
         return render(request, 
                     'user/dashboard.html', 
                     context={
@@ -111,12 +111,17 @@ def home(request):
 def directions(request):
     if request.user.is_authenticated:
         user = request.user
-        return render(request, 'user/directions.html')
+        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=14) - timezone.now().replace(microsecond=0)
+        if(rem_time > datetime.timedelta()): 
+            return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
+        else:
+            return render(request, 'user/directions.html')
     else:
         return redirect('/user/login')
 
 def log_visit(request):
     if request.user.is_authenticated:
+        # return HttpResponse(json.dumps([i.email for i in User.objects.all()]), content_type="application/json")
         user = request.user
         utc = pytz.UTC
         old = user.participant.last_visit
@@ -124,7 +129,7 @@ def log_visit(request):
         windback = timezone.now() - datetime.timedelta(days=14)
         last_time = old#.replace(tzinfo=utc)
         wind_time = windback#.replace(tzinfo=utc)
-        rem_time = last_time + datetime.timedelta(seconds=10) - timezone.now()
+        rem_time = last_time + datetime.timedelta(days=14) - timezone.now()
         if(rem_time > datetime.timedelta()):
             return HttpResponse('Sorry, you cannot attempt the experiment more than once in two weeks. Time until next attempt: %s' % rem_time)
         else:

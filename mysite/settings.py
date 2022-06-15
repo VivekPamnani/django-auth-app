@@ -104,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'user.cron_alt.auto_email')
+    ('0 * * * *', 'user.cron.auto_email'),
 ]
 
 
@@ -133,7 +133,7 @@ EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "vivek.pamnani.iiit.research@outlook.com"
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_PASSWORD = "atlxqqivsmpfphvv"
 
 
 # Default primary key field type

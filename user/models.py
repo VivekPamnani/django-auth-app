@@ -14,6 +14,7 @@ class participant(models.Model):
     visit_time_5 = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     visit_time_6 = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     last_visit = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
+    last_email = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     sessions_completed = models.IntegerField(default=0)
 
 class codes(models.Model):
