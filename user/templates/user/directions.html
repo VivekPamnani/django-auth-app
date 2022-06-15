@@ -1,0 +1,57 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Directions</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'user:home' %}">Dashboard</a>
+    <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+        <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+    </li>
+    </ul>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="row justify-content-center" id="r1">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <h4 class="card-title"> Directions </h4>
+                <div class="card-body">
+                    <ul>
+                        <li> Only laptop/PC </li>
+                        <li> No distractions </li>
+                        <li> Not too close </li>
+                        <li> Vertical </li>
+                    </ul>
+
+                    <p> If you have understood the above directions, please confirm by clicking the button below to proceed.</p>
+                </div>
+                <div class="text-center">
+                    <form action="{% url 'user:visit' %}" method="GET">
+                        {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                    I understand
+                            </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+</main>
+
+</body>
