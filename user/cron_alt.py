@@ -32,7 +32,7 @@ def auto_email():
     smtp.starttls()
 
     # Login with your email and password
-    smtp.login(user="vivek.pamnani.iiit.research@outlook.com", password="vhyrkkrjiacjorzk")
+    smtp.login(user="", password="")
 
     # Call the message function
     msg = message("Good!", "Hi there!")
