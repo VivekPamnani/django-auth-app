@@ -17,12 +17,7 @@
 </head> 
 <body>
 <nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'user:home' %}">Dashboard</a>
-    <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-        <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
-    </li>
-    </ul>
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Instructions</a>
 </nav>
 
 <main role="main">
@@ -78,11 +73,11 @@
                     <p> If you have understood the above directions, please confirm by clicking the button below to proceed.</p>
                 </div>
                 <div class="text-center">
-                    <form action="{% url 'user:login' %}" method="GET">
+                    <form action="{% url 'user:home' %}" method="GET">
                         {% csrf_token %}
                             <button type="submit"
                                     class="btn btn-primary">
-                                    I understand. Let me log in.
+                                    I understand.
                             </button>
                     </form>
                 </div>

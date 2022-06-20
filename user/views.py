@@ -22,6 +22,9 @@ from django.core.mail import send_mail
 def index(request):
     return HttpResponse("this is the index page")
 
+def instructions(request):
+    return render(request, 'user/instructions.html')
+
 def user_init(user):
     user.participant.sessions_completed = 0
     user.save()
@@ -57,12 +60,12 @@ def verify_email(request):
     else:
         user = get_object_or_404(User, username=request.session['verif_user'])
         if(request.session['verif_code'] == entered_code):
-            user.is_active = True
+            user.participant.is_verified = True
             user.save()
             del request.session['verif_user']
             del request.session['verif_code']
             del request.session['attempts_left']
-            return HttpResponse("Your account has been verified! Click here to proceed to the login page: " + '<a href="/user/login">Login</a>')
+            return HttpResponse("Your account has been verified! Click here to proceed to the instructions: " + '<a href="/user/instructions"}>Continue.</a>')
         else:
             if(request.session['attempts_left'] > 0):
                 request.session['attempts_left'] -= 1
@@ -86,12 +89,11 @@ def register(request):
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
         send_mail('Verify your email address for participation.', 
-        msg, 
-        'vivek.pamnani.iiit.research@outlook.com', 
-        [entered_email],
-        fail_silently=True)
+            msg, 
+            'vivek.pamnani.iiit.research@outlook.com', 
+            [entered_email],
+            fail_silently=True)
         user = User.objects.create_user(entered_username, entered_email, entered_pwd)
-        user.is_active = False
         request.session['verif_code'] = verification_code
         request.session['verif_user'] = user.username
         request.session['attempts_left'] = 3
@@ -125,7 +127,7 @@ def signout(request):
     return redirect('/user/login/')
 
 def home(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
         progress_percentage = user.participant.sessions_completed / 6 * 100
         leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
@@ -141,14 +143,14 @@ def home(request):
                         'percentage': int(progress_percentage), 
                         'leftnum': leftnum, 
                         'rightnum': rightnum, 
-                        'earned': 100 * user.participant.sessions_completed,
-                        'remtime': rem_time
+                        'earned': 200 * user.participant.sessions_completed,
+                        'remtime': rem_time if user.participant.sessions_completed is not 0 else str(datetime.timedelta())
                     })
     else:
         return redirect('/user/login')
 
 def directions(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
         rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=14) - timezone.now().replace(microsecond=0)
         if(rem_time > datetime.timedelta()): 
@@ -159,7 +161,7 @@ def directions(request):
         return redirect('/user/login')
 
 def log_visit(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.participant.is_verified:
         # return HttpResponse(json.dumps([i.email for i in User.objects.all()]), content_type="application/json")
         user = request.user
         utc = pytz.UTC
@@ -182,7 +184,7 @@ def log_visit(request):
         return redirect('/user/login/')
 
 def visit_success(request, otp):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
         match user.participant.sessions_completed:
             case 1:

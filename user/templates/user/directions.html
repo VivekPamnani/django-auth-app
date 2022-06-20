@@ -16,13 +16,21 @@
     </style>
 </head> 
 <body>
-<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'user:home' %}">Dashboard</a>
-    <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-        <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
-    </li>
-    </ul>
+<nav class="navbar navbar-dark fixed-top navbar-custom navbar-expand-lg flex-md-nowrap p-1 shadow p-1 mb-5 " >
+
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'user:home' %}">Hi, {{ request.user.username }}!</a>
+    <div class="navbar-collapse collapse flex-grow-1 text-right"> </div>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:instructions' %}">Instructions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+            </li>
+        </ul>
+    <!-- <ul class="navbar-nav px-3">
+    </ul> -->
+
 </nav>
 
 <main role="main">

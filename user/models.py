@@ -16,6 +16,7 @@ class participant(models.Model):
     last_visit = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     last_email = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     sessions_completed = models.IntegerField(default=0)
+    is_verified = models.BooleanField(default=False)
 
 class codes(models.Model):
     otp = models.CharField(max_length=12)

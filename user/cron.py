@@ -7,7 +7,7 @@ def auto_email():
     user_list = User.objects.all()
     to_addr = []
     for user in user_list:
-        if user.username != 'admin':
+        if user.username != 'admin' and user.participant.is_verified:
             rem_time = user.participant.last_visit + datetime.timedelta(days=14) - timezone.now()
             delta_last_email = (timezone.now() - user.participant.last_email)
             if(delta_last_email > datetime.timedelta(days=14)):
