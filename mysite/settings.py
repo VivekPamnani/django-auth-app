@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_crontab',
+    "verify_email.apps.VerifyEmailConfig",
 ]
 
 MIDDLEWARE = [

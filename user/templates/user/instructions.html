@@ -1,0 +1,93 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Instructions</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'user:home' %}">Dashboard</a>
+    <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+        <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+    </li>
+    </ul>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="row justify-content-center" id="r1">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <h4 class="card-title"> Instructions </h4>
+                <div class="card-body">
+                    <h5 id="a-the-website">A. The website</h5>
+                    <p>If you are a new user you must first register on the website before reading. You will be redirected here once you register. Register <a href="{% url 'user:register' %}">here</a>.</p>
+                    <p>If you have just registered, continue reading. First, you must:</p>
+                    <ol>
+                        <li>Log in to the website.</li>
+                        <li>Once you are logged in, you will see a dashboard notifying you about the status and progress of your participation.</li>
+                    </ol>
+                    <h5 id="b-the-study">B. The study</h5>
+                    <p>In this study, you would attempting a series of tests periodically over a span of 3 months.</p>
+                    <p>The procedure is as follows:</p>
+                    <ol>
+                        <li>Click the button on the dashboard to proceed to the test.</li>
+                        <li>You will be redirected to the Psytoolkit platform, where the tests have been developed.</li>
+                        <li>If it is your <strong>first</strong> visit, the study consists of four parts:
+                            <ul>
+                                <li>Survey about your demographic information</li>
+                                <li>The sequence of tests to be given.</li>
+                                <li>Further questions related to the study.</li>
+                                <li>Health questionnaires.</li>
+                            </ul>
+                        </li>
+                        <li>If it is a <strong>subsequent</strong> visit, the study will only comprise of :
+                            <ul>
+                                <li>The tests and,</li>
+                                <li>Health questionnaires.</li>
+                            </ul>
+                        </li>
+                        <li>In <strong>either</strong> case, you will be asked follow the directions to generate a unique code (for every attempt). This unique code is a way to track your periodic attempts without linking it to any of your recorded personal information.</li>
+                        <li>The study will last for approximately 25-30 minutes; any instructions pertaining to the study will be addressed there.</li>
+                        <li>At the end of the survey, you will be provided a unique code. Note down this code either on your computer or on a piece of paper as you will need it shortly. Note that this code is stored separately from your experiment data.</li>
+                        <li>You will be asked for your UPI ID, via which you will be receiving your compensation. Note that this field is stored separately from your experiment data. This way, there is no way for us to link your data to you.</li>
+                        <li>Now, you will be redirected back to the website you logged in on. Here, you will be asked for the code we just asked you to memorize. This is an important step as the code will be validated. If the code does not pass the check, your data wil be deemed invalid and you will not receive the promised compensation.</li>
+                    </ol>
+                    <h5 id="c-directions-to-keep-in-mind-">C. Directions  to keep in mind.</h5>
+                    <ul>
+                        <li>This study requires you to be using a laptop or a PC. Kindly refrain from using mobiles/tablets/iPads for the study.</li>
+                        <li>Make sure you are in a quiet environment and free from distractions.</li>
+                        <li>Please sit straight during the course of the study.</li>
+                        <li>Do not sit too close or too far from the screen.</li>
+                        <li>The computer screen should be directly in front of you in a vertical position.</li>
+                    </ul>
+                    <p><em>If you have any questions regarding the instruction or if you need any kind of clarification, please write an email addressed to <a href='mailto:vivek.pamnani@research.iiit.ac.in'>vivek.pamnani@research.iiit.ac.in</a>.</em></p>
+                    <p><em>Further, if at any point of time you need refer the instructions again, enter the following URL in your browsesr and hit enter: <a href="https://www.abc.xyz/study/instructions/">https://www.abc.xyz/study/instructions/</a>. You can also go to the home page of our website and click the appropriate button (on top-left) that will redirect you to the same webpage.</em></p>
+                    <p> If you have understood the above directions, please confirm by clicking the button below to proceed.</p>
+                </div>
+                <div class="text-center">
+                    <form action="{% url 'user:login' %}" method="GET">
+                        {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                    I understand. Let me log in.
+                            </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+</main>
+
+</body>

@@ -16,6 +16,8 @@ from user.models import codes
 import shortuuid
 import pytz
 import json
+from verify_email.email_handler import send_verification_email
+from django.core.mail import send_mail
 
 def index(request):
     return HttpResponse("this is the index page")
@@ -47,6 +49,31 @@ def user_new_visit(user):
     user.save()
     return ob.otp
 
+def verify_email(request):
+    try:
+        entered_code = request.POST['code']
+    except:
+        return render(request, 'user/verification.html')
+    else:
+        user = get_object_or_404(User, username=request.session['verif_user'])
+        if(request.session['verif_code'] == entered_code):
+            user.is_active = True
+            user.save()
+            del request.session['verif_user']
+            del request.session['verif_code']
+            del request.session['attempts_left']
+            return HttpResponse("Your account has been verified! Click here to proceed to the login page: " + '<a href="/user/login">Login</a>')
+        else:
+            if(request.session['attempts_left'] > 0):
+                request.session['attempts_left'] -= 1
+                return redirect('user:verify')
+            else:
+                del request.session['verif_user']
+                del request.session['verif_code']
+                del request.session['attempts_left']
+                user.delete()
+                return HttpResponse('Sorry, too many wrong attempts! Click here to proceed to the registration page to try again: ' + '<a href="/user/register">Register</a>')
+
 def register(request):
     try:
         entered_username = request.POST['username']
@@ -56,15 +83,27 @@ def register(request):
     except:
         return render(request, 'user/registration.html')
     else:
+        verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
+        msg = "Please enter the following OTP to verify your email: " + str(verification_code)
+        send_mail('Verify your email address for participation.', 
+        msg, 
+        'vivek.pamnani.iiit.research@outlook.com', 
+        [entered_email],
+        fail_silently=True)
         user = User.objects.create_user(entered_username, entered_email, entered_pwd)
-        user.save()
-        user_init(user)
-    user = authenticate(request, username=entered_username, password=entered_pwd)
-    if user is not None:
-        login(request, user=user)
-        return redirect("/user/home/")
-    else:
-        return HttpResponse("Something went wrong.")
+        user.is_active = False
+        request.session['verif_code'] = verification_code
+        request.session['verif_user'] = user.username
+        request.session['attempts_left'] = 3
+        return redirect('user:verify')
+    #     user.save()
+    #     user_init(user)
+    # user = authenticate(request, username=entered_username, password=entered_pwd)
+    # if user is not None:
+    #     login(request, user=user)
+    #     return redirect("/user/home/")
+    # else:
+    #     return HttpResponse("Something went wrong.")
 
 def signin(request):
     try:

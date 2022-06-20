@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -12,7 +12,9 @@ urlpatterns = [
     path('visit/', views.log_visit, name='visit'),
     path('visit/<str:otp>/success/', views.visit_success, name='visit_success'),
     path('directions/', views.directions, name='directions'),
-    path('logout/', views.signout, name='logout')
+    path('logout/', views.signout, name='logout'),
+    path('verification/', views.verify_email, name='verify'),
+    # path('verification/', include('verify_email.urls')),
     # path('login/', views.login, name='login'),
     # path('logout/', views.vote, name='logout')
 ]

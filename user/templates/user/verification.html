@@ -1,0 +1,54 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Directions</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"></a>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <h4 class="card-title"> Email Verification </h4>
+            <br>
+            <p class="card-subtitle">Please check your email for a verification code. Also check your junk/spam folder if you don't see an email. <br> Enter the code below to verify your email. Once verified you will be asked to login.</p>
+            <br>
+            <form action="{% url 'user:verify' %}" method="post">
+                <div class="row justify-content-center" id="r1">
+                    <div class="card-body">
+                    <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
+                        {% csrf_token %}
+                        <div style="text-align:center;">
+                            <input type="text" name="code" placeholder='' class='form-text' id='code' maxlength="4" style="text-align: center;" required><br><br>
+                            <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
+                        </div>
+                        <!-- <a href="#" class='forgot'>Forgot?</a> -->
+                    </div>
+                    <br>
+                </div>
+                <div class="row align-items-center">
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit" id="do-verify">Verify</button>
+                    </div>
+                </div>
+            </form>
+            <br>
+        </div>
+</main>
+
+</body>
