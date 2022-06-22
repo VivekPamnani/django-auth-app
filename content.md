@@ -46,3 +46,20 @@ The procedure is as follows:
 
 ---
 ## Consent
+This experiment has been approved by the < ethics > Committee.
+
+No harm will come to you from taking part in this experiment. You have the right to decline and to withdraw from the research at any point of time.
+
+None of your response data will be used for any purpose other than research. Please refer the privacy notice for further details.
+
+This research can potentially help in mitigating the effects of COVID-19 infection by furthering our understanding of it. (Note that even if you have never been tested positive for COVID, your participation will be just as helpful).
+
+For each one of your visits (out of 6), you will receive a compensation of ₹200. 
+
+Thank you for agreeing to take part in this experiment! Before we continue, we need your consent to the following:
+
+1. I consent to performing the task online.
+2. I understand and consent to my responses are being recorded and stored securely in a database.
+3. I understand and consent to my responses are being used anonymously for research.
+
+If you have any further concerns, you may write an email addressed to: vivek.pamnani@research.iiit.ac.in
