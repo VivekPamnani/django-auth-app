@@ -44,11 +44,36 @@ The procedure is as follows:
 
 ## Introduction
 
+Welcome!
+
+*   What will I be doing in this study?
+
+The study comprises a series of tasks on which your performance will be evaluated. You will be asked some questions before and after the survey.
+
+* What is the purpose of the study?
+
+The purpose of the tasks in the study is get an estimate of individual performance in specific problems. Such data along with survey information will help us understand the impact of COVID-19 infection.
+
+* What are the benefits of this research?
+
+The research can potentially help mitigate the effects of COVID-19 infection in affected patients and also develop a better understanding of the nature of the infection.
+
+*   How long will this study take?
+
+The study lasts for approximately 30 minutes.
+
+*   Who should or can participate?
+
+If you are in the age range of 18-60 yrs, you are eligible to participate in this study. Even if you have never been tested positive for COVID-19, your participation will be just as helpful. You will be paid a compensation/fee of ₹200 for each attempt (to an upwards maximum of ₹1,200 for 6 such attempts).
+
+
 ---
+https://www.apa.org/news/press/releases/2014/06/informed-consent
+https://www.apa.org/monitor/2015/09/ethics
 ## Consent
 This experiment has been approved by the < ethics > Committee.
 
-No harm will come to you from taking part in this experiment. You have the right to decline and to withdraw from the research at any point of time.
+No harm will come to you from taking part in this experiment. The experiment includes a survey that can be potentially uncomfortable. You have the right to decline and to withdraw from the research at any point of time.
 
 None of your response data will be used for any purpose other than research. Please refer the privacy notice for further details.
 
@@ -63,3 +88,6 @@ Thank you for agreeing to take part in this experiment! Before we continue, we n
 3. I understand and consent to my responses are being used anonymously for research.
 
 If you have any further concerns, you may write an email addressed to: vivek.pamnani@research.iiit.ac.in
+
+---
+## Current functional ability?
