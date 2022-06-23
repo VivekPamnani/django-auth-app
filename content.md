@@ -66,8 +66,8 @@ The study lasts for approximately 30 minutes.
 
 If you are in the age range of 18-60 yrs, you are eligible to participate in this study. Even if you have never been tested positive for COVID-19, your participation will be just as helpful. You will be paid a compensation/fee of ₹200 for each attempt (to an upwards maximum of ₹1,200 for 6 such attempts).
 
-
 ---
+
 https://www.apa.org/news/press/releases/2014/06/informed-consent
 https://www.apa.org/monitor/2015/09/ethics
 ## Consent
