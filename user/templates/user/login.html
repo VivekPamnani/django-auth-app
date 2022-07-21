@@ -12,7 +12,7 @@
 <!-- partial:index.partial.html -->
 <section class='login' id='login'>
   <div class='head'>
-  <h1 class='company'>COVID-19 Study</h1>
+  <h1 class='company'>Indian Mental Wellbeing Study</h1>
   </div>
   <p class='msg'>Welcome back!</p>
   <div class='form'>
@@ -21,7 +21,7 @@
         <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
         <input type="password" name="password" placeholder='••••••••••••••' class='password'><br>
         <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
-        <br>
+        <p style="color: #FF0000;">{{err_msg}}</p>
         <div style="text-align:center;">
             <input class='btn-login' id='do-login' type="submit" value="Login"></input>
         </div>

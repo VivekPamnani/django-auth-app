@@ -14,7 +14,9 @@ urlpatterns = [
     path('directions/', views.directions, name='directions'),
     path('logout/', views.signout, name='logout'),
     path('verification/', views.verify_email, name='verify'),
-    path('instructions/', views.instructions, name='instructions')
+    path('instructions/', views.instructions, name='instructions'),
+    path('welcome/', views.welcome, name='welcome'),
+    path('consent/', views.consent, name='consent')
     # path('verification/', include('verify_email.urls')),
     # path('login/', views.login, name='login'),
     # path('logout/', views.vote, name='logout')

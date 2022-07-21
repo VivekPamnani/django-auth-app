@@ -56,7 +56,7 @@ def verify_email(request):
     try:
         entered_code = request.POST['code']
     except:
-        return render(request, 'user/verification.html')
+        return render(request, 'user/verification.html', context={'left': request.session['attempts_left']})
     else:
         user = get_object_or_404(User, username=request.session['verif_user'])
         if(request.session['verif_code'] == entered_code):
@@ -67,9 +67,9 @@ def verify_email(request):
             del request.session['attempts_left']
             return HttpResponse("Your account has been verified! Click here to proceed to the instructions: " + '<a href="/user/instructions"}>Continue.</a>')
         else:
-            if(request.session['attempts_left'] > 0):
+            if(request.session['attempts_left'] > 1):
                 request.session['attempts_left'] -= 1
-                return redirect('user:verify')
+                return render(request, 'user/verification.html', context={'left': request.session['attempts_left']})
             else:
                 del request.session['verif_user']
                 del request.session['verif_code']
@@ -113,14 +113,14 @@ def signin(request):
         # entered_email = request.POST['email']  
         entered_pwd = request.POST['password']
     except:
-        return render(request, 'user/login.html')
+        return render(request, 'user/login.html', context={'err_msg': ''})
     else:
         user = authenticate(request, username=entered_username, password=entered_pwd)
         if user is not None:
             login(request, user=user)
             return HttpResponseRedirect('/user/home')
         else:
-            return HttpResponse("Invalid attempt.")
+            return render(request, 'user/login.html', context={'err_msg': 'Invalid username or password.'})
 
 def signout(request):
     logout(request)
@@ -132,7 +132,7 @@ def home(request):
         progress_percentage = user.participant.sessions_completed / 6 * 100
         leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
         rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
-        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=2) - timezone.now().replace(microsecond=0)
+        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=14) - timezone.now().replace(microsecond=0)
         # rem_time = rem_time.replace(microsecond=0)
         # if(rem_time <= datetime.timedelta()):
         #     rem_time = datetime.timedelta()
@@ -232,3 +232,10 @@ def visit_success(request, otp):
                 # })
     else:
         return redirect('/user/login/')
+
+
+def welcome(request):
+    return render(request, 'user/welcome.html')
+
+def consent(request):
+    return render(request, 'user/consent.html')

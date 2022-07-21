@@ -11,17 +11,22 @@
 
 <body>
 <!-- partial:index.partial.html -->
-<section class='login' id='login'>
+<section class='login' id='login' style="width: 31%;">
   <div class='head'>
-  <h1 class='company'>COVID-19 Study</h1>
+  <h1 class='company'>Indian Mental Wellbeing Study</h1>
   </div>
   <p class='msg'>Welcome!</p>
   <div class='form'>
     <form action="{% url 'user:register' %}" method="post">
         {% csrf_token %}
-        <input type="email" name="email" placeholder='Email' class='text' id='email' required><br>
-        <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
-        <input type="password" name="password" placeholder='••••••••••••••' class='password'><br>
+        <div>
+          <input style="width: 100%;" type="email" name="email" placeholder='Email' class='text' id='email' required><br>
+          <input style="width: 100%;" type="text" name="username" placeholder='Username' class='text' id='username' required><br>
+          <input style="width: 100%;" type="password" name="password" placeholder='••••••••••••••' id='password' class='password' required><br><br>
+          <label for="consent">
+            <input type="checkbox" name="consent" id='consent' required> I have read the <a href="{% url 'user:consent' %}">consent form</a> and by signing up I agree to participate in this study.
+          </label>
+        </div>
         <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
         <br>
         <div style="text-align:center;">
