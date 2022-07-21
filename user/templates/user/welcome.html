@@ -1,0 +1,46 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Instructions</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Indian Mental Wellbeing Study</a>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="row justify-content-center" id="r1">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <h4 class="card-title"> Welcome! </h4>
+                <div class="card-body">
+                    <p>We appreciate your participation in our study that aims to understand the correlates of wellbeing in the context of Pandemic. The research study has been approved by the Institute Research Review Board Committee, which evaluates the validity of tests used in the study and protects the essential rights of human participation. </p>
+                    <p>In this study, you would be attempting a series of tests periodically, every fortnight, over a span of 3 months. Each session will take you approximately 25-30 minutes.</p> 
+                    <p>Anybody between 18-60 years and understand and/or speak English are   is eligible to participate in this study.  You will be paid a compensation/fee of ₹200 for each attempt (to an upwards maximum of ₹1,200 for 6 such attempts). If you would like to know more, please proceed by clicking the button below.</p>
+                </div>
+                <div class="text-center">
+                    <form action="{% url 'user:consent' %}" method="GET">
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                    I understand.
+                            </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+</main>
+
+</body>

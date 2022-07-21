@@ -1,0 +1,83 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Instructions</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 200px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Indian Mental Wellbeing Study</a>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="row justify-content-center" id="r1" style="margin-left: -21%; margin-right: -21%;">
+            <div class="col-md-8" style="padding-right: 7px;">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <h4 class="card-title"> General Information </h4>
+                    <div class="card-body">
+                        <p>Let me walk you through the process. Please read the questions carefully and in case of any inquiry, you can write to us: <a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a> (research student), or <a href="mailto:priyanka.srivastava@iiit.ac.in">priyanka.srivastava@iiit.ac.in</a> (principal investigator).</p>
+                        <p>The study consists of 6 sessions over a span of 3 months. We will request you to participate every fortnight. These periodic sessions will comprise four cognitive games and a health survey. We will also ask you to fill in the demographic details in the first session.&nbsp;</p>
+                        
+                        <p><b>Q: <em>How will I be performing on the tests?</em></b></p>
+                        <p><b>A:</b> You will be required to sit in front of your laptop or desktop to perform the tests. We will ask you to keep the laptop or desktop display screen at your arm length and be seated straight and comfortably.</p>
+                        <p>We will begin the session with a demographic survey, followed by four cognitive games and a health survey. The demographic survey will be conducted only once, in the first session. The following sessions will comprise the cognitive tests and the health survey. You will be informed about the tests details as you will proceed in the study. Each test is different in nature and will require different time. In total, every session may take around 20-30 minutes. The first session may take 35-40 minutes because of the demographic survey.&nbsp;</p>
+                        
+                        <p><b>Q: <em>What are the benefits of this research?</em></b></p>
+                        <p><b>A:</b> You may not be directly benefited by participating in our study. However, your participation will    potentially advance our  understanding of the impact of the Pandemic on individual mental wellbeing.</p>
+                        
+                        <p><b>Q: <em>What are the risks or inconveniences involved in this study?</em></b></p>
+                        <p><b>A:</b> The study does not comprise any known risks of physical or psychological damage associated with your participation. The Institute Research Review Board Committee has evaluated the potential risks associated with our study based on previous studies with similar tests conducted nationally and internationally. A possible inconvenience is that some participants have found similar tasks to be slightly fatiguing. </p>
+                        
+                        <p><b>Q: <em>How long will this study take?</em></b></p>
+                        <p><b>A:</b> The first session will last for approximately, 40 minutes. The following five sessions, every fortnight, will last for approximately, 20-30 minutes. </p>
+                        
+                        <p><b>Q: <em>How will my personal information be protected?</em></b></p>
+                        <p><b>A:</b> None of your response data will be shared with anyone other than the investigators or researchers. Your participation is entirely anonymous. No personal identifying information will be associated with the data we collect from you.  Instead, we will use unique user ID code to identify your data.</p>
+                        
+                        <p><b>Q: <em>What are my participation rights?</em></b></p>
+                        <p><b>A:</b> Your participation in this study is entirely voluntary. You can choose to withdraw from this study at any point in time. There are no penalties or consequences of any kind if you decide that you do not want to participate or discontinue your participation. However, for the benefit of the survey, we request you complete the study. </p>
+                        
+                        <p><b>Q: <em>Whom do I contact if I have questions about the study?</em></b></p>
+                        <p><b>A: </b>We will be glad to respond to any queries you may have about this study. If you have any questions, please write to <a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a> (research student), or <a href="mailto:priyanka.srivastava@iiit.ac.in">priyanka.srivastava@iiit.ac.in</a> (principal investigator). </p>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" style="padding-left: 7px;">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <h4 class="card-title"> Consent </h4>
+                    <div class="card-body">
+                        <p>I hereby give my consent and permit members of the research team to access a de-identified version (with no mention of my name) of the data. The clinical information related to me is only for research purposes.</p>
+                        <p>I understand the anonymized data can be shared in the public domain with other researchers worldwide.</p>
+                        <p>I will not be identified or identifiable in the report or reports that result from the research.</p>
+                        <p>If you agree to participate in the study, please click on the following button to start the participation.  </p>
+                    </div>
+                    <div class="text-center">
+                        <form action="{% url 'user:register' %}" method="GET">
+                            {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                        I understand.
+                                </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+</main>
+
+</body>
