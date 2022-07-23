@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
-from turtle import left
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -34,21 +33,20 @@ def user_new_visit(user):
     t = timezone.now()
     user.participant.last_visit = t
     ob = codes.objects.create(otp=shortuuid.ShortUUID().random(length=12), session_num=user.participant.sessions_completed)
-    match user.participant.sessions_completed:
-        case 1:
-            user.participant.visit_time_1 = t
-        case 2:
-            user.participant.visit_time_2 = t
-        case 3:
-            user.participant.visit_time_3 = t
-        case 4:
-            user.participant.visit_time_4 = t
-        case 5:
-            user.participant.visit_time_5 = t
-        case 6:
-            user.participant.visit_time_6 = t
-        case default:
-            return HttpResponse("Something went wrong.")
+    if (user.participant.sessions_completed==1):
+        user.participant.visit_time_1 = t
+    elif (user.participant.sessions_completed==2):
+        user.participant.visit_time_2 = t
+    elif (user.participant.sessions_completed==3):
+        user.participant.visit_time_3 = t
+    elif (user.participant.sessions_completed==4):
+        user.participant.visit_time_4 = t
+    elif (user.participant.sessions_completed==5):
+        user.participant.visit_time_5 = t
+    elif (user.participant.sessions_completed==6):
+        user.participant.visit_time_6 = t
+    else:
+        return HttpResponse("Something went wrong.")
     user.save()
     return ob.otp
 
@@ -88,9 +86,9 @@ def register(request):
     else:
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
-        send_mail('Verify your email address for participation.', 
-            msg, 
-            'vivek.pamnani.iiit.research@outlook.com', 
+        send_mail('Verify your email address for participation.',
+            msg,
+            'vivek.pamnani.iiit.research@outlook.com',
             [entered_email],
             fail_silently=True)
         user = User.objects.create_user(entered_username, entered_email, entered_pwd)
@@ -110,7 +108,7 @@ def register(request):
 def signin(request):
     try:
         entered_username = request.POST['username']
-        # entered_email = request.POST['email']  
+        # entered_email = request.POST['email']
         entered_pwd = request.POST['password']
     except:
         return render(request, 'user/login.html', context={'err_msg': ''})
@@ -136,13 +134,13 @@ def home(request):
         # rem_time = rem_time.replace(microsecond=0)
         # if(rem_time <= datetime.timedelta()):
         #     rem_time = datetime.timedelta()
-        return render(request, 
-                    'user/dashboard.html', 
+        return render(request,
+                    'user/dashboard.html',
                     context={
-                        'user': user, 
-                        'percentage': int(progress_percentage), 
-                        'leftnum': leftnum, 
-                        'rightnum': rightnum, 
+                        'user': user,
+                        'percentage': int(progress_percentage),
+                        'leftnum': leftnum,
+                        'rightnum': rightnum,
                         'earned': 200 * user.participant.sessions_completed,
                         'remtime': rem_time if user.participant.sessions_completed != 0 else str(datetime.timedelta())
                     })
@@ -153,7 +151,7 @@ def directions(request):
     if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
         rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=14) - timezone.now().replace(microsecond=0)
-        if(rem_time > datetime.timedelta()): 
+        if(rem_time > datetime.timedelta()):
             return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
         else:
             return render(request, 'user/directions.html')
@@ -186,50 +184,53 @@ def log_visit(request):
 def visit_success(request, otp):
     if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
-        match user.participant.sessions_completed:
-            case 1:
-                return render(request, 'user/attempt.html', {
-                    'user': user, 
-                    'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
-                })
-            case 2:
-                return render(request, 'user/attempt.html', {
-                    'user': user, 
-                    'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
-                })
-            case 3:
-                return render(request, 'user/attempt.html', {
-                    'user': user, 
-                    'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
-                })
-            case 4:
-                return render(request, 'user/attempt.html', {
-                    'user': user, 
-                    'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
-                })
-            case 5:
-                return render(request, 'user/attempt.html', {
-                    'user': user, 
-                    'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
-                })
-            case 6:
-                return render(request, 'user/attempt.html', {
-                    'user': user, 
-                    'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
-                })
-            case default:
-                return HttpResponse("Something went wrong.")
-                # return render(request, 'user/attempt.html', {
-                #     'user': user, 
-                #     'otp' : otp, 
-                #     'url' : "https://www.flipkart.com"
-                # })
+        if(user.participant.sessions_completed==1):
+            return render(request, 'user/attempt.html', {
+                'user': user,
+                'otp' : otp,
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+            })
+        elif(user.participant.sessions_completed==2):
+            return render(request, 'user/attempt.html', {
+                'user': user,
+                'otp' : otp,
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+            })
+
+        elif(user.participant.sessions_completed==3):
+            return render(request, 'user/attempt.html', {
+                'user': user,
+                'otp' : otp,
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+            })
+
+        elif(user.participant.sessions_completed==4):
+            return render(request, 'user/attempt.html', {
+                'user': user,
+                'otp' : otp,
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+            })
+
+        elif(user.participant.sessions_completed==5):
+            return render(request, 'user/attempt.html', {
+                'user': user,
+                'otp' : otp,
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+            })
+
+        elif(user.participant.sessions_completed==6):
+            return render(request, 'user/attempt.html', {
+                'user': user,
+                'otp' : otp,
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+            })
+        else:
+            return HttpResponse("Something went wrong.")
+            # return render(request, 'user/attempt.html', {
+            #     'user': user,
+            #     'otp' : otp,
+            #     'url' : "https://www.flipkart.com"
+            # })
     else:
         return redirect('/user/login/')
 

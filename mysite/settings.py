@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-cmn*=x-kc3*cjtu+o*i^+d*t^3bq!m^fm5r#iy(rb-v6@0m#f3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hemanttaneja.pythonanywhere.com']
 
 
 # Application definition
@@ -130,14 +130,20 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATICFILES_DIRS = [
-    # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
-    BASE_DIR/"/user/static",
-]
+if env('SERVER')=='PROD':
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
+else:
+    STATICFILES_DIRS = [
+        # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
+        BASE_DIR/"/user/static",
+    ]
+# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-STATIC_URL = 'static/'
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = env('SMTP_MAIL')
