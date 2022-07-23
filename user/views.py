@@ -144,7 +144,7 @@ def home(request):
                         'leftnum': leftnum, 
                         'rightnum': rightnum, 
                         'earned': 200 * user.participant.sessions_completed,
-                        'remtime': rem_time if user.participant.sessions_completed is not 0 else str(datetime.timedelta())
+                        'remtime': rem_time if user.participant.sessions_completed != 0 else str(datetime.timedelta())
                     })
     else:
         return redirect('/user/login')
@@ -191,37 +191,37 @@ def visit_success(request, otp):
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
+                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
                 })
             case 2:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
+                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
                 })
             case 3:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
+                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
                 })
             case 4:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
+                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
                 })
             case 5:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
+                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
                 })
             case 6:
                 return render(request, 'user/attempt.html', {
                     'user': user, 
                     'otp' : otp, 
-                    'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO"
+                    'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
                 })
             case default:
                 return HttpResponse("Something went wrong.")
