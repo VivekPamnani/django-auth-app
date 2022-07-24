@@ -1,3 +1,7 @@
 __pycache__/
 .env
 script.py
+*
+user/__pycache__/
+polls/__pycache__/
+mysite/__pycache__/
