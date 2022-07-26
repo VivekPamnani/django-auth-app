@@ -194,35 +194,35 @@ def visit_success(request, otp):
             return render(request, 'user/attempt.html', {
                 'user': user,
                 'otp' : otp,
-                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=W6bf8"
             })
 
         elif(user.participant.sessions_completed==3):
             return render(request, 'user/attempt.html', {
                 'user': user,
                 'otp' : otp,
-                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=uBY8M"
             })
 
         elif(user.participant.sessions_completed==4):
             return render(request, 'user/attempt.html', {
                 'user': user,
                 'otp' : otp,
-                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=jeph9"
             })
 
         elif(user.participant.sessions_completed==5):
             return render(request, 'user/attempt.html', {
                 'user': user,
                 'otp' : otp,
-                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=gZxRf"
             })
 
         elif(user.participant.sessions_completed==6):
             return render(request, 'user/attempt.html', {
                 'user': user,
                 'otp' : otp,
-                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=e4STN"
             })
         else:
             return HttpResponse("Something went wrong.")
