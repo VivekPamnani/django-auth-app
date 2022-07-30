@@ -21,6 +21,7 @@ class participant(models.Model):
 class codes(models.Model):
     otp = models.CharField(max_length=12)
     session_num = models.IntegerField(default=0)
+    is_paid = models.BooleanField(default=False)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
