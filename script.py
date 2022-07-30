@@ -27,16 +27,9 @@ def auto_email():
                     send_mail('Reminder for your next session.', 
                         body[-1], 
                         'covid.research.iiit@gmail.com', 
-                        [user.email],
+                        [to_addr[-1]],
                         fail_silently=True)
-    # to_addr = [i.email for i in user_list]
-    # for addr in to_addr:
-    #     send_mail('Reminder for your next session.', 
-    #         body[to_addr.index(addr)], 
-    #         'vivek.pamnani.iiit.research@outlook.com', 
-    #         [addr],
-    #         fail_silently=True)
 
 if __name__ == "__main__":
-    print('Sending...')
+    # print('Sending...')
     auto_email()
