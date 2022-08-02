@@ -134,6 +134,7 @@ def home(request):
         # rem_time = rem_time.replace(microsecond=0)
         # if(rem_time <= datetime.timedelta()):
         #     rem_time = datetime.timedelta()
+        amounts = [0,100,400,400,800,800,1200]
         return render(request,
                     'user/dashboard.html',
                     context={
@@ -141,7 +142,7 @@ def home(request):
                         'percentage': int(progress_percentage),
                         'leftnum': leftnum,
                         'rightnum': rightnum,
-                        'earned': 200 * user.participant.sessions_completed,
+                        'earned': amounts[user.participant.sessions_completed],
                         'remtime': rem_time if user.participant.sessions_completed != 0 else str(datetime.timedelta())
                     })
     else:
