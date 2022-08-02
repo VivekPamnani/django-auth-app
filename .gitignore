@@ -2,7 +2,8 @@ __pycache__/
 .env
 script.py
 *
-user/__pycache__/
-polls/__pycache__/
-mysite/__pycache__/
+# user/__pycache__/
+# polls/__pycache__/
+# mysite/__pycache__/
 db.sqlite3
+__pycache__/$
