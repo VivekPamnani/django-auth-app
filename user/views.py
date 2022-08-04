@@ -130,7 +130,7 @@ def home(request):
         progress_percentage = user.participant.sessions_completed / 6 * 100
         leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
         rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
-        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=14) - timezone.now().replace(microsecond=0)
+        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
         # rem_time = rem_time.replace(microsecond=0)
         # if(rem_time <= datetime.timedelta()):
         #     rem_time = datetime.timedelta()
@@ -143,7 +143,7 @@ def home(request):
                         'leftnum': leftnum,
                         'rightnum': rightnum,
                         'earned': amounts[user.participant.sessions_completed],
-                        'remtime': rem_time if user.participant.sessions_completed != 0 else str(datetime.timedelta())
+                        'remtime': rem_time if (user.participant.sessions_completed != 0 and rem_time > datetime.timedelta()) else str(datetime.timedelta())
                     })
     else:
         return redirect('/user/login')
@@ -151,7 +151,7 @@ def home(request):
 def directions(request):
     if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
-        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=14) - timezone.now().replace(microsecond=0)
+        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
         if(rem_time > datetime.timedelta()):
             return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
         else:
@@ -166,10 +166,10 @@ def log_visit(request):
         utc = pytz.UTC
         old = user.participant.last_visit
         # dt = datetime.datetime.strptime(str(old), '%Y-%m-%d %H:%M:%S')
-        windback = timezone.now() - datetime.timedelta(days=14)
+        windback = timezone.now() - datetime.timedelta(days=13,hours=20)
         last_time = old#.replace(tzinfo=utc)
         wind_time = windback#.replace(tzinfo=utc)
-        rem_time = last_time + datetime.timedelta(days=14) - timezone.now()
+        rem_time = last_time + datetime.timedelta(days=13,hours=20) - timezone.now()
         if(rem_time > datetime.timedelta()):
             return HttpResponse('Sorry, you cannot attempt the experiment more than once in two weeks. Time until next attempt: %s' % rem_time)
         else:
