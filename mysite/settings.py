@@ -136,6 +136,7 @@ if env('SERVER')=='PROD':
     EMAIL_HOST = 'smtp.gmail.com'
 else:
     STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
     STATICFILES_DIRS = [
         # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
         BASE_DIR/"/user/static",
