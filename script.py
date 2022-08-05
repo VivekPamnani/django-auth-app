@@ -51,7 +51,7 @@ def auto_email():
                     [to_addr[-1]],
                     fail_silently=True)
 
-            if(rem_time <= datetime.timedelta(hours=2) and user.participant.sessions_completed < 6 and delta_last_email > datetime.timedelta(days=14)):
+            if(rem_time <= datetime.timedelta(hours=3) and user.participant.sessions_completed < 6 and delta_last_email > datetime.timedelta(hours=2)):
                 to_addr.append(user.email)
                 body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: http://covidresearch.pythonanywhere.com/user/login/")
                 user.participant.last_email = timezone.now()
