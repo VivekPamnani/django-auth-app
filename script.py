@@ -36,7 +36,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is 2 days away.', 
                     body[-1], 
-                    'covid.research.iiit@gmail.com', 
+                    'vivek.pamnani.iiit.research@outlook.com', 
                     [to_addr[-1]],
                     fail_silently=True)
 
@@ -47,7 +47,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is tomorrow.', 
                     body[-1], 
-                    'covid.research.iiit@gmail.com', 
+                    'vivek.pamnani.iiit.research@outlook.com', 
                     [to_addr[-1]],
                     fail_silently=True)
 
@@ -58,7 +58,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is TODAY.', 
                     body[-1], 
-                    'covid.research.iiit@gmail.com', 
+                    'vivek.pamnani.iiit.research@outlook.com', 
                     [to_addr[-1]],
                     fail_silently=True)                    
 
