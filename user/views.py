@@ -17,6 +17,9 @@ import pytz
 import json
 from verify_email.email_handler import send_verification_email
 from django.core.mail import send_mail
+import environ
+
+env = environ.Env()
 
 def index(request):
     return HttpResponse("this is the index page")
@@ -88,7 +91,7 @@ def register(request):
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
         send_mail('Verify your email address for participation.',
             msg,
-            'vivek.pamnani.iiit.research@outlook.com',
+            str(env('SMTP_MAIL')),
             [entered_email],
             fail_silently=True)
         user = User.objects.create_user(entered_username, entered_email, entered_pwd)
@@ -125,26 +128,29 @@ def signout(request):
     return redirect('/user/login/')
 
 def home(request):
-    if request.user.is_authenticated and request.user.participant.is_verified:
-        user = request.user
-        progress_percentage = user.participant.sessions_completed / 6 * 100
-        leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
-        rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
-        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
-        # rem_time = rem_time.replace(microsecond=0)
-        # if(rem_time <= datetime.timedelta()):
-        #     rem_time = datetime.timedelta()
-        amounts = [0,100,400,400,800,800,1200]
-        return render(request,
-                    'user/dashboard.html',
-                    context={
-                        'user': user,
-                        'percentage': int(progress_percentage),
-                        'leftnum': leftnum,
-                        'rightnum': rightnum,
-                        'earned': amounts[user.participant.sessions_completed],
-                        'remtime': rem_time if (user.participant.sessions_completed != 0 and rem_time > datetime.timedelta()) else str(datetime.timedelta())
-                    })
+    if request.user.is_authenticated:
+        if request.user.participant.is_verified:
+            user = request.user
+            progress_percentage = user.participant.sessions_completed / 6 * 100
+            leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
+            rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
+            rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
+            # rem_time = rem_time.replace(microsecond=0)
+            # if(rem_time <= datetime.timedelta()):
+            #     rem_time = datetime.timedelta()
+            amounts = [0,100,400,400,800,800,1200]
+            return render(request,
+                        'user/dashboard.html',
+                        context={
+                            'user': user,
+                            'percentage': int(progress_percentage),
+                            'leftnum': leftnum,
+                            'rightnum': rightnum,
+                            'earned': amounts[user.participant.sessions_completed],
+                            'remtime': rem_time if (user.participant.sessions_completed != 0 and rem_time > datetime.timedelta()) else str(datetime.timedelta())
+                        })
+        else:
+            return HttpResponse("There seems to be something wrong with your registration. Please register using a different email or contact us via email at vivek.pamnani@research.iiit.ac.in")
     else:
         return redirect('/user/login')
 
