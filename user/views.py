@@ -195,7 +195,7 @@ def visit_success(request, otp):
             return render(request, 'user/attempt.html', {
                 'user': user,
                 'otp' : otp,
-                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=ZYQWa"
+                'url' : "https://www.psytoolkit.org/c/3.4.0/survey?s=fpcam"
             })
         elif(user.participant.sessions_completed==2):
             return render(request, 'user/attempt.html', {
