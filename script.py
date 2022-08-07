@@ -24,7 +24,7 @@ def auto_email():
             # if(delta_last_email > datetime.timedelta(days=14)):
                 # if(rem_time <= datetime.timedelta() and user.participant.sessions_completed < 6):
                 #     to_addr.append(user.email)
-                #     body.append("Hi, " + user.username + "! This is an email reminder for the follow-up survey. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website to earn and participate: http://imwbs.pythonanywhere.com/user/login/")
+                #     body.append("Hi, " + user.username + "! This is an email reminder for the follow-up survey. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website to earn and participate: https://imwbs.pythonanywhere.com/user/login/")
                 #     user.participant.last_email = timezone.now()
                 #     user.save()
                 #     send_mail('Reminder for your next session.', 
@@ -39,7 +39,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(days=2)
             ):
                 to_addr.append(user.email)
-                body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website AFTER 2 days to earn and participate: http://imwbs.pythonanywhere.com/user/login/ . We suggest you block your calendar about 2 days from now for a 30 minute slot.")
+                body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website AFTER 2 days to earn and participate: https://imwbs.pythonanywhere.com/user/login/ . We suggest you block your calendar about 2 days from now for a 30 minute slot.")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('Your next session is 2 days away.', 
@@ -54,7 +54,7 @@ def auto_email():
             #     delta_last_email > datetime.timedelta(days=1)
             # ):
             #     to_addr.append(user.email)
-            #     body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website TOMORROW to earn and participate: http://imwbs.pythonanywhere.com/user/login/")
+            #     body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website TOMORROW to earn and participate: https://imwbs.pythonanywhere.com/user/login/")
             #     user.participant.last_email = timezone.now()
             #     user.save()
             #     send_mail('Your next session is tomorrow.', 
@@ -69,7 +69,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=3)
             ):
                 to_addr.append(user.email)
-                body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: http://imwbs.pythonanywhere.com/user/login/")
+                body.append("Hi, " + user.username + "! This is an email reminder for the upcoming follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: https://imwbs.pythonanywhere.com/user/login/")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('Your next session is TODAY.', 
@@ -85,7 +85,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=23)
             ):
                 to_addr.append(user.email)
-                body.append("Hi, " + user.username + "! This is an email reminder for the missed follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: http://imwbs.pythonanywhere.com/user/login/")
+                body.append("Hi, " + user.username + "! This is an email reminder for the missed follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: https://imwbs.pythonanywhere.com/user/login/")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('Your next session is TODAY.', 
@@ -101,7 +101,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=24)
             ):
                 to_addr.append(user.email)
-                body.append("Hi, " + user.username + "! This is an email reminder for the missed follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: http://imwbs.pythonanywhere.com/user/login/ . Note that is the last email reminder from our side.")
+                body.append("Hi, " + user.username + "! This is an email reminder for the missed follow-up session. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Please visit the website any time TODAY to earn and participate: https://imwbs.pythonanywhere.com/user/login/ . Note that is the last email reminder from our side.")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('Your next session is TODAY.', 
