@@ -17,11 +17,13 @@ class participant(models.Model):
     last_email = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     sessions_completed = models.IntegerField(default=0)
     is_verified = models.BooleanField(default=False)
+    ref = models.CharField(default='noref', max_length=30)
 
 class codes(models.Model):
     otp = models.CharField(max_length=12)
     session_num = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
+    ref = models.CharField(default='noref', max_length=30)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

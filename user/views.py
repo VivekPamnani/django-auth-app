@@ -31,11 +31,11 @@ def user_init(user):
     user.participant.sessions_completed = 0
     user.save()
 
-def user_new_visit(user):
+def user_new_visit(user, ref):
     user.participant.sessions_completed += 1
     t = timezone.now()
     user.participant.last_visit = t
-    ob = codes.objects.create(otp=shortuuid.ShortUUID().random(length=12), session_num=user.participant.sessions_completed)
+    ob = codes.objects.create(otp=shortuuid.ShortUUID().random(length=12), session_num=user.participant.sessions_completed, ref=ref)
     if (user.participant.sessions_completed==1):
         user.participant.visit_time_1 = t
     elif (user.participant.sessions_completed==2):
@@ -62,6 +62,10 @@ def verify_email(request):
         user = get_object_or_404(User, username=request.session['verif_user'])
         if(request.session['verif_code'] == entered_code):
             user.participant.is_verified = True
+            try: 
+                user.participant.ref = request.session['ref']
+            except KeyError:
+                user.participant.ref = 'keyError'
             user.save()
             del request.session['verif_user']
             del request.session['verif_code']
@@ -180,7 +184,8 @@ def log_visit(request):
             return HttpResponse('Sorry, you cannot attempt the experiment more than once in two weeks. Time until next attempt: %s' % rem_time)
         else:
             if user.participant.sessions_completed < 6:
-                otp = user_new_visit(user)
+                ref = user.participant.ref
+                otp = user_new_visit(user, ref)
                 if request.method == "GET":
                     return HttpResponseRedirect(reverse('user:visit_success', args=(), kwargs={'otp': otp}))
             else:
@@ -243,6 +248,10 @@ def visit_success(request, otp):
 
 
 def welcome(request):
+    ref = request.GET.get('ref', '')
+    if ref == '':
+        ref = 'noref'
+    request.session['ref'] = ref
     return render(request, 'user/welcome.html')
 
 def consent(request):
