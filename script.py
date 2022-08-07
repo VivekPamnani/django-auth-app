@@ -1,5 +1,6 @@
 import os
 import django
+import environ
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 django.setup()
@@ -9,6 +10,8 @@ from django.core.mail import send_mail
 import datetime
 from django.utils import timezone
 from django.contrib.auth.models import User
+
+env = environ.Env()
 
 def auto_email():
     user_list = User.objects.all()
@@ -41,7 +44,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is 2 days away.', 
                     body[-1], 
-                    'vivek.pamnani.iiit.research@outlook.com', 
+                    str(env('smtp_mail')), 
                     [to_addr[-1]],
                     fail_silently=True)
 
@@ -56,7 +59,7 @@ def auto_email():
             #     user.save()
             #     send_mail('Your next session is tomorrow.', 
             #         body[-1], 
-            #         'vivek.pamnani.iiit.research@outlook.com', 
+            #         str(env('smtp_mail')), 
             #         [to_addr[-1]],
             #         fail_silently=True)
 
@@ -71,7 +74,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is TODAY.', 
                     body[-1], 
-                    'vivek.pamnani.iiit.research@outlook.com', 
+                    str(env('smtp_mail')), 
                     [to_addr[-1]],
                     fail_silently=True)               
 
@@ -87,7 +90,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is TODAY.', 
                     body[-1], 
-                    'vivek.pamnani.iiit.research@outlook.com', 
+                    str(env('smtp_mail')), 
                     [to_addr[-1]],
                     fail_silently=True)  
 
@@ -103,7 +106,7 @@ def auto_email():
                 user.save()
                 send_mail('Your next session is TODAY.', 
                     body[-1], 
-                    'vivek.pamnani.iiit.research@outlook.com', 
+                    str(env('smtp_mail')), 
                     [to_addr[-1]],
                     fail_silently=True)   
 
