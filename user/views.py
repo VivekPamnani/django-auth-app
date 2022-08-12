@@ -132,6 +132,11 @@ def signout(request):
     return redirect('/user/login/')
 
 def home(request):
+    try:
+        err_msg = request.session['proceed_err']
+        del request.session['proceed_err']
+    except KeyError:
+        err_msg = ''
     if request.user.is_authenticated:
         if request.user.participant.is_verified:
             user = request.user
@@ -151,7 +156,8 @@ def home(request):
                             'leftnum': leftnum,
                             'rightnum': rightnum,
                             'earned': amounts[user.participant.sessions_completed],
-                            'remtime': rem_time if (user.participant.sessions_completed != 0 and rem_time > datetime.timedelta()) else str(datetime.timedelta())
+                            'remtime': rem_time if (user.participant.sessions_completed != 0 and rem_time > datetime.timedelta()) else str(datetime.timedelta()),
+                            'err_msg': err_msg
                         })
         else:
             return HttpResponse("There seems to be something wrong with your registration. Please register using a different email or contact us via email at vivek.pamnani@research.iiit.ac.in")
@@ -163,7 +169,9 @@ def directions(request):
         user = request.user
         rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
         if(rem_time > datetime.timedelta()):
-            return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
+            request.session['proceed_err'] = str("Sorry, you will have to wait %s until your next session." % rem_time)
+            # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
+            return redirect('/user/home')
         else:
             return render(request, 'user/directions.html')
     else:
