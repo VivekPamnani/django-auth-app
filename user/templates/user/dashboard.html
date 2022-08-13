@@ -34,59 +34,7 @@
 
     </nav>
     <main role="main" class="col-md-9 col-lg-11">
-        <div class="container">
-        <!-- Row 1 -->
-            <div class="row justify-content-center" id="r1">
-                <!-- (R1, C1) -->
-                <div class="col-md-4">
-                    <div class="card shadow p-3 mb-5 bg-white rounded">
-                        <div class="card-body">
-                            <!-- <h5 class="card-title">Progress</h5> -->
-                            <div class="row align-items-left" id="r1_1">
-                                <h5 class="card-title">Progress</h5> 
-                            </div>
-                            <br>
-                            <!-- Row 1.2 -->
-                            <div class="row align-items-center" id="r1_2"r>
-                                <!-- (R1.2, C1) -->
-                                <div class="col-md-6">
-                                    <div class="progress blue">
-                                        <span class="progress-left" data-leftnum="{{leftnum}}">
-                                            <span class="progress-bar"></span>
-                                        </span>
-                                        <span class="progress-right" data-rightnum="{{rightnum}}">
-                                                <span class="progress-bar"></span>
-                                        </span> 
-                                        <div class="progress-value">
-                                            <div class="text-center">
-                                                {{user.participant.sessions_completed}}/6<br>
-                                                <span>completed</span>
-                                            </div>
-                                        </div> 
-                                    </div>
-                                </div>
-                                <!-- (R1.2, C2) -->
-                                <div class="col-md-auto text-center">
-                                    <h5>₹{{earned}} earned!</h5>
-                                </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- (R1, C2) -->
-                <div class="col-md-4">
-                    <div class="card shadow p-3 mb-5 bg-white rounded">
-                        <div class="card-body">
-                            <h5 class="card-title">Last Visit Status</h5><br>   
-                            <p class="card-text">Last visit time: {{user.participant.last_visit}}</p>
-                            <p class="card-text">Time until next: {{remtime}}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="container">
+        <div class="container" >
         <!-- Row 2 -->
             <div class="row justify-content-center">
                 <!-- (R2, C1) -->
@@ -143,8 +91,42 @@
                         </div>
                     </div>
                 </div> -->
+                <div class="col-md-4">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <!-- <h5 class="card-title">Progress</h5> -->
+                        <div class="row align-items-left" id="r1_1">
+                            <h5 class="card-title">Progress</h5> 
+                        </div>
+                        <div class="card-body">
+                            <!-- Row 1.2 -->
+                            <div class="row align-items-center" id="r1_2"r>
+                                <!-- (R1.2, C1) -->
+                                <div class="col-md-6">
+                                    <div class="progress blue">
+                                        <span class="progress-left" data-leftnum="{{leftnum}}">
+                                            <span class="progress-bar"></span>
+                                        </span>
+                                        <span class="progress-right" data-rightnum="{{rightnum}}">
+                                                <span class="progress-bar"></span>
+                                        </span> 
+                                        <div class="progress-value">
+                                            <div class="text-center">
+                                                {{user.participant.sessions_completed}}/6<br>
+                                                <span>completed</span>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <!-- (R1.2, C2) -->
+                                <div class="col-md-auto text-center">
+                                    <h5>₹{{earned}} earned!</h5>
+                                </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- (R2, C2) -->
-                <div class="col-md-5">
+                <div class="col-md-4 d-flex align-items-stretch">
                     <div class=" shadow p-3 mb-5 bg-white rounded">
                         <div class="card-body">
                             <h5 class="card-title">Next</h5><br>
@@ -158,6 +140,23 @@
                                 </button></div>
                             </form>
                             <!-- <div class="text-center"><a href="#" class="btn btn-primary">Proceed</a></div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+        <!-- Row 1 -->
+            <div class="row justify-content-center" id="r1">
+                <!-- (R1, C1) -->
+                
+                <!-- (R1, C2) -->
+                <div class="col-md-4">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Last Visit Status</h5><br>   
+                            <p class="card-text">Last visit time: {{user.participant.last_visit}}</p>
+                            <p class="card-text">Time until next: {{remtime}}</p>
                         </div>
                     </div>
                 </div>
