@@ -23,8 +23,8 @@
 <main role="main">
     <div class="container">
         <!-- Row 1 -->
-        <div class="row justify-content-center" id="r1"">
-            <div class="col-md-8" style="padding-right: 7px;">
+        <div class="row mb-0 justify-content-center" id="r1">
+            <div class="col-xl-12">
                 <div class="card shadow p-3 mb-5 bg-white rounded">
                     <h4 class="card-title"> General Information </h4>
                     <div class="card-body">
@@ -33,7 +33,7 @@
                         
                         <p><b>Q: <em>How long will this study take? How will I compensated?</em></b></p>
                         <p><b>A:</b> The first session will last for approximately, 40-45 minutes. The following five sessions, every fortnight, will last for approximately 35 minutes. You will be reminded via email twice: 2 days, and 3 hrs before your upcoming session.</p>
-                        <p>You will receive <b>₹200 per session</b> on average (to an upwards ₹1200 for a total of 6 sessions). For the six sessions, you will receiving the amounts <b>₹100, ₹300, ₹0, ₹400, ₹0, ₹400</b> respectively. After completing a session, you will receive the amount <em>within 7 days</em>.</p>
+                        <p>You will receive <b>₹200 per session</b> (up to ₹1200 for a total of 6 sessions). For the six sessions, you will be receiving the total amount in installments of <b>₹100, ₹300, ₹0, ₹400, ₹0, ₹400</b> (one installment after each session respectively). After completing a session, you will receive the amount <em>within 7 days</em>.</p>
                         
                         <p><b>Q: <em>How will I be performing on the tests?</em></b></p>
                         <p><b>A:</b> You will be required to sit in front of your laptop or desktop to perform the tests. We will ask you to keep the laptop or desktop display screen at your arm length and be seated straight and comfortably.</p>
@@ -57,27 +57,30 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" style="padding-left: 7px;">
+        </div>
+        <div class="row mt-0 justify-content-center" id="r2">
+            <div class="col-xl-12">
                 <div class="card shadow p-3 mb-5 bg-white rounded">
                     <h4 class="card-title"> Consent </h4>
                     <div class="card-body">
                         <p>I hereby give my consent and permit members of the research team to access a de-identified version (with no mention of my name) of the data. The clinical information related to me is only for research purposes.</p>
                         <p>I understand the anonymized data can be shared in the public domain with other researchers worldwide.</p>
                         <p>I understand I will not be identified or identifiable in the report or reports that result from the research.</p>
-                        <p>If you agree to participate in the study, please click on the following button to start the participation.  </p>
+                        <p>I have read the general information about the study.</p>
+                        <p>I am older than 18 years of age and no older than the age of 60.</p>
+                        <p><em>We hope you have read the general information. If you agree to all of the above, please click the following button to participate.</em></p>
                     </div>
                     <div class="text-center">
                         <form action="{% url 'user:register' %}" method="GET">
                             {% csrf_token %}
                                 <button type="submit"
                                         class="btn btn-primary">
-                                        I understand.
+                                        I agree.
                                 </button>
                         </form>
                     </div>
                 </div>
             </div>
-            
         </div>
 </main>
 

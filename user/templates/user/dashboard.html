@@ -35,132 +35,132 @@
     <main role="main" class="col-md-9 col-lg-11">
         <div class="container">
         <!-- Row 1 -->
-        <div class="row justify-content-center" id="r1">
-            <!-- (R1, C1) -->
-            <div class="col-md-4">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <div class="card-body">
-                        <!-- <h5 class="card-title">Progress</h5> -->
-                        <div class="row align-items-left" id="r1_1">
-                            <h5 class="card-title">Progress</h5> 
-                        </div>
-                        <br>
-                        <!-- Row 1.2 -->
-                        <div class="row align-items-center" id="r1_2"r>
-                            <!-- (R1.2, C1) -->
-                            <div class="col-md-6">
-                                <div class="progress blue">
-                                    <span class="progress-left" data-leftnum="{{leftnum}}">
-                                        <span class="progress-bar"></span>
-                                    </span>
-                                    <span class="progress-right" data-rightnum="{{rightnum}}">
+            <div class="row justify-content-center" id="r1">
+                <!-- (R1, C1) -->
+                <div class="col-md-4">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body">
+                            <!-- <h5 class="card-title">Progress</h5> -->
+                            <div class="row align-items-left" id="r1_1">
+                                <h5 class="card-title">Progress</h5> 
+                            </div>
+                            <br>
+                            <!-- Row 1.2 -->
+                            <div class="row align-items-center" id="r1_2"r>
+                                <!-- (R1.2, C1) -->
+                                <div class="col-md-6">
+                                    <div class="progress blue">
+                                        <span class="progress-left" data-leftnum="{{leftnum}}">
                                             <span class="progress-bar"></span>
-                                    </span> 
-                                    <div class="progress-value">
-                                        <div class="text-center">
-                                            {{user.participant.sessions_completed}}/6<br>
-                                            <span>completed</span>
-                                        </div>
-                                    </div> 
+                                        </span>
+                                        <span class="progress-right" data-rightnum="{{rightnum}}">
+                                                <span class="progress-bar"></span>
+                                        </span> 
+                                        <div class="progress-value">
+                                            <div class="text-center">
+                                                {{user.participant.sessions_completed}}/6<br>
+                                                <span>completed</span>
+                                            </div>
+                                        </div> 
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- (R1.2, C2) -->
-                            <div class="col-md-auto text-center">
-                                <h5>₹{{earned}} earned!</h5>
-                            </div>
-                       </div>
+                                <!-- (R1.2, C2) -->
+                                <div class="col-md-auto text-center">
+                                    <h5>₹{{earned}} earned!</h5>
+                                </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- (R1, C2) -->
+                <div class="col-md-4">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Last Visit Status</h5><br>   
+                            <p class="card-text">Last visit time: {{user.participant.last_visit}}</p>
+                            <p class="card-text">Time until next: {{remtime}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- (R1, C2) -->
-            <div class="col-md-4">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Last Visit Status</h5><br>   
-                        <p class="card-text">Last visit time: {{user.participant.last_visit}}</p>
-                        <p class="card-text">Time until next: {{remtime}}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
         </div>
         
-        <div class="cotainer">
+        <div class="container">
         <!-- Row 2 -->
-        <div class="row justify-content-center">
-            <!-- (R2, C1) -->
-            <!-- <div class="col-md-5">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Access Times</h5>
-                        <table class="table table-bordered">
-                            <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Second</th>
-                                <th scope="col">Third</th>
-                                <th scope="col">Fourth</th>
-                                <th scope="col">Fifth</th>
-                                <th scope="col">Sixth</th>
-                            
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            
-                            </tbody>
-                        </table>
-                        <p class="card-text">Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis.</p>
-                        <a href="#" class="btn btn-primary">Print</a>
+            <div class="row justify-content-center">
+                <!-- (R2, C1) -->
+                <!-- <div class="col-md-5">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Access Times</h5>
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">First</th>
+                                    <th scope="col">Second</th>
+                                    <th scope="col">Third</th>
+                                    <th scope="col">Fourth</th>
+                                    <th scope="col">Fifth</th>
+                                    <th scope="col">Sixth</th>
+                                
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                </tr>
+                                
+                                </tbody>
+                            </table>
+                            <p class="card-text">Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis.</p>
+                            <a href="#" class="btn btn-primary">Print</a>
+                        </div>
                     </div>
-                </div>
-            </div> -->
-            <!-- (R2, C2) -->
-            <div class="col-md-5">
-                <div class=" shadow p-3 mb-5 bg-white rounded">
-                    <div class="card-body">
-                        <h5 class="card-title">Next</h5><br>
-                        <p class="card-text">Click the button below to proceed to your next session.</p>
-                        <p style="color: #FF0000;">{{err_msg}}</p>
-                        <form action="{% url 'user:directions' %}" method="GET">
-                            {% csrf_token %}
-                            <div class="text-center"><button type="submit"
-                                class="btn btn-primary">
-                                Proceed
-                            </button></div>
-                        </form>
-                        <!-- <div class="text-center"><a href="#" class="btn btn-primary">Proceed</a></div> -->
+                </div> -->
+                <!-- (R2, C2) -->
+                <div class="col-md-5">
+                    <div class=" shadow p-3 mb-5 bg-white rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Next</h5><br>
+                            <p class="card-text">Click the button below to proceed to your next session.</p>
+                            <p style="color: #FF0000;">{{err_msg}}</p>
+                            <form action="{% url 'user:directions' %}" method="GET">
+                                {% csrf_token %}
+                                <div class="text-center"><button type="submit"
+                                    class="btn btn-primary">
+                                    Proceed
+                                </button></div>
+                            </form>
+                            <!-- <div class="text-center"><a href="#" class="btn btn-primary">Proceed</a></div> -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </main>
 
