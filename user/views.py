@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
+from sqlite3 import IntegrityError
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
@@ -89,7 +91,7 @@ def register(request):
         entered_pwd = request.POST['password']
         # user = User.objects.create_user(entered_username, entered_email, entered_pwd)
     except:
-        return render(request, 'user/registration.html')
+        return render(request, 'user/registration.html', context={'err_msg': ''})
     else:
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
@@ -98,7 +100,13 @@ def register(request):
             str(env('SMTP_MAIL')),
             [entered_email],
             fail_silently=True)
-        user = User.objects.create_user(entered_username, entered_email, entered_pwd)
+        try: 
+            user = User.objects.create_user(entered_username, entered_email, entered_pwd)
+        except IntegrityError:
+            # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            # message = template.format(type(ex).__name__, ex.args)
+            # return HttpResponse(message)
+            return render(request, 'user/registration.html', context={'err_msg': 'That username already exists! If you have already created an account, please log in instead.'})
         request.session['verif_code'] = verification_code
         request.session['verif_user'] = user.username
         request.session['attempts_left'] = 3

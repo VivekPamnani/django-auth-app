@@ -23,6 +23,7 @@
           <input type="email" name="email" placeholder='Email' class='text' id='email' required><br>
           <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
           <input type="password" name="password" placeholder='••••••••••••••' id='password' class='password' required><br><br>
+          <p style="color: #FF0000;">{{err_msg}}</p>
           <div>
             <label for="consent">
               <input type="checkbox" name="consent" id='consent' required>    I have read the <a href="{% url 'user:consent' %}"> consent form</a> and by signing up I agree to participate in this study.
