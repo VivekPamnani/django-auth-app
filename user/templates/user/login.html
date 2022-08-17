@@ -21,12 +21,14 @@
         <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
         <input type="password" name="password" placeholder='••••••••••••••' class='password'><br>
         <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
-        <p style="color: #FF0000;">{{err_msg}}</p>
+        <p style="color: #FF0000;">{% autoescape off %}{{ err_msg }}{% endautoescape %}
+        </p>
         <div style="text-align:center;">
             <input class='btn-login' id='do-login' type="submit" value="Login"></input>
         </div>
         <br>
         <div>
+          Forgot password? <a class='forgot' href="/user/reset"> Reset password.</a> <br>
           Don't have an account?<a class='forgot' href="/user/register"> Register. </a>
         </div>
         <!-- <a href="#" class='forgot'>Forgot?</a> -->

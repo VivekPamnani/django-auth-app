@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
-from sqlite3 import IntegrityError
+from sqlite3 import IntegrityError, OperationalError
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import generic
-from django.db import IntegrityError
+from django.db import IntegrityError, OperationalError
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
@@ -120,6 +120,84 @@ def register(request):
     # else:
     #     return HttpResponse("Something went wrong.")
 
+def reset_pwd(request, got_name=0, verified=0):
+    try:
+        got_name = request.session['got_name']
+    except KeyError:
+        got_name = 0
+    try:
+        verified = request.session['verified']
+    except KeyError:
+        verified = 0
+    try:
+        forgot_username = request.session['forgot_username']
+    except KeyError:
+        forgot_username = ''
+
+    if(got_name!=1 and verified!=1):
+        try:
+            entered_username = request.POST['username']
+        except:
+            return render(request, 'user/reset.html', context={'err_msg': '', 'verified': 0, 'got_name': 0})
+        else:
+            verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
+            request.session['verif_code'] = verification_code
+            msg = "Please enter the following OTP to verify your email: " + str(verification_code)
+            forgot_user = get_object_or_404(User, username=entered_username)
+
+            if forgot_user is not None:
+                request.session['forgot_username'] = entered_username
+                send_mail('Verify your email address for password reset.',
+                    msg,
+                    str(env('SMTP_MAIL')),
+                    [forgot_user.email],
+                    fail_silently=True)
+                request.session['got_name'] = 1
+                request.session['verified'] = 0
+                return render(request, 'user/reset.html', context={'err_msg': 'OK, mail sent!', 'verified': 0, 'got_name': 1})
+                # reset_pwd(request, 1, 0)
+            else: 
+                del request.session['forgot_username']
+                del request.session['got_name']
+                del request.session['verified']
+                return HttpResponse('Error. Try again: ' + '<a href="/user/reset"}>Reset.</a>')
+    
+    elif(got_name==1 and verified!=1):
+        try:
+            entered_code = request.POST['code']
+        except:
+            return render(request, 'user/reset.html', context={'err_msg': 'Please enter the code.', 'verified': 0, 'got_name': 1})
+        else:
+            if entered_code == request.session['verif_code']:
+                del request.session['verif_code']
+                request.session['got_name'] = 1
+                request.session['verified'] = 1
+                return render(request, 'user/reset.html', context={'err_msg': '', 'verified': 1, 'got_name': 1})
+                # reset_pwd(request, 1, 1)
+            else:
+                del request.session['forgot_username']
+                del request.session['got_name']
+                del request.session['verified']
+                return HttpResponse('Error verifying. Try again: ' + '<a href="/user/reset"}>Reset.</a>')
+
+    elif(got_name==1 and verified==1):
+        try:
+            entered_pwd = request.POST['password']
+            confirm_pwd = request.POST['confirm_password']
+        except:
+            return render(request, 'user/reset.html', context={'err_msg': 'Please enter your new password.', 'verified': 1, 'got_name': 1})
+        else:
+            if entered_pwd == confirm_pwd:
+                forgot_user = get_object_or_404(User, username=request.session['forgot_username'])
+                forgot_user.set_password(entered_pwd)
+                forgot_user.save()
+                del request.session['forgot_username']
+                del request.session['got_name']
+                del request.session['verified']
+                return HttpResponse("Hurray! Your password is reset! Click here to log in: " + "<a href='/user/login'}>Login.</a>")
+            else:
+                return render(request, 'user/reset.html', context={'err_msg': 'Passwords do not match.', 'verified': 1, 'got_name': 1})
+
 def signin(request):
     try:
         entered_username = request.POST['username']
@@ -128,12 +206,15 @@ def signin(request):
     except:
         return render(request, 'user/login.html', context={'err_msg': ''})
     else:
-        user = authenticate(request, username=entered_username, password=entered_pwd)
+        try:
+            user = authenticate(request, username=entered_username, password=entered_pwd)
+        except OperationalError:
+            return render(request, 'user/login.html', context={'err_msg': 'There seems to be an error. Have you tried registering first?'})
         if user is not None:
             login(request, user=user)
             return HttpResponseRedirect('/user/home')
         else:
-            return render(request, 'user/login.html', context={'err_msg': 'Invalid username or password.'})
+            return render(request, 'user/login.html', context={'err_msg': 'Incorrect password, please try again.'})
 
 def signout(request):
     logout(request)

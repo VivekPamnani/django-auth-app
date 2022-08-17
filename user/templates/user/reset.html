@@ -1,0 +1,110 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Verify your email</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"></a>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <h4 class="card-title"> Reset password </h4>
+            <br>
+
+            {% if got_name != 1 %}
+                <form action="{% url 'user:reset' %}" method="post">
+                    <div class="row justify-content-center" id="r1">
+                        <div class="card-body">
+                            <p class="card-subtitle">If you wish to change your password, please enter the username of your account in the text box below.<br> We will send an email to the address associated with the account.</p>
+                            <br>
+                        <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
+                            {% csrf_token %}
+                            <div style="text-align:center;">
+                                <input type="text" name="username" placeholder='Username' class='form-text' id='username' style="text-align: center;" required><br><br>
+                                <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
+                            </div>
+                            <!-- <a href="#" class='forgot'>Forgot?</a> -->
+                        </div>
+                        <br>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit" id="do-verify">Confirm</button>
+                        </div>
+                    </div>
+                    <p style="color: #FF0000;">{{err_msg}}</p>
+                </form>
+                {% elif verified != 1 %}
+                <form action="{% url 'user:reset' %}" method="post">
+                    <div class="row justify-content-center" id="r1">
+                        <div class="card-body">
+                            <p class="card-subtitle">Please check your email for a verification code. Also check your junk/spam folder if you don't see an email. <br> Enter the code below to verify your email. Once verified, you will be asked to login.</p>
+                            <br>
+                            <p>If you are stuck on this page and would like to retry, please open the following link in incognito mode in your browser and try again. <a href="{% url 'user:reset' %}">Link</a>.
+                            </p>
+                            <p style="color: #136a8a;">Note: If you received the mail in your junk/spam folder, please make sure you "Report not spam" (if on Gmail) or "It's not junk" (if on Outlook). This is important; otherwise you will NOT be notified for reminder emails.</p>
+                            <br>
+                            <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
+                            {% csrf_token %}
+                            <div style="text-align:center;">
+                                <input type="text" name="code" placeholder='4-digit OTP' class='form-text' id='code' maxlength="4" style="text-align: center;" required><br><br>
+                                <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
+                            </div>
+                            <!-- <a href="#" class='forgot'>Forgot?</a> -->
+                        </div>
+                        <br>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit" id="do-verify">Verify</button>
+                        </div>
+                    </div>
+                    <p style="color: #FF0000;">{{err_msg}}</p>
+                </form>
+            {% else %}
+                <form action="{% url 'user:reset' %}" method="post">
+                    <div class="row justify-content-center" id="r1">
+                        <div class="card-body">
+                            <p class="card-subtitle">Please enter a new password.</p>
+                            <br>
+                        <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
+                            {% csrf_token %}
+                            <div style="text-align:center;">
+                                <input type="password" name="password" placeholder='New password' class='form-text id='password' style="text-align: left;" required><br><br>
+                                <input type="password" name="confirm_password" placeholder='Confirm password' class='form-text' id='confirm_password' style="text-align: left;" required><br><br>
+                                <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
+                            </div>
+                            <!-- <a href="#" class='forgot'>Forgot?</a> -->
+                        </div>
+                        <br>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit" id="do-verify">Reset password</button>
+                        </div>
+                    </div>
+                    <p style="color: #FF0000;">{{err_msg}}</p>
+                </form>
+            {% endif %}
+            <br>
+        </div>
+</main>
+
+</body>
