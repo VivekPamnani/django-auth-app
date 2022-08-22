@@ -154,7 +154,7 @@ def reset_pwd(request, got_name=0, verified=0):
                     fail_silently=True)
                 request.session['got_name'] = 1
                 request.session['verified'] = 0
-                return render(request, 'user/reset.html', context={'err_msg': 'OK, mail sent!', 'verified': 0, 'got_name': 1})
+                return render(request, 'user/reset.html', context={'err_msg': "OK, mail has been sent to " + str(forgot_user.email) + "!", 'verified': 0, 'got_name': 1})
                 # reset_pwd(request, 1, 0)
             else: 
                 del request.session['forgot_username']
