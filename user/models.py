@@ -6,6 +6,8 @@ import datetime
 # Create your models here.
 
 class participant(models.Model):
+    def __str__(self):
+        return self.user.username + ": " + self.user.email
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     visit_time_1 = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     visit_time_2 = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
