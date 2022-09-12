@@ -49,7 +49,7 @@ def auto_email():
             #     user.save()
             #     send_mail('[Indian Mental Wellbeing Study] Your next session is 2 days away.',
             #         body[-1],
-            #         str(env('smtp_mail')),
+            #         str(env('SMTP_MAIL')),
             #         [to_addr[-1]],
             #         fail_silently=True)
 
@@ -65,7 +65,7 @@ def auto_email():
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is tomorrow.',
                     body[-1],
-                    str(env('smtp_mail')),
+                    str(env('SMTP_MAIL')),
                     [to_addr[-1]],
                     fail_silently=True)
 
@@ -81,7 +81,7 @@ def auto_email():
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
                     body[-1],
-                    str(env('smtp_mail')),
+                    str(env('SMTP_MAIL')),
                     [to_addr[-1]],
                     fail_silently=True)
 
@@ -97,7 +97,7 @@ def auto_email():
             #     user.save()
             #     send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
             #         body[-1],
-            #         str(env('smtp_mail')),
+            #         str(env('SMTP_MAIL')),
             #         [to_addr[-1]],
             #         fail_silently=True)
 
@@ -113,7 +113,7 @@ def auto_email():
             #     user.save()
             #     send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
             #         body[-1],
-            #         str(env('smtp_mail')),
+            #         str(env('SMTP_MAIL')),
             #         [to_addr[-1]],
             #         fail_silently=True)
 
@@ -129,7 +129,7 @@ def auto_email():
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
                     body[-1],
-                    str(env('smtp_mail')),
+                    str(env('SMTP_MAIL')),
                     [to_addr[-1]],
                     fail_silently=True)
 
@@ -145,7 +145,7 @@ def auto_email():
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
                     body[-1],
-                    str(env('smtp_mail')),
+                    str(env('SMTP_MAIL')),
                     [to_addr[-1]],
                     fail_silently=True)
     db.connections.close_all()
