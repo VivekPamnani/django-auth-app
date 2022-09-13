@@ -8,7 +8,7 @@ def mark_paid(modeladmin, request, queryset):
     queryset.update(is_paid=True)
 
 class CodesAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'is_paid']
+    list_display = ['__str__', 'is_paid', 'session_num']
     # ordering = ['title']
     actions = [mark_paid]
 
