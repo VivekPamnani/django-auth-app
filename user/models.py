@@ -22,6 +22,8 @@ class participant(models.Model):
     ref = models.CharField(default='noref', max_length=30)
 
 class codes(models.Model):
+    def __str__(self):
+        return str(self.otp) + "; " + str(self.session_num) + "; " + str(self.is_paid)
     otp = models.CharField(max_length=12)
     session_num = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
