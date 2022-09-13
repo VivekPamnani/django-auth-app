@@ -3,5 +3,17 @@ from django.contrib import admin
 # Register your models here.
 from .models import participant, codes
 
-admin.site.register(participant)
-admin.site.register(codes)
+@admin.action(description='Mark paid')
+def mark_paid(modeladmin, request, queryset):
+    queryset.update(is_paid=True)
+
+class CodesAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'is_paid']
+    # ordering = ['title']
+    actions = [mark_paid]
+
+class ParticipantsAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'sessions_completed', 'last_visit', 'last_email']
+
+admin.site.register(participant, ParticipantsAdmin)
+admin.site.register(codes, CodesAdmin)
