@@ -31,16 +31,38 @@
                     <p>We appreciate your participation in our study. The aim is to understand the correlates of wellbeing in the context of Pandemic. The research study has been approved by the Institute Research Review Board Committee, which evaluates the validity of tests used in the study and protects the essential rights of human participation. </p>
                     <p>In this study, you would be attempting a series of tests periodically, every fortnight, over a span of 3 months. Each session will take approximately 35 minutes.</p>                        
                     <p>Your participation in this study is entirely voluntary. <u>You can choose to withdraw from this study at any point in time.</u> There are no penalties or consequences of any kind if you decide that you do not want to participate or discontinue your participation. However, for the benefit of research, we request you complete the study.</p> 
-                    <p>Anybody who is 18-60 years old and can understand and/or speak English is eligible to participate. You will be paid <b>₹200 per session</b> (up to ₹1200 for a total of 6 sessions). <u>A physical keyboard is required for this study.</u> If you would like to know more, please proceed by clicking the button below.</p>
-                </div>
-                <div class="text-center">
-                    <form action="{% url 'user:consent' %}" method="GET">
+                    <p>Anybody who is 18-60 years old and can understand and/or speak English is eligible to participate. You will be paid <b>₹200 per session</b> (up to ₹1200 for a total of 6 sessions). <u>A physical keyboard is required for this study.</u> If you would like to know more, please proceed by clicking the '<b>Continue</b>' button below.</p><br>
+                <!-- </div>
+                <div> -->
+                    <div class="text-center">
+                        <form action="{% url 'user:consent' %}" method="GET">
                             <button type="submit"
-                                    class="btn btn-primary">
-                                    Continue
+                                class="btn btn-primary">
+                                Continue
                             </button>
-                    </form>
+                        </form>
+                    </div>
+                    
                 </div>
+                
+            </div>
+        </div>
+
+        <div class="row justify-content-center" id="r2">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <h4 class="card-title"> If you are on mobile: </h4>
+                <div class="card-body">
+                <p>We can send you an email with the study link. You can then participate next time you are on your computer. To do so, simply enter you email in the field below and click the '<b>Remind me</b>' button.</p>
+                <form action="{% url 'user:welcome' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="text-center">
+                        <input type="email" name="email" placeholder='Email' class='text-center' id='email'>   
+                        <button type="submit" style="width: 150px;"
+                            class="btn btn-primary">
+                            Remind me
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 </main>

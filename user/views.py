@@ -345,10 +345,29 @@ def visit_success(request, otp):
 
 
 def welcome(request):
-    ref = request.GET.get('ref', '')
-    if ref == '':
-        ref = 'noref'
-    request.session['ref'] = ref
+    if request.method == "GET":
+        ref = request.GET.get('ref', '')
+        if ref == '':
+            ref = 'noref'
+        request.session['ref'] = ref
+
+    elif request.method == "POST":
+        try:
+            entered_email = request.POST['email']
+        except:
+            return HttpResponse("There was an issue processing the entered email. Are you sure you entered correctly?" + '<a href="/user/welcome"}>Try again.</a>')
+        else: 
+            try:
+                ref = request.session['ref']
+            except KeyError:
+                ref = 'err'
+            msg = "Here is the link to participate in the study: https://imwbs.pythonanywhere.com/user/welcome/?ref=" + ref
+            send_mail('[Indian Mental Wellbeing Study] Link for participation',
+                msg,
+                str(env('SMTP_MAIL')),
+                [entered_email],
+                fail_silently=True)
+                
     return render(request, 'user/welcome.html')
 
 def consent(request):
