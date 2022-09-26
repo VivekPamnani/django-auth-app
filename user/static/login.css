@@ -86,23 +86,3 @@ body {
     color: #0a0a0a;
     /* float: right; */
   }
-  footer {
-    position: absolute;
-    color: #136a8a;
-    bottom: 10px;
-    padding-left: 20px;
-  }
-  footer p {
-    display: inline;
-  }
-  footer a {
-    color: green;
-    text-decoration: none;
-  }
-  footer a:hover {
-    text-decoration: underline;
-  }
-  footer .heart {
-    color: #B22222;
-    font-size: 1.5em
-  }

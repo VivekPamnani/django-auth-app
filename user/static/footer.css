@@ -1,0 +1,28 @@
+footer {
+    position: absolute;
+    color: #136a8a;
+    width: 100%;
+    text-align: center;
+    /* color: #fff; */
+    border-width: 5px;
+    background-color: #143a40;
+    bottom: 1px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    padding-left: 20px;
+}
+footer p {
+    color: #fefafe;
+    display: inline;
+}
+footer a {
+    color: #fefafe;
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+footer .heart {
+    color: #B22222;
+    font-size: 1.5em
+}
