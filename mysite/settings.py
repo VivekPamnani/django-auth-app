@@ -29,6 +29,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('S_KEY')
+# MAINTENANCE_MODE = int(os.environ.get("DJANGO_MAINTENANCE_MODE", 0))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -90,6 +91,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'OPTIONS': {
+            'timeout': 20,
+        }
     }
 }
 
