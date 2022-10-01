@@ -6,6 +6,7 @@
     <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
     <link rel="stylesheet" href="{% static 'dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
     <script src="{% static 'js/bootstrap.min.js' %}"></script>  
     <style>
         #r1 .card {
@@ -50,9 +51,10 @@
 
         <div class="row justify-content-center" id="r2">
             <div class="card shadow p-3 mb-5 bg-white rounded">
-                <h4 class="card-title"> If you are on mobile: </h4>
+                <h4 class="card-title"> On mobile? </h4>
                 <div class="card-body">
-                <p>We can send you an email with the study link. You can then participate next time you are on your computer. To do so, simply enter your email in the field below and click the '<b>Remind me</b>' button.</p>
+                <p>You cannot participate in this study if you are on your mobile/iPad. If you are viewing this page on a mobile device, we can send you an email with the link to this website. So the next time you are on your computer, you can click the link and proceed. </p>
+                <p>If you would like to do so, simply enter your email in the text box below and click the '<b>Remind me</b>' button.</p>
                 <form action="{% url 'user:welcome' %}" method="POST">
                     {% csrf_token %}
                     <div class="text-center">
@@ -66,5 +68,9 @@
             </div>
         </div>
 </main>
-
+<footer>
+    <p>Contact:</p>
+    <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
+    <p>(Vivek Pamnani)</p>
+  </footer>
 </body>
