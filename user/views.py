@@ -199,6 +199,8 @@ def reset_pwd(request, got_name=0, verified=0):
                 return render(request, 'user/reset.html', context={'err_msg': 'Passwords do not match.', 'verified': 1, 'got_name': 1})
 
 def signin(request):
+    # if env('MAINTENANCE_MODE') == 1:
+    #     return HttpResponse('This website is now in maintenance mode.')
     try:
         entered_username = request.POST['username']
         # entered_email = request.POST['email']
@@ -209,12 +211,18 @@ def signin(request):
         try:
             user = authenticate(request, username=entered_username, password=entered_pwd)
         except OperationalError:
-            return render(request, 'user/login.html', context={'err_msg': 'There seems to be an error. Have you tried registering first?'})
+            return render(request, 'user/login.html', context={
+                'err_msg': 'There seems to be an error. Have you tried registering first?',
+                'maintenance': ''
+                })
         if user is not None:
             login(request, user=user)
             return HttpResponseRedirect('/user/home')
         else:
-            return render(request, 'user/login.html', context={'err_msg': 'Incorrect password, please try again.'})
+            return render(request, 'user/login.html', context={
+                'err_msg': 'Incorrect password, please try again.',
+                'maintenance': ''
+                })
 
 def signout(request):
     logout(request)
@@ -237,6 +245,23 @@ def home(request):
             # if(rem_time <= datetime.timedelta()):
             #     rem_time = datetime.timedelta()
             amounts = [0,100,400,400,800,800,1200]
+            over_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+            if(over_time < datetime.timedelta()):
+                time_until_next = "N/A"
+            elif(rem_time > datetime.timedelta()):
+                days, seconds = rem_time.days, rem_time.seconds
+                hours = (seconds // 3600)
+                minutes = (seconds % 3600) // 60
+                seconds = seconds % 60
+                time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
+                # time_until_next = rem_time
+            else:
+                time_until_next = datetime.timedelta()
+                days, seconds = time_until_next.days, time_until_next.seconds
+                hours = (seconds // 3600)
+                minutes = (seconds % 3600) // 60
+                seconds = seconds % 60
+                time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
             return render(request,
                         'user/dashboard.html',
                         context={
@@ -245,7 +270,7 @@ def home(request):
                             'leftnum': leftnum,
                             'rightnum': rightnum,
                             'earned': amounts[user.participant.sessions_completed],
-                            'remtime': rem_time if (user.participant.sessions_completed != 0 and rem_time > datetime.timedelta()) else str(datetime.timedelta()),
+                            'remtime': time_until_next,
                             'err_msg': err_msg
                         })
         else:
@@ -257,7 +282,12 @@ def directions(request):
     if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
         rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
-        if(rem_time > datetime.timedelta()):
+        over_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+        if(over_time < datetime.timedelta()):
+            request.session['proceed_err'] = str("Sorry, it has been more than 20 days since your last visit. You can no longer participate in this study.\nThank you for your contribution to science!")
+            # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
+            return redirect('/user/home')
+        elif(rem_time > datetime.timedelta()):
             request.session['proceed_err'] = str("Sorry, you will have to wait %s until your next session." % rem_time)
             # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
             return redirect('/user/home')
