@@ -244,7 +244,7 @@ def home(request):
             # rem_time = rem_time.replace(microsecond=0)
             # if(rem_time <= datetime.timedelta()):
             #     rem_time = datetime.timedelta()
-            amounts = [0,100,400,400,800,800,1200]
+            amounts = [0,100,400,600,800,1000,1200]
             over_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
             if(over_time < datetime.timedelta()):
                 time_until_next = "N/A"
