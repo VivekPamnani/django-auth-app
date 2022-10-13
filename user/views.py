@@ -237,16 +237,18 @@ def home(request):
     if request.user.is_authenticated:
         if request.user.participant.is_verified:
             user = request.user
-            progress_percentage = user.participant.sessions_completed / 6 * 100
-            leftnum = user.participant.sessions_completed - 3 if user.participant.sessions_completed > 3 else 0
-            rightnum = user.participant.sessions_completed if user.participant.sessions_completed < 3 else 3
+            sess_completed = user.participant.sessions_completed
+            progress_percentage = sess_completed / 6 * 100
+            leftnum = sess_completed - 3 if sess_completed > 3 else 0
+            rightnum = sess_completed if sess_completed < 3 else 3
             rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
             # rem_time = rem_time.replace(microsecond=0)
             # if(rem_time <= datetime.timedelta()):
             #     rem_time = datetime.timedelta()
             amounts = [0,100,400,600,800,1000,1200]
-            over_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
-            if(over_time < datetime.timedelta()):
+            last_vis = user.participant.last_visit
+            over_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+            if(over_time < datetime.timedelta() and sess_completed != 0):
                 time_until_next = "N/A"
             elif(rem_time > datetime.timedelta()):
                 days, seconds = rem_time.days, rem_time.seconds
@@ -262,6 +264,8 @@ def home(request):
                 minutes = (seconds % 3600) // 60
                 seconds = seconds % 60
                 time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
+                if sess_completed == 0: 
+                    last_vis = "Never"
             return render(request,
                         'user/dashboard.html',
                         context={
@@ -269,9 +273,10 @@ def home(request):
                             'percentage': int(progress_percentage),
                             'leftnum': leftnum,
                             'rightnum': rightnum,
-                            'earned': amounts[user.participant.sessions_completed],
+                            'earned': amounts[sess_completed],
                             'remtime': time_until_next,
-                            'err_msg': err_msg
+                            'err_msg': err_msg,
+                            'last_vis': last_vis
                         })
         else:
             return HttpResponse("There seems to be something wrong with your registration. Please register using a different email or contact us via email at vivek.pamnani@research.iiit.ac.in")
@@ -281,9 +286,11 @@ def home(request):
 def directions(request):
     if request.user.is_authenticated and request.user.participant.is_verified:
         user = request.user
-        rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
-        over_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
-        if(over_time < datetime.timedelta()):
+        last_vis = user.participant.last_visit
+        sess_completed = user.participant.sessions_completed
+        rem_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
+        over_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+        if(over_time < datetime.timedelta() and sess_completed != 0):
             request.session['proceed_err'] = str("Sorry, it has been more than 20 days since your last visit. You can no longer participate in this study.\nThank you for your contribution to science!")
             # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
             return redirect('/user/home')
