@@ -276,7 +276,8 @@ def home(request):
                             'earned': amounts[sess_completed],
                             'remtime': time_until_next,
                             'err_msg': err_msg,
-                            'last_vis': last_vis
+                            'last_vis': last_vis,
+                            'colorTested': user.participant.is_colorTested
                         })
         else:
             return HttpResponse("There seems to be something wrong with your registration. Please register using a different email or contact us via email at vivek.pamnani@research.iiit.ac.in")
@@ -290,6 +291,9 @@ def directions(request):
         sess_completed = user.participant.sessions_completed
         rem_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
         over_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+        if(user.participant.is_colorBlind):
+            request.session['proceed_err'] = str("It seems that either you have not taken the color test or you were detected as color blind. \n If you haven't, a 'Color Test' button should appear below for you to take the test.")
+            return redirect('/user/home')
         if(over_time < datetime.timedelta() and sess_completed != 0):
             request.session['proceed_err'] = str("Sorry, it has been more than 20 days since your last visit. You can no longer participate in this study.\nThank you for your contribution to science!")
             # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
@@ -409,3 +413,53 @@ def welcome(request):
 
 def consent(request):
     return render(request, 'user/consent.html')
+
+def ishihara(request):
+    # don't allow if not registered
+    if not (request.user.is_authenticated and request.user.participant.is_verified):
+        return redirect('/user/login')
+
+    # don't allow if already given
+    if request.user.participant.is_colorTested:
+        return redirect('/user/home')
+
+    protan_scores = [0,0,0]
+    deuteran_scores = [0,0,0]
+    tritan_scores = [0,0,0]
+    score = 0
+
+    if request.method == 'POST':
+        try:
+            protan_scores = [
+                int(int(request.POST['5_protan'])==5),
+                int(int(request.POST['7_protan'])==7),
+                int(int(request.POST['8_protan'])==8)
+            ]
+
+            deuteran_scores = [
+                int(int(request.POST['2_deuteran'])==2),
+                int(int(request.POST['8_deuteran'])==8),
+                int(int(request.POST['9_deuteran'])==9)
+            ]
+
+            tritan_scores = [
+                int(int(request.POST['3_tritan_2'])==3),
+                int(int(request.POST['7_tritan'])==7),
+                int(int(request.POST['8_tritan'])==8)
+            ]
+        except:
+            return HttpResponse('There was an error processing your request. ' + str(type(protan_scores[0])))
+        else:
+            for i, j, k in zip(protan_scores, deuteran_scores, tritan_scores):
+                score += i + j + k
+
+        if score < 8:
+            request.user.participant.is_colorBlind = True
+        else:
+            request.user.participant.is_colorBlind = False
+
+        request.user.participant.is_colorTested = True
+        request.user.save()
+        return redirect('/user/home')
+
+    return render(request, 'user/ishihara.html', context={'score': score})

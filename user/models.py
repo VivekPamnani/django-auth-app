@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -19,6 +20,8 @@ class participant(models.Model):
     last_email = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     sessions_completed = models.IntegerField(default=0)
     is_verified = models.BooleanField(default=False)
+    is_colorBlind = models.BooleanField(default=True)
+    is_colorTested = models.BooleanField(default=False)
     ref = models.CharField(default='noref', max_length=30)
 
 class codes(models.Model):

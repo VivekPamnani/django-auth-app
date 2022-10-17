@@ -51,7 +51,7 @@
                     </div>
                     <p style="color: #FF0000;">{{err_msg}}</p>
                 </form>
-                {% elif verified != 1 %}
+            {% elif verified != 1 %}
                 <form action="{% url 'user:reset' %}" method="post">
                     <div class="row justify-content-center" id="r1">
                         <div class="card-body">

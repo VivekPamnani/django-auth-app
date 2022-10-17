@@ -17,7 +17,8 @@ urlpatterns = [
     path('instructions/', views.instructions, name='instructions'),
     path('welcome/', views.welcome, name='welcome'),
     path('consent/', views.consent, name='consent'),
-    path('reset/', views.reset_pwd, name='reset')
+    path('reset/', views.reset_pwd, name='reset'),
+    path('ishihara/', views.ishihara, name='ishihara')
     # path('verification/', include('verify_email.urls')),
     # path('login/', views.login, name='login'),
     # path('logout/', views.vote, name='logout')
