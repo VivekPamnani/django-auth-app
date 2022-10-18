@@ -402,7 +402,7 @@ def welcome(request):
                 ref = request.session['ref']
             except KeyError:
                 ref = 'err'
-            msg = "Here is the link to participate in the study: https://imwbs.pythonanywhere.com/user/welcome/?ref=" + ref
+            msg = "Here is the link to participate in the study: https://www.imwbs.org/user/welcome/?ref=" + ref
             send_mail('[Indian Mental Wellbeing Study] Link for participation',
                 msg,
                 str(env('SMTP_MAIL')),
