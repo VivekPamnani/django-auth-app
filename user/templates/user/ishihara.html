@@ -1,0 +1,156 @@
+<head>  
+    <meta charset="UTF-8">  
+    <title>Directions</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom navbar-expand-lg flex-md-nowrap p-1 shadow p-1 mb-5 " >
+
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{% url 'user:home' %}">Hi, {{ request.user.username }}!</a>
+    <div class="navbar-collapse collapse flex-grow-1 text-right"> </div>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:instructions' %}">Instructions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user:logout' %}">Logout</a>
+            </li>
+        </ul>
+    <!-- <ul class="navbar-nav px-3">
+    </ul> -->
+
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="row justify-content-center" id="r1">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <h4 class="card-title"> Color Test </h4>
+                <div class="card-body">
+                    <p> This is a color perception test. Here you must look at each of the following images and write the identified number in the box below. Please view the images carefully and respond.</p>
+                    <p> Once you are done, click the 'Submit' button at the bottom of the page. </p>
+                </div>
+            </div>
+        </div>
+
+        <form action="{% url 'user:ishihara' %}" method="POST">
+        {% csrf_token %}
+        <div class="row justify-content-center" id="r2">
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 5_protan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/5_protan.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="5_protan" class='ishi_protan text-center' id='5_protan' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 5_protan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/7_protan.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="7_protan" class='ishi_protan text-center' id='7_protan' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 5_protan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/8_protan.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="8_protan" class='ishi_protan text-center' id='8_protan' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center" id="r3">
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 5_protan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/2_deuteran.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="2_deuteran" class='ishi_protan text-center' id='2_deuteran' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 2_deuteran </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/8_deuteran.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="8_deuteran" class='ishi_protan text-center' id='8_deuteran' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 2_deuteran </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/9_deuteran.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="9_deuteran" class='ishi_protan text-center' id='9_deuteran' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center" id="r4">
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 5_protan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/7_tritan.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="7_tritan" class='ishi_protan text-center' id='7_tritan' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 7_tritan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/3_tritan_2.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="3_tritan_2" class='ishi_protan text-center' id='3_tritan_2' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="r2c1">
+                <div class="card shadow p-3 mb-5 bg-white rounded">
+                    <!-- <h4 class="card-title"> 7_tritan </h4> -->
+                    <div class="card-body text-center">
+                        <img src="{% static 'ishi/8_tritan.png' %}" alt="My image" width="280px"><br><br>
+                        <input type="number" name="8_tritan" class='ishi_protan text-center' id='8_tritan' style="width: 50px" required><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center;">
+            <input class='btn btn-primary' id='do-login' type="submit" value="Submit"></input>
+        </div>
+        </form>
+</main>
+<br>
+<br>
+<br>
+<footer>
+    <p>Contact:</p>
+    <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
+    <p>(Vivek Pamnani)</p>
+  </footer>
+</body>
