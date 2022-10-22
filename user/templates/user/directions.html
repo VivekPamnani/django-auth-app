@@ -55,14 +55,21 @@
                     </ol>
                     <p> If you are unclear about the instructions, please click the 'Instructions' button on the top right before continuing. </p>
                     <p> If you have understood the above directions, please confirm by clicking the button below to proceed. Once you have confirmed, your attempt will be recorded; so kindly do not hit refresh or back button on your browser.</p>
+                    <p><b>If you have prescription for your eyesight, please make sure you wear your prescribed glasses/lenses, and you check the box below.<br>
+                    By not checking, you convey that you do not have a prescription.</b></p>
                 </div>
                 <div class="text-center">
                     <form action="{% url 'user:visit' %}" method="GET">
                         {% csrf_token %}
-                            <button type="submit"
-                                    class="btn btn-primary">
-                                    I understand
-                            </button>
+                        <label for="wearing">
+                            <input type="checkbox" name="wearing" id='wearing'> <u>I am wearing my prescribed glasses/lenses for the study.</u>
+                        </label>
+                        <br><br>
+                        <p style="color: red;">Note that clicking the button below will start your session. Be ready.</p>
+                        <button type="submit"
+                            class="btn btn-primary">
+                            I'm ready, let's start.
+                        </button>
                     </form>
                 </div>
             </div>

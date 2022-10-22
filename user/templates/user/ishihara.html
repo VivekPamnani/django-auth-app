@@ -50,95 +50,22 @@
 
         <form action="{% url 'user:ishihara' %}" method="POST">
         {% csrf_token %}
-        <div class="row justify-content-center" id="r2">
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 5_protan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/5_protan.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="5_protan" class='ishi_protan text-center' id='5_protan' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 5_protan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/7_protan.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="7_protan" class='ishi_protan text-center' id='7_protan' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 5_protan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/8_protan.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="8_protan" class='ishi_protan text-center' id='8_protan' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row justify-content-center" id="r3">
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 5_protan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/2_deuteran.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="2_deuteran" class='ishi_protan text-center' id='2_deuteran' style="width: 50px" required><br>
+        {% for images in image_row_tuples %}
+            <div class="row justify-content-center" id="r2">
+                {% for image in images %}
+                <div class="col-md-4" id="r2c1">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
+                        <!-- <h4 class="card-title"> 5_protan </h4> -->
+                        <div class="card-body text-center">
+                            <img src="{% get_static_prefix %}ishi/{{ image }}.png"" alt={{image}} width="280px"><br><br>
+                            <input type="number" name={{image}} class='ishi_protan text-center' id={{image}} style="width: 50px" required><br>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 2_deuteran </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/8_deuteran.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="8_deuteran" class='ishi_protan text-center' id='8_deuteran' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 2_deuteran </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/9_deuteran.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="9_deuteran" class='ishi_protan text-center' id='9_deuteran' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row justify-content-center" id="r4">
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 5_protan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/7_tritan.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="7_tritan" class='ishi_protan text-center' id='7_tritan' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 7_tritan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/3_tritan_2.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="3_tritan_2" class='ishi_protan text-center' id='3_tritan_2' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" id="r2c1">
-                <div class="card shadow p-3 mb-5 bg-white rounded">
-                    <!-- <h4 class="card-title"> 7_tritan </h4> -->
-                    <div class="card-body text-center">
-                        <img src="{% static 'ishi/8_tritan.png' %}" alt="My image" width="280px"><br><br>
-                        <input type="number" name="8_tritan" class='ishi_protan text-center' id='8_tritan' style="width: 50px" required><br>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
 
         <div style="text-align:center;">
             <input class='btn btn-primary' id='do-login' type="submit" value="Submit"></input>

@@ -17,6 +17,7 @@ from user.models import codes
 import shortuuid
 import pytz
 import json
+from random import shuffle
 from verify_email.email_handler import send_verification_email
 from django.core.mail import send_mail
 import environ
@@ -423,37 +424,41 @@ def ishihara(request):
     if request.user.participant.is_colorTested:
         return redirect('/user/home')
 
-    protan_scores = [0,0,0]
-    deuteran_scores = [0,0,0]
-    tritan_scores = [0,0,0]
+    protan_images = [
+        '5_protan',
+        '7_protan', 
+        '8_protan'
+    ]
+    deuteran_images = [
+        '2_deuteran',
+        '8_deuteran', 
+        '9_deuteran'
+    ]
+    tritan_images = [
+        '3_tritan_2',
+        '7_tritan', 
+        '8_tritan'
+    ]
+    images = protan_images + deuteran_images + tritan_images
+    shuffle(images)
+    image_row_tuples = [images[i:i+3] for i in range(0, len(images), 3)]
+
+    protan_scores = [0] * len(protan_images)
+    deuteran_scores = [0] * len(deuteran_images)
+    tritan_scores = [0] * len(tritan_images)
     score = 0
 
     if request.method == 'POST':
         try:
-            protan_scores = [
-                int(int(request.POST['5_protan'])==5),
-                int(int(request.POST['7_protan'])==7),
-                int(int(request.POST['8_protan'])==8)
-            ]
-
-            deuteran_scores = [
-                int(int(request.POST['2_deuteran'])==2),
-                int(int(request.POST['8_deuteran'])==8),
-                int(int(request.POST['9_deuteran'])==9)
-            ]
-
-            tritan_scores = [
-                int(int(request.POST['3_tritan_2'])==3),
-                int(int(request.POST['7_tritan'])==7),
-                int(int(request.POST['8_tritan'])==8)
-            ]
+            protan_scores = [int(int(request.POST[img])==int(img[0])) for img in protan_images]
+            deuteran_scores = [int(int(request.POST[img])==int(img[0])) for img in deuteran_images]
+            tritan_scores = [int(int(request.POST[img])==int(img[0])) for img in tritan_images]
         except:
             return HttpResponse('There was an error processing your request. ' + str(type(protan_scores[0])))
         else:
-            for i, j, k in zip(protan_scores, deuteran_scores, tritan_scores):
-                score += i + j + k
+            score = sum(protan_scores + deuteran_scores + tritan_scores)
 
-        if score < 8:
+        if score <= 7:
             request.user.participant.is_colorBlind = True
         else:
             request.user.participant.is_colorBlind = False
@@ -462,4 +467,7 @@ def ishihara(request):
         request.user.save()
         return redirect('/user/home')
 
-    return render(request, 'user/ishihara.html', context={'score': score})
+    return render(request, 'user/ishihara.html', context={
+        'score': score, 
+        'image_row_tuples': image_row_tuples, 
+        })
