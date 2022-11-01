@@ -17,7 +17,7 @@ class CodesAdmin(admin.ModelAdmin):
     actions = [mark_paid]
 
 class ParticipantsAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'sessions_completed', 'last_visit', 'last_email']
+    list_display = ['__str__', 'sessions_completed', 'last_visit', 'last_email', 'ref']
     actions = [mark_notBlind]
 
 admin.site.register(participant, ParticipantsAdmin)
