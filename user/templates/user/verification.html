@@ -37,7 +37,7 @@
                     <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
                         {% csrf_token %}
                         <div style="text-align:center;">
-                            <input type="text" name="code" placeholder='' class='form-text' id='code' maxlength="4" style="text-align: center;" required><br><br>
+                            <input type="text" name="code" placeholder='' class='form-text' id='code' maxlength="4" style="text-align: center;" autofocus required><br><br>
                             <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
                         </div>
                         <div>

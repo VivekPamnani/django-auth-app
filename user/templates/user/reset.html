@@ -37,7 +37,7 @@
                         <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
                             {% csrf_token %}
                             <div style="text-align:center;">
-                                <input type="text" name="username" placeholder='Username' class='form-text' id='username' style="text-align: center;" required><br><br>
+                                <input type="text" name="username" placeholder='Username' class='form-text' id='username' style="text-align: center;" autofocus required><br><br>
                                 <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
                             </div>
                             <!-- <a href="#" class='forgot'>Forgot?</a> -->
@@ -64,7 +64,7 @@
                             <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
                             {% csrf_token %}
                             <div style="text-align:center;">
-                                <input type="text" name="code" placeholder='4-digit OTP' class='form-text' id='code' maxlength="4" style="text-align: center;" required><br><br>
+                                <input type="text" name="code" placeholder='4-digit OTP' class='form-text' id='code' maxlength="4" style="text-align: center;" autofocus required><br><br>
                                 <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
                             </div>
                             <!-- <a href="#" class='forgot'>Forgot?</a> -->
@@ -87,7 +87,7 @@
                         <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
                             {% csrf_token %}
                             <div style="text-align:center;">
-                                <input type="password" name="password" placeholder='New password' class='form-text id='password' style="text-align: left;" required><br><br>
+                                <input type="password" name="password" placeholder='New password' class='form-text id='password' style="text-align: left;" autofocus required><br><br>
                                 <input type="password" name="confirm_password" placeholder='Confirm password' class='form-text' id='confirm_password' style="text-align: left;" required><br><br>
                                 <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
                             </div>
