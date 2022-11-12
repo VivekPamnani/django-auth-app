@@ -90,10 +90,13 @@ def register(request):
         entered_username = request.POST['username']
         entered_email = request.POST['email']
         entered_pwd = request.POST['password']
+        # entered_age = request.POST['age']
         # user = User.objects.create_user(entered_username, entered_email, entered_pwd)
     except:
         return render(request, 'user/registration.html', context={'err_msg': ''})
     else:
+        # if(int(entered_age)<int(env('AGE_CUTOFF'))):
+        #     return render(request, 'user/registration.html', context={'err_msg': "Sorry, you must be at least " + env('AGE_CUTOFF') + " years old to continue."})
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
         send_mail('Verify your email address for participation.',
@@ -403,11 +406,15 @@ def welcome(request):
                 ref = request.session['ref']
             except KeyError:
                 ref = 'err'
-            msg = "Here is the link to participate in the study: https://www.imwbs.org/user/welcome/?ref=" + ref
+            msg_greet = "Hi " + entered_email.split('@')[0] + "! <br><br> Thank you for showing an interest in our research. You have received this email because you opted for it on our welcome page. To know more about the study, simply click the link below. "
+            msg_link = "Here is the link to participate in the study: https://www.imwbs.org/user/welcome/?ref=" + ref
+            msg_req = "Please note that the study requires you to have a laptop/desktop with a physical keyboard. iPads will not work."
+            auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
             send_mail('[Indian Mental Wellbeing Study] Link for participation',
-                msg,
+                '',
                 str(env('SMTP_MAIL')),
                 [entered_email],
+                html_message=msg_greet + "<br>" + msg_link + "<br><br>" + msg_req + "<br><br>" + auto_note,
                 fail_silently=True)
                 
     return render(request, 'user/welcome.html')
