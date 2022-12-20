@@ -32,7 +32,7 @@ def auto_email():
         if user.participant.sessions_completed == 0 and delta_last_email > datetime.timedelta(days=365):
             subject = '[Indian Mental Wellbeing Study] Reminder to participate.'
             # message = "Hi, " + user.username + "! <br><br>We noticed you signed up on the website but haven't proceeded through. If you'd like to: <ol> <li>Learn about your mental well-being, </li><li>Contribute to science, and </li><li><b>Earn</b> up to ₹1200</li></ol> Please visit our website to participate: https://www.imwbs.org/user/login/" 
-            message = "<p>Hi, " + user.username + "!</p> <p>We noticed you signed up on the website but haven't proceeded through.</p>If you'd like to: <ol> <li>Learn about your mental well-being, </li><li>Contribute to science, and </li><li><b>Earn</b> up to ₹1200</li></ol> Please visit our website to participate: https://www.imwbs.org/user/login/ <p>Your username is " + user.username + ". If you forgot your password, follow this link: https://www.imwbs.org/user/reset/</p>"
+            message = "<p>Hi, " + user.username + "!</p> <p>We noticed you signed up on the website but haven't proceeded through.</p>If you'd like to: <ol> <li>Learn about your mental well-being, and </li><li>Contribute to science </li></ol> Please visit our website to participate: https://www.imwbs.org/user/login/ <p>Your username is " + user.username + ". If you forgot your password, follow this link: https://www.imwbs.org/user/reset/</p>"
             recipient = [user.email]
             # datatuple.append([subject, message + auto_note, from_email, recipient])
             user.participant.last_email = timezone.now()
