@@ -90,13 +90,14 @@ def register(request):
         entered_username = request.POST['username']
         entered_email = request.POST['email']
         entered_pwd = request.POST['password']
-        # entered_age = request.POST['age']
+        entered_age = request.POST['age']
         # user = User.objects.create_user(entered_username, entered_email, entered_pwd)
     except:
         return render(request, 'user/registration.html', context={'err_msg': ''})
     else:
         # if(int(entered_age)<int(env('AGE_CUTOFF'))):
-        #     return render(request, 'user/registration.html', context={'err_msg': "Sorry, you must be at least " + env('AGE_CUTOFF') + " years old to continue."})
+        if(int(entered_age) < 30):
+            return render(request, 'user/registration.html', context={'err_msg': "Sorry, you must be at least " + env('AGE_CUTOFF') + " years old to continue."})
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
         send_mail('Verify your email address for participation.',
