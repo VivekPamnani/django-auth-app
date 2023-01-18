@@ -41,7 +41,7 @@ message_body = """
     We would like to urge you to continue participating in the study, as it is a valuable contribution to science. Your participation is important to the success of the research and we appreciate your willingness to be a part of it.
 </p>
 <p>
-    However, we understand that this delay may have caused frustration, and if you choose to stop participating in the study, you will still be compensated for the sessions that you have already completed. We understand that this may be a difficult decision, but please know that we respect your right to do so.
+    However, we understand that this delay may have caused frustration, and if you choose to stop participating, you will still be compensated for the sessions that you have already completed. We understand that choosing to continue participating despite the delay may be a difficult decision, but please know that we would really appreciate if you do so.
 </p>
 <p>
     Thank you for your understanding and your continued participation in the study.
