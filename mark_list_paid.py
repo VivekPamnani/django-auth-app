@@ -29,6 +29,10 @@ db.close_old_connections()
 
 env = environ.Env()
 
+tobePaid = []
+n_codes = 0
+redundant_codes = 0
+
 def mark_paid(paid_codes):
     allcodes = codes.objects.all()
     for code in paid_codes:
@@ -39,6 +43,9 @@ def mark_paid(paid_codes):
         except: 
             print("Error: " + code + "; Something else went wrong.")
         else:
+            n_codes += 1
+            if(c.is_paid):
+                redundant_codes += 1
             c.is_paid = 1
             c.save()
 
@@ -92,7 +99,6 @@ if __name__ == "__main__":
     #         '6YXCcfvdtYDv'
     #     ]
     # )
-    tobePaid = []
     while True:
         inp = input()
         if(inp == 'x' or inp == 'X'):
@@ -101,3 +107,6 @@ if __name__ == "__main__":
             continue
         tobePaid.append(inp)
     mark_paid(tobePaid)
+
+    print("Total number of codes: " + str(n_codes))
+    print("Of which, codes already marked as paid: " + str(redundant_codes))
