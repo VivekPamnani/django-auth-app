@@ -32,6 +32,7 @@ env = environ.Env()
 tobePaid = []
 n_codes = 0
 redundant_codes = 0
+invalid_codes = 0
 
 def mark_paid(paid_codes):
     allcodes = codes.objects.all()
@@ -39,8 +40,10 @@ def mark_paid(paid_codes):
         try:
             c = codes.objects.get(otp=code)
         except ObjectDoesNotExist:
+            invalid_codes += 1
             print("Error: " + code + "; Code not found.")
         except: 
+            invalid_codes += 1
             print("Error: " + code + "; Something else went wrong.")
         else:
             n_codes += 1
@@ -110,3 +113,4 @@ if __name__ == "__main__":
 
     print("Total number of codes: " + str(n_codes))
     print("Of which, codes already marked as paid: " + str(redundant_codes))
+    print("Of which, invalid codes: " + str(invalid_codes))
