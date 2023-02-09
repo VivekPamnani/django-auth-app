@@ -35,8 +35,10 @@ redundant_codes = 0
 invalid_codes = 0
 
 def mark_paid(paid_codes):
+    global n_codes, redundant_codes, invalid_codes
     allcodes = codes.objects.all()
     for code in paid_codes:
+        n_codes += 1
         try:
             c = codes.objects.get(otp=code)
         except ObjectDoesNotExist:
@@ -46,7 +48,6 @@ def mark_paid(paid_codes):
             invalid_codes += 1
             print("Error: " + code + "; Something else went wrong.")
         else:
-            n_codes += 1
             if(c.is_paid):
                 redundant_codes += 1
             c.is_paid = 1
@@ -114,3 +115,4 @@ if __name__ == "__main__":
     print("Total number of codes: " + str(n_codes))
     print("Of which, codes already marked as paid: " + str(redundant_codes))
     print("Of which, invalid codes: " + str(invalid_codes))
+    print("Codes updated successfully: " + str(n_codes - redundant_codes - invalid_codes))
