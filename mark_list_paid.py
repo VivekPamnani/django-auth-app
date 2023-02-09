@@ -5,6 +5,7 @@
 
 
 import os
+
 import django
 import environ
 
@@ -13,13 +14,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 django.setup()
 
 
-from django.core.mail import send_mail
 import datetime
-from django.utils import timezone
+
+from django import db
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
+from django.utils import timezone
+
 from user.models import codes
-from django import db
+
 db.connections.close_all()
 db.close_old_connections()
 
@@ -44,6 +48,20 @@ def mark_paid(paid_codes):
         # print(type(code.otp))
 
 if __name__ == "__main__":
+    print("""
+    This script will mark the list of codes as paid.
+    Enter the list of codes that you would like to mark as paid (one code per line).
+    Once you're done, enter 'x' or 'X' to tell that you're done inputting codes.
+    
+    Example:
+    75bjUuokzJZo
+    5JzAAoFVsYBY
+    3sce3ohafZYs
+    4CyoxwMEtkSH
+    x
+
+    This will mark the codes 75bjUuokzJZo, 5JzAAoFVsYBY, 3sce3ohafZYs, and 4CyoxwMEtkSH as paid.
+    """)
     # print(codes.objects.get())
     # mark_paid(
     #     [
