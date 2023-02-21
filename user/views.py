@@ -1,26 +1,27 @@
+import datetime
+import json
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
+from random import shuffle
 from sqlite3 import IntegrityError, OperationalError
-from django.shortcuts import redirect, render
-from django.contrib.auth.models import User
+
+import environ
+import pytz
+import shortuuid
 from django.contrib.auth import authenticate, login, logout
-from django.views import generic
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import IntegrityError, OperationalError
-from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-import datetime
 from django.utils import timezone
+from django.views import generic
+from verify_email.email_handler import send_verification_email
+
 import user
 from user.models import codes
-import shortuuid
-import pytz
-import json
-from random import shuffle
-from verify_email.email_handler import send_verification_email
-from django.core.mail import send_mail
-import environ
 
 env = environ.Env()
 
@@ -96,7 +97,7 @@ def register(request):
         return render(request, 'user/registration.html', context={'err_msg': ''})
     else:
         # if(int(entered_age)<int(env('AGE_CUTOFF'))):
-        if(int(entered_age) < 30):
+        if(int(entered_age) < 18):
             return render(request, 'user/registration.html', context={'err_msg': "Sorry, you must be at least " + env('AGE_CUTOFF') + " years old to continue."})
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
