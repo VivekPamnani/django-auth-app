@@ -1,5 +1,5 @@
 <head>  
-    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Directions</title>  
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
@@ -51,33 +51,29 @@
         <form action="{% url 'user:ishihara' %}" method="POST">
         {% csrf_token %}
 
-        {% for images in image_row_tuples %}
-            <div class="row justify-content-center" id="r2">
-                {% for image in images %}
-                <div class="col-md-4" id="r2c1">
-                    <div class="card shadow p-3 mb-5 bg-white rounded">
-                        <!-- <h4 class="card-title"> 5_protan </h4> -->
-                        <div class="card-body text-center">
-                            <img src="{% get_static_prefix %}ishi/{{ image }}.png"" alt={{image}} width="280px"><br><br>
-                            <input type="number" name={{image}} class='ishi_protan text-center' id={{image}} style="width: 50px" required><br>
+            {% for images in image_row_tuples %}
+                <div class="row justify-content-center" id="r2">
+                    {% for image in images %}
+                    <div class="col-md-4" id="r2c1">
+                        <div class="card shadow p-3 mb-5 bg-white rounded">
+                            <!-- <h4 class="card-title"> 5_protan </h4> -->
+                            <div class="card-body text-center">
+                                <img src="{% get_static_prefix %}ishi/{{ image }}.webp"" alt={{image}} width="280px"><br><br>
+                                <input type="number" name={{image}} class='ishi_protan text-center' id={{image}} style="width: 50px" required><br>
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+            {% endfor %}
 
-        <div style="text-align:center;">
-            <input class='btn btn-primary' id='do-login' type="submit" value="Submit"></input>
-        </div>
+            <div style="text-align:center;">
+                <input class='btn btn-primary' id='do-login' type="submit" style="width: 35%; min-width: 200px; padding: 3px;" value="Submit"></input>
+            </div>
         </form>
 </main>
 <br>
 <br>
 <br>
-<footer>
-    <p>Contact:</p>
-    <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
-    <p>(Vivek Pamnani)</p>
-  </footer>
 </body>
+{% include 'user/footer.html' %}
