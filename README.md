@@ -26,7 +26,5 @@ For crontab, make sure the `cron` and `atd` services are running.
 2. sudo service atd start
 
 ### To do:
-1. instructions
-2. email verification
-3. testing
-4. hosting
+1. now to adjust the times (4 weeks instead of 2).. and we're done with developemnt
+2. make sure to adjust reminder script.py accordingly.
