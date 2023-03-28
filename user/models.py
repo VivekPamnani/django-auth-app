@@ -1,9 +1,11 @@
+import datetime
 from email.policy import default
-from django.db import models
+
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import datetime
+
 # Create your models here.
 
 class participant(models.Model):
@@ -20,6 +22,7 @@ class participant(models.Model):
     last_email = models.DateTimeField(default=datetime.datetime(1000,1,1,0,0,0))
     sessions_completed = models.IntegerField(default=0)
     is_verified = models.BooleanField(default=False)
+    is_eligible = models.IntegerField(default=0) # 0 = not screened, 1 = eligible, 2 = ineligible
     is_colorBlind = models.BooleanField(default=True)
     is_colorTested = models.BooleanField(default=False)
     ref = models.CharField(default='noref', max_length=30)

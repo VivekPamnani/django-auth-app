@@ -1,0 +1,53 @@
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Verify your email</title>  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <style>
+        #r1 .card {
+            height: auto;
+        }
+        .btn {
+            width: 400px;
+        }
+    </style>
+</head> 
+<body>
+<nav class="navbar navbar-dark fixed-top navbar-custom flex-md-nowrap p-0 shadow p-1 mb-5 " >
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"></a>
+</nav>
+
+<main role="main">
+    <div class="container">
+        <!-- Row 1 -->
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <h4 class="card-title"> Forgot username </h4>
+            <br>
+            <form action="{% url 'user:forgot_username' %}" method="post">
+                <p class="card-subtitle">If you have forgot your username, please enter your email address below. We will send you an email with your username if it exists in our database.</p>
+                <div class="row justify-content-center" id="r1">
+                    <div class="card-body">
+                        <br>
+                    <!-- <p>Your OTP for visit number {{ user.participant.sessions_completed }} is:</p> -->
+                        {% csrf_token %}
+                        <div style="text-align:center;">
+                            <input type="email" name="email" placeholder='example@abc.com' class='form-text' id='email' style="text-align: center;" autofocus required><br><br>
+                            <!-- <button class='btn btn-primary' id='do-verify' type="submit">Verify</button> -->
+                        </div>
+                        <!-- <a href="#" class='forgot'>Forgot?</a> -->
+                    </div>
+                    <br>
+                </div>
+                <div class="row align-items-center">
+                    <div class="text-center">
+                        <button class="btn btn-primary" type="submit" id="do-verify" style="width: 25%; min-width: 200px; padding: 3px;">Confirm</button>
+                    </div>
+                </div>
+                <p style="color: #FF0000;">{{err_msg}}</p>
+            </form>

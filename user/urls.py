@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import include, path
 
 from . import views
 
@@ -18,7 +18,12 @@ urlpatterns = [
     path('welcome/', views.welcome, name='welcome'),
     path('consent/', views.consent, name='consent'),
     path('reset/', views.reset_pwd, name='reset'),
-    path('ishihara/', views.ishihara, name='ishihara')
+    path('ishihara/', views.ishihara, name='ishihara'), 
+    path('screen/', views.screen, name='screen'),
+    path('freescreen/', views.freescreen, name='freescreen'),
+    path('msg/', views.error, name='error'),
+    path('getname/', views.forgot_username, name='forgot_username'),
+    path('continue/', views.long_proposal, name='long_proposal'),
     # path('verification/', include('verify_email.urls')),
     # path('login/', views.login, name='login'),
     # path('logout/', views.vote, name='logout')
