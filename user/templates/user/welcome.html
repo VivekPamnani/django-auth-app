@@ -1,13 +1,19 @@
 <head>  
-    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Welcome</title>  
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
     <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
-    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">    
     <link rel="stylesheet" href="{% static 'nav.css' %}">
     <link rel="stylesheet" href="{% static 'footer.css' %}">
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>  
+    <!-- <link rel="preload" href="{% static 'dashboard.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'dashboard.css' %}"></noscript> -->
+    <!-- <link rel="preload" href="{% static 'footer.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'footer.css' %}"></noscript> -->
+    <!-- <link rel="preload" href="{% static 'nav.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'nav.css' %}"></noscript> -->
+    <!-- <script src="{% static 'js/bootstrap.min.js' %}"></script>   -->
     <style>
         #r1 .card {
             height: auto;
@@ -29,16 +35,18 @@
             <div class="card shadow p-3 mb-5 bg-white rounded">
                 <h4 class="card-title"> Welcome! </h4>
                 <div class="card-body">
+                    {% block content %}
                     <p>We appreciate your participation in our study. The aim is to understand the correlates of wellbeing in the context of Pandemic. The research study has been approved by the Institute Research Review Board Committee, which evaluates the validity of tests used in the study and protects the essential rights of human participation. </p>
                     <p>In this study, you would be attempting a series of tests periodically, every fortnight, over a span of 3 months. Each session will take approximately 35 minutes.</p>                        
                     <p>Your participation in this study is entirely voluntary. <u>You can choose to withdraw from this study at any point in time.</u> There are no penalties or consequences of any kind if you decide that you do not want to participate or discontinue your participation. However, for the benefit of research, we request you complete the study.</p> 
                     <p>Anybody who is 18-60 years old and can understand and/or speak English is eligible to participate. You will be paid <b>₹200 per session</b> (up to ₹1200 for a total of 6 sessions). <u>A laptop or a desktop with a physical keyboard is required for this study.</u> </p>
                     <p>If you would like to know more, please proceed by clicking the '<b>Continue</b>' button below.</p><br>
+                    {% endblock %}
                 <!-- </div>
                 <div> -->
                     <div class="text-center">
                         <form action="{% url 'user:consent' %}" method="GET">
-                            <button type="submit"
+                            <button type="submit" style="width: 25%; min-width: 200px; padding: 3px;"
                                 class="btn btn-primary">
                                 Continue
                             </button>
@@ -60,7 +68,7 @@
                     {% csrf_token %}
                     <div class="text-center">
                         <input type="email" name="email" placeholder='Email' class='text-center' id='email'>   
-                        <button type="submit" style="width: 150px; padding: 3px;"
+                        <button type="submit" style="max-width: fit-content; padding: 3px;"
                             class="btn btn-primary">
                             Remind me
                         </button>
@@ -69,9 +77,5 @@
             </div>
         </div>
 </main>
-<footer>
-    <p>Contact:</p>
-    <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
-    <p>(Vivek Pamnani)</p>
-</footer>
 </body>
+{% include 'user/footer.html' %}

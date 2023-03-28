@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-  <meta charset="UTF-8">
+  <!-- <meta charset="UTF-8"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
   <title>Indian Mental Wellbeing Study: Welcome back! </title>
   {% load static %}  
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
@@ -29,19 +30,17 @@
         </div>
         <br>
         <div>
-          Forgot password? <a class='forgot' href="/user/reset"> Reset password.</a> <br>
-          Don't have an account?<a class='forgot' href="/user/register"> Register. </a>
+          Forgot password? <a class='forgot' href="{% url 'user:reset' %}"> Reset password.</a> <br>
+          <!-- Forgot username? <a class='forgot' href="{% url 'user:forgot_username' %}"> Get username.</a> <br> -->
+          Don't have an account? <a class='forgot' href="{% url 'user:register' %}"> Register. </a>
         </div>
         <!-- <a href="#" class='forgot'>Forgot?</a> -->
     </form>
   </div>
 </section>
-<footer>
-  <p>Contact:</p>
-  <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
-  <p>(Vivek Pamnani)</p>
-</footer>
 <!-- partial -->
 
 </body>
+{% include 'user/footer.html' %}
+
 </html>

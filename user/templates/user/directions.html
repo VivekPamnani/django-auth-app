@@ -55,29 +55,27 @@
                     </ol>
                     <p> If you are unclear about the instructions, please click the 'Instructions' button on the top right before continuing. </p>
                     <p> If you have understood the above directions, please confirm by clicking the button below to proceed. Once you have confirmed, your attempt will be recorded; so kindly do not hit refresh or back button on your browser.</p>
-                    <p><b>If you have prescription for your eyesight, please make sure you wear your prescribed glasses/lenses, and you check the box below.<br>
-                    By not checking, you convey that you do not have a prescription.</b></p>
-                </div>
-                <div class="text-center">
                     <form action="{% url 'user:visit' %}" method="GET">
                         {% csrf_token %}
+                        <!-- <p><b>If you have prescription for your eyesight, please make sure you wear your prescribed glasses/lenses, and you check the box below.<br>
+                        By not checking, you convey that you do not have a prescription.</b></p>
                         <label for="wearing">
                             <input type="checkbox" name="wearing" id='wearing'> <u>I am wearing my prescribed glasses/lenses for the study.</u>
-                        </label>
-                        <br><br>
-                        <p style="color: red;">Note that clicking the button below will start your session. Be ready.</p>
-                        <button type="submit"
-                            class="btn btn-primary">
-                            I'm ready, let's start.
-                        </button>
-                    </form>
-                </div>
+                        </label> -->
+                        <p><b>If you have prescription for your eyesight, please make sure you wear your prescribed glasses/lenses.<br>Please select the appropriate option below.</b></p>
+                        <input type="radio" id="wearing" name="wearing" value=1 required> I have a prescription and I am wearing my prescribed glasses/lenses for the study.</input>
+                        <br>
+                        <input type="radio" id="notwearing" name="wearing" value=2 required> I do not have a prescription.
+                        <div class="text-center">
+                            
+                            <br><br>
+                            <p style="color: red;">Note that clicking the button below will start your session. Be ready.</p>
+                            <button type="submit" class="btn btn-primary"> I'm ready, let's start.</button>
+                    </div>
+                </form>
+            </div>
             </div>
         </div>
 </main>
-<footer>
-    <p>Contact:</p>
-    <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
-    <p>(Vivek Pamnani)</p>
-  </footer>
 </body>
+{% include 'user/footer.html' %}

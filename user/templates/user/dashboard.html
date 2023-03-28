@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% load static %}  
     <!-- <link rel="stylesheet" href="{% static 'font_roboto.css' %}"> -->
@@ -92,6 +91,7 @@
                         </div>
                     </div>
                 </div> -->
+                {% block progress_bar %}
                 <div class="col-md-auto">
                     <div class="card shadow p-3 mb-5 bg-white rounded">
                         <!-- <h5 class="card-title">Progress</h5> -->
@@ -126,12 +126,17 @@
                         </div>
                     </div>
                 </div>
+                {% endblock %}
+
+                {% block next %}
                 <!-- (R2, C2) -->
                 <div class="col-md-4 d-flex align-items-stretch">
-                    <div class=" shadow p-3 mb-5 bg-white rounded">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
                         <div class="card-body">
                             <h5 class="card-title">Next</h5><br>
+                            {% block next_content %}
                             <p class="card-text">Click the button below to proceed to your next session.</p>
+                            {% endblock %}
                             <p style="color: #FF0000;">{{err_msg}}</p>
                             <div class="justify-content-center" style="display: flex;">
                                 {% if colorTested == 0 %}
@@ -154,6 +159,7 @@
                         </div>
                     </div>
                 </div>
+                {% endblock %}
             </div>
         </div>
         <div class="container">
@@ -162,6 +168,7 @@
                 <!-- (R1, C1) -->
                 
                 <!-- (R1, C2) -->
+                {% block last_visit %}
                 <div class="col-md-4">
                     <div class="card shadow p-3 mb-5 bg-white rounded">
                         <div class="card-body">
@@ -171,13 +178,10 @@
                         </div>
                     </div>
                 </div>
+                {% endblock %} 
             </div>
         </div>
     </main>
-    <footer>
-        <p>Contact:</p>
-        <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
-        <p>(Vivek Pamnani)</p>
-    </footer>
 </body>
 </html>
+{% include 'user/footer.html' %}

@@ -15,11 +15,18 @@ body {
     linear-gradient(to right, #267871, #136a8a);
 }
 
-.btn {
+.btn-primary {
   background-color: #267871;
+  width: 25%;
+  min-width: 200px;
+  /* padding: 3px; */
 }
-.btn:hover {
+.btn-primary:hover {
   background-color: #136a8a;
+}
+
+img {
+  max-width: 100%;
 }
 
 main {

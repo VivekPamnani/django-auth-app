@@ -1,11 +1,12 @@
 <head>  
-    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Verify your email</title>  
     {% load static %}  
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
     <!-- <link rel="stylesheet" href="{% static 'home.css' %}"> -->
     <link rel="stylesheet" href="{% static 'dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'nav.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
     <script src="{% static 'js/bootstrap.min.js' %}"></script>  
     <style>
         #r1 .card {
@@ -49,7 +50,7 @@
                 </div>
                 <div class="row align-items-center">
                     <div class="text-center">
-                        <button class="btn btn-primary" type="submit" id="do-verify">Verify</button>
+                        <button class="btn btn-primary" type="submit" style="width: 250px; padding: 3px" id="do-verify">Verify</button>
                     </div>
                 </div>
             </form>
@@ -58,3 +59,4 @@
 </main>
 
 </body>
+{% include 'user/footer.html' %}

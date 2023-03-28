@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
   <title>Indian Mental Wellbeing Study: Welcome! </title>
   {% load static %}  
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
@@ -24,7 +24,6 @@
           <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
           <input type="password" name="password" placeholder='••••••••••••••' id='password' class='password' required><br>
           <input type="number" name="age" placeholder='Age' id="age" min="18" max="60" step="1"><br>
-          <p style="color: #FF0000;">{{err_msg}}</p>
           <div>
             <label for="consent">
               <input type="checkbox" name="consent" id='consent' required>    I have read the <a href="{% url 'user:consent' %}"> consent form</a> and by signing up I agree to participate in this study.
@@ -34,22 +33,20 @@
         <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
         <br>
         <div style="text-align:center;">
-            <input class='btn-login' id='do-login' type="submit" value="Register"></input>
+          <p style="color: #FF0000;">{{err_msg}}</p>
+          <input class='btn-login' id='do-login' type="submit" value="Register"></input>
         </div>
         <br>
         <div>
-          Already registered?<a class='forgot' href="/user/login"> Login. </a>
+          Already registered?<a class='forgot' href="{% url 'user:login' %}"> Login. </a>
         </div>
         <!-- <a href="#" class='forgot'>Forgot?</a> -->
     </form>
   </div>
 </section>
-<footer>
-  <p>Contact:</p>
-  <p><a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a></p>
-  <p>(Vivek Pamnani)</p>
-</footer>
 <!-- partial -->
 
 </body>
+{% include 'user/footer.html' %}
+
 </html>
