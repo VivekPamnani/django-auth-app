@@ -25,6 +25,7 @@ class participant(models.Model):
     is_eligible = models.IntegerField(default=0) # 0 = not screened, 1 = eligible, 2 = ineligible
     is_colorBlind = models.BooleanField(default=True)
     is_colorTested = models.BooleanField(default=False)
+    longitudinal_enrollment_status = models.IntegerField(default=0) # 0 = unproposed, 1 = opt in, 2 = opt out
     ref = models.CharField(default='noref', max_length=30)
 
 class codes(models.Model):

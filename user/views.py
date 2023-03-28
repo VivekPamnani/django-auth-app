@@ -13,8 +13,10 @@ import pytz
 import shortuuid
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_login_failed
 from django.core.mail import send_mail
 from django.db import IntegrityError, OperationalError
+from django.dispatch import receiver
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -33,11 +35,64 @@ def get_url(base_url, params: dict[str, str]):
     """
     return f"{base_url}?{urlencode(params)}"
 
+def long_or_single(func):
+    @functools.wraps(func)
+    def wrapper(request, template_path, *args, **kwargs):
+        if request.user.is_authenticated is False or request.user.participant.longitudinal_enrollment_status != 1:
+            tsplit = template_path.split('.')
+            try:
+                template_path = tsplit[0] + '_single.' + tsplit[1]
+            except:
+                pass
+        return func(request, template_path, *args, **kwargs)
+    return wrapper
+
+crender = long_or_single(render)
+"""
+django.shortcuts.render with longitudinal enrollment status check. \\
+Renders the appropriate template based on the user's longitudinal enrollment status. \\
+Current logic is that if the user is not enrolled in the longitudinal study, the template is suffixed with '_single'.
+"""
+
+
 def index(request):
     return redirect('user:home')
 
 def instructions(request):
-    return render(request, 'user/instructions_single.html')
+    return crender(request, 'user/instructions.html')
+
+def welcome(request):
+    if request.method == "GET":
+        ref = request.GET.get('ref', '')
+        if ref == '':
+            ref = 'noref'
+        request.session['ref'] = ref
+
+    elif request.method == "POST":
+        try:
+            entered_email = request.POST['email']
+        except:
+            return HttpResponse("There was an issue processing the entered email. Are you sure you entered correctly?" + '<a href="/user/welcome"}>Try again.</a>')
+        else: 
+            try:
+                ref = request.session['ref']
+            except KeyError:
+                ref = 'err'
+            msg_greet = "Hi " + entered_email.split('@')[0] + "! <br><br> Thank you for showing an interest in our research. You have received this email because you opted for it on our welcome page. To know more about the study, simply click the link below. "
+            msg_link = "Here is the link to participate in the study: https://www.imwbs.org/user/welcome/?ref=" + ref
+            msg_req = "Please note that the study requires you to have a laptop/desktop with a physical keyboard. iPads will not work."
+            auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
+            send_mail('[Indian Mental Wellbeing Study] Link for participation',
+                '',
+                str(env('SMTP_MAIL')),
+                [entered_email],
+                html_message=msg_greet + "<br>" + msg_link + "<br><br>" + msg_req + "<br><br>" + auto_note,
+                fail_silently=True)
+                
+    return crender(request, 'user/welcome.html')
+
+def consent(request):
+    return crender(request, 'user/consent.html')
 
 def user_init(user):
     user.participant.sessions_completed = 0
@@ -259,6 +314,16 @@ def reset_pwd(request, got_name=0, verified=0):
             else:
                 return render(request, 'user/reset.html', context={'err_msg': 'Passwords do not match.', 'verified': 1, 'got_name': 1})
 
+@receiver(user_login_failed)
+def user_login_failed_callback(sender, credentials, request, **kwargs):
+    try:
+        user = User.objects.get(username=credentials['username'])
+    except User.DoesNotExist:
+        pass
+    else:
+        if user.is_active is False:
+            request.session['long_reject_login_attempted'] = True
+
 def signin(request):
     # if env('MAINTENANCE_MODE') == 1:
     #     return HttpResponse('This website is now in maintenance mode.')
@@ -280,6 +345,10 @@ def signin(request):
             login(request, user=user)
             return redirect('user:home')
         else:
+            if request.session.get('long_reject_login_attempted', False):
+                del request.session['long_reject_login_attempted']
+                return redirect(f'{reverse("user:error")}?err=long-reject')
+
             return render(request, 'user/login.html', context={
                 'err_msg': 'Incorrect username or password, please try again.',
                 'maintenance': ''
@@ -378,13 +447,12 @@ def error(request):
         err_context['title'] = 'Thank you for your interest!'
         err_context['title_color'] = title_color['positive']
     elif err == 'long-reject':
-        err_context['msg'] = f"Thank you for you participation. You will not be contacted for the follow-up study. You may now close this tab."
+        err_context['msg'] = f"Thank you for you participation. You have opted out of the follow-up study. You will not be contacted for the follow-up study. You may now close this tab."
         err_context['title'] = 'Thank you for your participation!'
         err_context['title_color'] = title_color['positive']
-
-        
     else:
-        err_context['msg'] = 'An error has occurred. Please try again.'
+        err_context['msg'] = 'An error has occurred. Please try again or contact us.'
+        err_context['title'] = 'Error'
     
     return render(request, 'user/error.html', context=err_context)
 
@@ -545,6 +613,13 @@ def home(request):
         if request.user.participant.is_colorBlind is True:
             return redirect(f"{reverse('user:error')}?err=colorblind")
 
+    if request.user.participant.sessions_completed == 1 and request.user.participant.longitudinal_enrollment_status == 0:
+        return redirect('user:long_proposal')
+    
+    if request.user.participant.sessions_completed > 1 and request.user.participant.longitudinal_enrollment_status != 1:
+        request.user.participant.longitudinal_enrollment_status = 1
+        request.user.participant.save()
+
     try:
         err_msg = request.session['proceed_err']
         del request.session['proceed_err']
@@ -563,7 +638,7 @@ def home(request):
     # * Get the time until the next session.
     time_until_next, last_visit_time = get_time_until_next_session(user.participant.last_visit, sess_completed)
     
-    return render(request,
+    return crender(request,
         'user/dashboard.html',
         context={
             'user': user,
@@ -676,61 +751,25 @@ def visit_success(request, otp):
         #     'url' : "https://www.flipkart.com"
         # })
 
-
-def welcome(request):
-    if request.method == "GET":
-        ref = request.GET.get('ref', '')
-        if ref == '':
-            ref = 'noref'
-        request.session['ref'] = ref
-
-    elif request.method == "POST":
-        try:
-            entered_email = request.POST['email']
-        except:
-            return HttpResponse("There was an issue processing the entered email. Are you sure you entered correctly?" + '<a href="/user/welcome"}>Try again.</a>')
-        else: 
-            try:
-                ref = request.session['ref']
-            except KeyError:
-                ref = 'err'
-            msg_greet = "Hi " + entered_email.split('@')[0] + "! <br><br> Thank you for showing an interest in our research. You have received this email because you opted for it on our welcome page. To know more about the study, simply click the link below. "
-            msg_link = "Here is the link to participate in the study: https://www.imwbs.org/user/welcome/?ref=" + ref
-            msg_req = "Please note that the study requires you to have a laptop/desktop with a physical keyboard. iPads will not work."
-            auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
-            send_mail('[Indian Mental Wellbeing Study] Link for participation',
-                '',
-                str(env('SMTP_MAIL')),
-                [entered_email],
-                html_message=msg_greet + "<br>" + msg_link + "<br><br>" + msg_req + "<br><br>" + auto_note,
-                fail_silently=True)
-                
-    return render(request, 'user/welcome_single.html')
-
-def consent(request):
-    return render(request, 'user/consent_single.html')
-
 @screening_required_decorator()
 def long_proposal(request):
     if request.user.participant.sessions_completed == 0:
         return redirect('user:home')
 
-    long_signup = -1
+    user = request.user
     try:
-        if request.method == 'POST':
-            if 'signup' in request.POST:
-                long_signup = 1
-            elif 'reject' in request.POST:
-                long_signup = 0
-            else:
-                raise Exception("Invalid form submission")
-        
-        if long_signup == 1:
+        if 'signup' in request.POST:
+            user.participant.longitudinal_enrollment_status = 1
+            user.save()
             return redirect(f"{reverse('user:error')}?err=long-signup")
-        elif long_signup == 0:
+        elif 'reject' in request.POST:
+            user.participant.longitudinal_enrollment_status = 2
+            user.is_active = False
+            user.save()
+            logout(request)
             return redirect(f"{reverse('user:error')}?err=long-reject")
         else:
-            return render(request, 'user/long_proposal.html')
+            raise Exception("Invalid form submission.")
     except:
         return render(request, 'user/long_proposal.html')
 
