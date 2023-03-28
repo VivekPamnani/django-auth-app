@@ -17,8 +17,8 @@ body {
 
 .btn-primary {
   background-color: #267871;
-  width: 25%;
-  min-width: 200px;
+  /* width: 25%;
+  min-width: 200px; */
   /* padding: 3px; */
 }
 .btn-primary:hover {
