@@ -492,6 +492,35 @@ def freescreen(request):
         request.session['free_is_eligible'] = is_eligible = 2
         return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': is_eligible, 'free': True})
 
+def get_time_until_next_session(last_visit_time, sess_completed) -> str:
+    time_until_next = ""
+    rem_time = last_visit_time.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
+    over_time = last_visit_time.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+
+    if sess_completed == 0:
+        last_visit_time = "Never"
+    else:
+        # Show the last visit time in a more nautural language
+        last_visit_time = last_visit_time.strftime("%A, %B %d, %Y at %I:%M %p")
+
+    if(over_time < datetime.timedelta() and sess_completed != 0):
+        time_until_next = "N/A"
+    elif(rem_time > datetime.timedelta()):
+        days, seconds = rem_time.days, rem_time.seconds
+        hours = (seconds // 3600)
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
+    else:
+        time_until_next = datetime.timedelta()
+        days, seconds = time_until_next.days, time_until_next.seconds
+        hours = (seconds // 3600)
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
+
+    return time_until_next, last_visit_time
+
 def home(request):
     # * If the user is not logged in, redirect to the login page.
     if request.user.is_authenticated is False:
@@ -507,7 +536,7 @@ def home(request):
         request.user.participant.is_eligible = 1
         request.user.participant.save()
 
-    # * 7If the user is not eligible, redirect to the screening page.
+    # * If the user is not eligible, redirect to the screening page.
     if request.user.participant.is_eligible != 1:
         return redirect('user:screen')
 
@@ -526,48 +555,31 @@ def home(request):
         err_msg = ''
     
     user = request.user
+
+    # * Get the user's progress percentage.
     sess_completed = user.participant.sessions_completed
     progress_percentage = sess_completed / 6 * 100
     leftnum = sess_completed - 3 if sess_completed > 3 else 0
     rightnum = sess_completed if sess_completed < 3 else 3
-    rem_time = user.participant.last_visit.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
-    # rem_time = rem_time.replace(microsecond=0)
-    # if(rem_time <= datetime.timedelta()):
-    #     rem_time = datetime.timedelta()
     amounts = [0,100,400,600,800,1000,1200]
-    last_vis = user.participant.last_visit
-    over_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
-    if(over_time < datetime.timedelta() and sess_completed != 0):
-        time_until_next = "N/A"
-    elif(rem_time > datetime.timedelta()):
-        days, seconds = rem_time.days, rem_time.seconds
-        hours = (seconds // 3600)
-        minutes = (seconds % 3600) // 60
-        seconds = seconds % 60
-        time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
-        # time_until_next = rem_time
-    else:
-        time_until_next = datetime.timedelta()
-        days, seconds = time_until_next.days, time_until_next.seconds
-        hours = (seconds // 3600)
-        minutes = (seconds % 3600) // 60
-        seconds = seconds % 60
-        time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
-        if sess_completed == 0: 
-            last_vis = "Never"
+
+    # * Get the time until the next session.
+    time_until_next, last_visit_time = get_time_until_next_session(user.participant.last_visit, sess_completed)
+    
     return render(request,
-                'user/dashboard_single.html',
-                context={
-                    'user': user,
-                    'percentage': int(progress_percentage),
-                    'leftnum': leftnum,
-                    'rightnum': rightnum,
-                    'earned': amounts[sess_completed],
-                    'remtime': time_until_next,
-                    'err_msg': err_msg,
-                    'last_vis': last_vis,
-                    'colorTested': user.participant.is_colorTested
-                })
+        'user/dashboard.html',
+        context={
+            'user': user,
+            'percentage': int(progress_percentage),
+            'leftnum': leftnum,
+            'rightnum': rightnum,
+            'earned': amounts[sess_completed],
+            'remtime': time_until_next,
+            'err_msg': err_msg,
+            'last_vis': last_visit_time,
+            'colorTested': user.participant.is_colorTested
+        }
+    )
 
 @screening_required_decorator()
 def directions(request):
