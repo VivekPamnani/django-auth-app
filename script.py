@@ -1,4 +1,5 @@
 import os
+
 import django
 import environ
 
@@ -6,11 +7,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 django.setup()
 
 
-from django.core.mail import send_mail
 import datetime
-from django.utils import timezone
-from django.contrib.auth.models import User
+
 from django import db
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.utils import timezone
+
 db.connections.close_all()
 db.close_old_connections()
 
@@ -23,7 +26,7 @@ def auto_email():
     auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
     amounts = ['0', '100', '300', '200', '200', '200', '200']
     for user in user_list:
-        if user.username != 'admin' and user.participant.is_verified:
+        if user.username != 'admin' and user.participant.is_verified and user.is_active:
             rem_time = user.participant.last_visit + datetime.timedelta(days=14) - timezone.now()
             delta_last_email = (timezone.now() - user.participant.last_email)
             # if(delta_last_email > datetime.timedelta(days=14)):
