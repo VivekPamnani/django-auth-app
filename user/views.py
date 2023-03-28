@@ -342,37 +342,41 @@ def error(request):
     err_context = {
         'msg': '',
         'title': '',
-        'title_color': '',
+        'title_color': title_color['negative'],
     }
 
     if err == 'not-eligible':
         err_context['msg'] = 'You are not eligible to participate in this study.'
+        err_context['title'] = 'Not Eligible'
     elif err == 'not-verified':
         err_context['msg'] = 'There seems to be something wrong with your registration. Please register using a different email or contact us.'
+        err_context['title'] = 'Not Verified'
     elif err == 'too-soon':
         err_context['msg'] = 'You cannot attempt the experiment more than once in two weeks. Please wait ' + str(rem_time) + ' before you can participate again.'
+        err_context['title'] = 'Too Soon!'
     elif err == 'colorblind':
-        err_context['msg'] = 'You seem to be color blind. Please contact us if you would like to participate in this study.'
+        err_context['msg'] = 'You seem to be color blind. Please contact us if you think this is a mistake.'
+        err_context['title'] = 'Suspected Color Blindness'
     elif err == 'verif-success':
+        redirect_url = reverse('user:instructions')
         err_context['msg'] = f'Your account has been verified! Click the button below to proceed to the instructions: <p><a class="btn btn-primary" style="width: 25%; min-width: 200px;" href={redirect_url}>Continue.</a></p>'
         err_context['title'] = 'Success!'
         err_context['title_color'] = title_color['positive']
-        redirect_url = reverse('user:instructions')
     elif err == 'pwd-reset-success':
+        redirect_url = reverse('user:login')
         err_context['msg'] = f'Your password has been reset! Click the button below to proceed to the login page: <p><a class="btn btn-primary" style="width: 25%; min-width: 200px;" href={redirect_url}>Continue.</a></p>'
         err_context['title'] = 'Hurray!'
         err_context['title_color'] = title_color['positive']
-        redirect_url = reverse('user:login')
     elif err == 'uname-sent':
+        redirect_url = reverse('user:login')
         err_context['msg'] = f'Your username has been sent to your email! Click the button below to proceed to the login page: <p><a class="btn btn-primary" style="width: 25%; min-width: 200px;" href={redirect_url}>Login</a></p>'
         err_context['title'] = 'Username sent!'
         err_context['title_color'] = title_color['positive']
-        redirect_url = reverse('user:login')
     elif err == 'long-signup':
+        redirect_url = reverse('user:home')
         err_context['msg'] = f"Thank you for your interest in our study. We will contact you shortly. Meanwhile, you can click the button below to return to the home page: <p><a class='btn btn-primary' style='width: 25%; min-width: 200px;' href={redirect_url}>Return to home page</a></p>"
         err_context['title'] = 'Thank you for your interest!'
         err_context['title_color'] = title_color['positive']
-        redirect_url = reverse('user:home')
     elif err == 'long-reject':
         err_context['msg'] = f"Thank you for you participation. You will not be contacted for the follow-up study. You may now close this tab."
         err_context['title'] = 'Thank you for your participation!'
@@ -522,29 +526,22 @@ def get_time_until_next_session(last_visit_time, sess_completed) -> str:
     return time_until_next, last_visit_time
 
 def home(request):
-    # * If the user is not logged in, redirect to the login page.
     if request.user.is_authenticated is False:
         return redirect('user:login')
 
-    # * If the user is not verified, redirect to the error page.
     if request.user.participant.is_verified is False:
         return redirect(f"{reverse('user:error')}?err=not-verified")
     
-    # * If the user has completed at least 1 session previously, mark them as eligible.
-    # if request.user.participant.last_visit.replace(tzinfo=None) > datetime.datetime(1001,1,1,0,0,0) and request.user.participant.is_eligible != 1:
     if request.user.participant.sessions_completed > 0 and request.user.participant.is_eligible != 1:
         request.user.participant.is_eligible = 1
         request.user.participant.save()
 
-    # * If the user is not eligible, redirect to the screening page.
     if request.user.participant.is_eligible != 1:
         return redirect('user:screen')
 
-    # * If the user has not completed the color test, redirect to the color test page.
     if request.user.participant.is_colorTested is False:
         return redirect('user:ishihara')
     else:
-        # * If the user is colorblind, redirect to the error page.
         if request.user.participant.is_colorBlind is True:
             return redirect(f"{reverse('user:error')}?err=colorblind")
 
