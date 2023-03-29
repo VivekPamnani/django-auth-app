@@ -104,11 +104,19 @@
                 <div class="card-body">
                     <p>Thank you for completing the session! If you liked the study and would like to earn a little more, we'd love to have you follow up for additional sessions.</p>
                     <p>If you're interested, please click the button below to open a sign-up form.</p>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" style="width: 25%; min-width: 200px;" data-target="#exampleModal">
-                            Sign up
-                        </button>
-                    </div>
+                </div> 
+                <div class="card-footer">
+                    <form action="{% url 'user:long_proposal' %}" method="post">
+                    <div class="row justify-content-center mx-auto" style="width: 100%;">
+                            {% csrf_token %}
+                            <div class="col text-center">
+                                <input type="submit" style="width: 80%; min-width: 125px;" id="reject" class="btn btn-secondary btn-modal" name='reject' value="No, thanks."></input>
+                            </div>
+                            <div class="col text-center">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" style="width: 80%; min-width: 125px;" data-target="#exampleModal">Submit</button>
+                            </div> 
+                        </div>
+                    </form>
 
                 </div>
                 {% endautoescape %}

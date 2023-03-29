@@ -6,6 +6,12 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
+.card-footer {
+  background: #fff;
+  border: 0px;
+  padding: 0px;
+}
+
 .navbar-custom {
   /* background-color: #009688; */
   background: #136a8a;
@@ -23,6 +29,17 @@ body {
 }
 .btn-primary:hover {
   background-color: #136a8a;
+}
+
+.btn-secondary {
+  /* background-color: #6B7280; */
+  background-color: #71717A;
+  /* width: 25%;
+  min-width: 200px; */
+  /* padding: 3px; */
+}
+.btn-secondary:hover {
+  background-color: #52525B;
 }
 
 img {

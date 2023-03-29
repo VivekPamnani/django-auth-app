@@ -73,7 +73,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(days=1)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website TOMORROW to earn and participate: https://www.imwbs.org/user/login/ . <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website TOMORROW to earn and participate: https://www.imwbs.org/user/login/ . We suggest you block your calendar for a 30 minute slot tomorrow. <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is tomorrow.',
