@@ -32,11 +32,16 @@
                     <div class="card-body">
                         {% block faq %}
                         <p>Let me walk you through the process. Please read the FAQ carefully and in case of any inquiry, you can write to us: <a href="mailto:vivek.pamnani@research.iiit.ac.in">vivek.pamnani@research.iiit.ac.in</a> (research student), or <a href="mailto:priyanka.srivastava@iiit.ac.in">priyanka.srivastava@iiit.ac.in</a> (principal investigator).</p>
-                        <p>The study consists of 6 sessions over a span of 3 months. We will request you to participate every fortnight. These periodic sessions will comprise three cognitive games and a health survey. We will also ask you to fill in the demographic details in the first session.&nbsp;</p>
+                        <p>The study consists of {{MAX_SESSIONS}} sessions. We will request you to participate every {{SESSION_INTERVAL_DAYS}} days. These periodic sessions will comprise three cognitive games and a health survey. We will also ask you to fill in the demographic details in the first session.&nbsp;</p>
                         
                         <p><b>Q: <em>How long will this study take? How will I compensated?</em></b></p>
-                        <p><b>A:</b> The first session will last for approximately, 35-40 minutes. The following five sessions, every fortnight, will last for approximately 30-35 minutes. You will be reminded via email twice: 2 days, and 3 hrs before your upcoming session.</p>
-                        <p>You will receive <b>up to ₹1200</b> in total for six sessions. For the six sessions, you will be receiving the total amount in installments of <b>₹100, ₹300, ₹200, ₹200, ₹200, ₹200</b> (one installment after each session respectively). After completing a session, you will receive the amount <u><em>within 7-10 days</em></u>.</p>
+                        <p><b>A:</b> The first session will last for approximately, 35-40 minutes. The following {{MAX_SESSIONS|add:"-1"}} sessions will last for approximately 25-30 minutes. You will be reminded at the following intervals to complete the study:
+                            <ul>
+                                <li>1 day before a session</li>
+                                <li>3 hours before a session</li>
+                            </ul>
+                        </p>
+                        <p>You will receive <b>up to ₹{{MAX_AMOUNT}}</b> in total for {{MAX_SESSIONS|add:"-1"}} extra sessions. You will be receiving the total amount in installments of <b>{% for amt in SESSION_AMOUNTS %} {% if forloop.counter0 > 1 %} ₹{{amt}}, {% endif %}{% endfor %}</b> (one installment after each session respectively). After completing a session, you will receive the amount <u><em>within 7-10 days</em></u>.</p>
                         
                         <p><b>Q: <em>How will I be performing on the tests?</em></b></p>
                         <p><b>A:</b> You will be required to sit in front of your laptop or desktop to perform the tests. We will ask you to keep the laptop or desktop display screen at your arm length and be seated straight and comfortably.</p>

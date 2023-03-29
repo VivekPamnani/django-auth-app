@@ -13,7 +13,7 @@
     },
     {
         "code": "too-soon",
-        "msg": "You cannot attempt the experiment more than once in two weeks. Please wait before attempting the experiment again. <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/home/>Return to home page</a></p>",
+        "msg": "There is still time left before you can attempt the experiment again. Please wait before attempting the experiment again. <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/home/>Return to home page</a></p>",    
         "title": "Too Soon!",
         "type": "negative"
     },

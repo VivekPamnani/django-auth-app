@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'user.context_processor.user_settings',
             ],
         },
     },
@@ -179,6 +180,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 USER_MAX_SESSIONS = 4
 USER_SESSION_INTERVAL_DAYS = 28
+USER_SESSION_INTERVAL_DAYS_MAX = 35
 USER_SESSION_LINKS = [
     None,
     'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
@@ -186,7 +188,7 @@ USER_SESSION_LINKS = [
     'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
     'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
 ]
-USER_SESSION_AMOUNTS = [0, 0, 200, 400, 600]
+USER_SESSION_AMOUNTS = [0, 0, 200, 200, 200]
 
 if USER_MAX_SESSIONS > 6:
     raise Exception("USER_MAX_SESSIONS cannot be greater than 6")

@@ -31,6 +31,7 @@ from user.models import codes
 env = environ.Env()
 MAX_SESSIONS = settings.USER_MAX_SESSIONS
 SESSION_INTERVAL_DAYS = settings.USER_SESSION_INTERVAL_DAYS
+SESSION_INTERVAL_DAYS_MAX = settings.USER_SESSION_INTERVAL_DAYS_MAX
 SESSION_LINKS = settings.USER_SESSION_LINKS
 SESSION_AMOUNTS = settings.USER_SESSION_AMOUNTS
 
@@ -563,10 +564,18 @@ def freescreen(request):
         request.session['free_is_eligible'] = is_eligible = 2
         return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': is_eligible, 'free': True})
 
+def stringify_remaining_time(remaining_time):
+    days, seconds = remaining_time.days, remaining_time.seconds
+    hours = (seconds // 3600)
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    return f"{days} days, {hours} hours, and {minutes} minutes"
+
 def get_time_until_next_session(last_visit_time, sess_completed) -> str:
     time_until_next = ""
-    rem_time = last_visit_time.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
-    over_time = last_visit_time.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+    rem_time = last_visit_time.replace(microsecond=0) + datetime.timedelta(days=SESSION_INTERVAL_DAYS-1,hours=20) - timezone.now().replace(microsecond=0)
+    over_time = last_visit_time.replace(microsecond=0) + datetime.timedelta(days=SESSION_INTERVAL_DAYS_MAX-1,hours=4) - timezone.now().replace(microsecond=0)
+
 
     if sess_completed == 0:
         last_visit_time = "Never"
@@ -574,22 +583,14 @@ def get_time_until_next_session(last_visit_time, sess_completed) -> str:
         # Show the last visit time in a more nautural language
         last_visit_time = last_visit_time.strftime("%A, %B %d, %Y at %I:%M %p")
 
-    if(over_time < datetime.timedelta() and sess_completed != 0):
-        time_until_next = "N/A"
+    if(sess_completed == MAX_SESSIONS):
+        time_until_next = "N/A" 
+    elif(over_time < datetime.timedelta() and sess_completed != 0):
+        time_until_next = f"Ineligible (over {SESSION_INTERVAL_DAYS_MAX} days since last session)"
     elif(rem_time > datetime.timedelta()):
-        days, seconds = rem_time.days, rem_time.seconds
-        hours = (seconds // 3600)
-        minutes = (seconds % 3600) // 60
-        seconds = seconds % 60
-        time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
+        time_until_next = stringify_remaining_time(rem_time)
     else:
-        time_until_next = datetime.timedelta()
-        days, seconds = time_until_next.days, time_until_next.seconds
-        hours = (seconds // 3600)
-        minutes = (seconds % 3600) // 60
-        seconds = seconds % 60
-        time_until_next = str(days) + " days, " + str(hours) + " hours, and " + str(minutes) + " minutes"
-
+        time_until_next = "Now!"
     return time_until_next, last_visit_time
 
 def home(request):
@@ -633,6 +634,11 @@ def home(request):
     leftnum = sess_completed - int(MAX_SESSIONS/2) if sess_completed > int(MAX_SESSIONS/2) else 0
     rightnum = sess_completed if sess_completed < int(MAX_SESSIONS/2) else int(MAX_SESSIONS/2)
 
+    earned = 0
+    for i in range(1, sess_completed+1):
+        earned += SESSION_AMOUNTS[i]
+        
+
     # * Get the time until the next session.
     time_until_next, last_visit_time = get_time_until_next_session(user.participant.last_visit, sess_completed)
     
@@ -644,9 +650,9 @@ def home(request):
             'percentage': int(progress_percentage),
             'leftnum': leftnum,
             'rightnum': rightnum,
-            'earned': SESSION_AMOUNTS[sess_completed],
+            'earned': earned,
             'MAX_SESSIONS': MAX_SESSIONS,
-            'MAX_AMOUNT': SESSION_AMOUNTS[MAX_SESSIONS],
+            'MAX_AMOUNT': sum(SESSION_AMOUNTS),
             'remtime': time_until_next,
             'err_msg': err_msg,
             'last_vis': last_visit_time,
@@ -659,17 +665,17 @@ def directions(request):
     user = request.user
     last_vis = user.participant.last_visit
     sess_completed = user.participant.sessions_completed
-    rem_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=13,hours=20) - timezone.now().replace(microsecond=0)
-    over_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=20,hours=4) - timezone.now().replace(microsecond=0)
+    rem_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=SESSION_INTERVAL_DAYS-1,hours=20) - timezone.now().replace(microsecond=0)
+    over_time = last_vis.replace(microsecond=0) + datetime.timedelta(days=SESSION_INTERVAL_DAYS_MAX-1,hours=4) - timezone.now().replace(microsecond=0)
     # if(user.participant.is_colorBlind):
     #     request.session['proceed_err'] = str("It seems that either you have not taken the color test or you were detected as color blind. \n If you haven't, a 'Color Test' button should appear below for you to take the test.")
     #     return redirect('user:home')
     if(over_time < datetime.timedelta() and sess_completed != 0):
-        request.session['proceed_err'] = str("Sorry, it has been more than 20 days since your last visit. You can no longer participate in this study.\nThank you for your contribution to science!")
+        request.session['proceed_err'] = f"Sorry, it has been more than {SESSION_INTERVAL_DAYS_MAX} days since your last visit. You can no longer participate in this study.\nThank you for your contribution to science!"
         # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
         return redirect('user:home')
     elif(rem_time > datetime.timedelta()):
-        request.session['proceed_err'] = str("Sorry, you will have to wait %s until your next session." % rem_time)
+        request.session['proceed_err'] = f"Please wait {stringify_remaining_time(rem_time)} until your next session."
         # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
         return redirect('user:home')
     else:
@@ -687,12 +693,12 @@ def log_visit(request):
     utc = pytz.UTC
     old = user.participant.last_visit
     # dt = datetime.datetime.strptime(str(old), '%Y-%m-%d %H:%M:%S')
-    windback = timezone.now() - datetime.timedelta(days=13,hours=20)
+    windback = timezone.now() - datetime.timedelta(days=SESSION_INTERVAL_DAYS-1,hours=20)
     last_time = old#.replace(tzinfo=utc)
     wind_time = windback#.replace(tzinfo=utc)
-    rem_time = last_time + datetime.timedelta(days=13,hours=20) - timezone.now()
+    rem_time = last_time + datetime.timedelta(days=SESSION_INTERVAL_DAYS-1,hours=20) - timezone.now()
     if(rem_time > datetime.timedelta()):
-        wait_time = f"{rem_time.days} days, {rem_time.seconds//3600} hours, and {rem_time.seconds%3600//60} minutes"
+        wait_time = stringify_remaining_time(rem_time)
         return redirect(f"{reverse('user:error')}?err=too-soon&rem_time={wait_time}")
     else:
         if user.participant.sessions_completed < MAX_SESSIONS:
