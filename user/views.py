@@ -32,6 +32,7 @@ env = environ.Env()
 MAX_SESSIONS = settings.USER_MAX_SESSIONS
 SESSION_INTERVAL_DAYS = settings.USER_SESSION_INTERVAL_DAYS
 SESSION_LINKS = settings.USER_SESSION_LINKS
+SESSION_AMOUNTS = settings.USER_SESSION_AMOUNTS
 
 def get_url(base_url, params: dict[str, str]):
     """
@@ -628,10 +629,9 @@ def home(request):
 
     # * Get the user's progress percentage.
     sess_completed = user.participant.sessions_completed
-    progress_percentage = sess_completed / 6 * 100
-    leftnum = sess_completed - 3 if sess_completed > 3 else 0
-    rightnum = sess_completed if sess_completed < 3 else 3
-    amounts = [0,100,400,600,800,1000,1200]
+    progress_percentage = sess_completed / MAX_SESSIONS * 100
+    leftnum = sess_completed - int(MAX_SESSIONS/2) if sess_completed > int(MAX_SESSIONS/2) else 0
+    rightnum = sess_completed if sess_completed < int(MAX_SESSIONS/2) else int(MAX_SESSIONS/2)
 
     # * Get the time until the next session.
     time_until_next, last_visit_time = get_time_until_next_session(user.participant.last_visit, sess_completed)
@@ -640,10 +640,13 @@ def home(request):
         'user/dashboard.html',
         context={
             'user': user,
+            'completed': sess_completed,
             'percentage': int(progress_percentage),
             'leftnum': leftnum,
             'rightnum': rightnum,
-            'earned': amounts[sess_completed],
+            'earned': SESSION_AMOUNTS[sess_completed],
+            'MAX_SESSIONS': MAX_SESSIONS,
+            'MAX_AMOUNT': SESSION_AMOUNTS[MAX_SESSIONS],
             'remtime': time_until_next,
             'err_msg': err_msg,
             'last_vis': last_visit_time,
@@ -670,7 +673,7 @@ def directions(request):
         # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
         return redirect('user:home')
     else:
-        if user.participant.sessions_completed == 6:
+        if user.participant.sessions_completed == MAX_SESSIONS:
             return redirect(f"{reverse('user:error')}?err=completed-all")
         return render(request, 'user/directions.html')
 
@@ -692,7 +695,7 @@ def log_visit(request):
         wait_time = f"{rem_time.days} days, {rem_time.seconds//3600} hours, and {rem_time.seconds%3600//60} minutes"
         return redirect(f"{reverse('user:error')}?err=too-soon&rem_time={wait_time}")
     else:
-        if user.participant.sessions_completed < 6:
+        if user.participant.sessions_completed < MAX_SESSIONS:
             ref = user.participant.ref
             otp = user_new_visit(user, ref)
             if request.method == "GET":
