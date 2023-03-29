@@ -11,6 +11,7 @@ from urllib.parse import urlencode
 import environ
 import pytz
 import shortuuid
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_login_failed
@@ -28,6 +29,9 @@ import user
 from user.models import codes
 
 env = environ.Env()
+MAX_SESSIONS = settings.USER_MAX_SESSIONS
+SESSION_INTERVAL_DAYS = settings.USER_SESSION_INTERVAL_DAYS
+SESSION_LINKS = settings.USER_SESSION_LINKS
 
 def get_url(base_url, params: dict[str, str]):
     """
@@ -392,68 +396,62 @@ def screening_required_decorator(colorBlind=True, eligible=True):
             return func(request, *args, **kwargs)
         return wrapper
     return screening_required
-    
 
 def error(request):
+    class message:
+        """
+        A class to store error messages.
+        """
+        def __init__(self, code='', msg='', title='', type='negative'):
+            self.code = code
+            self.msg = msg
+            self.title = title
+            self.type = type
+
+        def __str__(self):
+            return self.msg
+
+        def to_dict(self) -> dict:
+            return {
+                'code': self.code,
+                'msg': self.msg,
+                'title': self.title,
+                'type': self.type,
+            }
+
+        def to_template_context(self) -> dict:
+            type_color = {
+                'negative': '#EF4444',
+                'positive': '#047857',
+            }
+            return {
+                'code': self.code,
+                'msg': self.msg,
+                'title': self.title,
+                'title_color': type_color[self.type],
+            }
+    
+    # * Read error messages from messages.json
+    messages = {k: v for (k, v) in json.load(open('user/messages.json', 'r'), object_hook=lambda d:
+        (d['code'], message(**d).to_template_context())
+    )}
+
+    # * Get the error code from the request.
     try:
         if request.method == "GET":
             params = request.GET
     except:
-        return redirect('/user/msg/?err=unknown')
-    err = params.get('err', '')
-    rem_time = params.get('rem_time', '')
-    type = 'negative'
-    title_color = {
-        'negative': '#EF4444',
-        'positive': '#047857',
-    }
-
-    err_context = {
-        'msg': '',
-        'title': '',
-        'title_color': title_color['negative'],
-    }
-
-    if err == 'not-eligible':
-        err_context['msg'] = 'You are not eligible to participate in this study.'
-        err_context['title'] = 'Not Eligible'
-    elif err == 'not-verified':
-        err_context['msg'] = 'There seems to be something wrong with your registration. Please register using a different email or contact us.'
-        err_context['title'] = 'Not Verified'
-    elif err == 'too-soon':
-        err_context['msg'] = 'You cannot attempt the experiment more than once in two weeks. Please wait ' + str(rem_time) + ' before you can participate again.'
-        err_context['title'] = 'Too Soon!'
-    elif err == 'colorblind':
-        err_context['msg'] = 'You seem to be color blind. Please contact us if you think this is a mistake.'
-        err_context['title'] = 'Suspected Color Blindness'
-    elif err == 'verif-success':
-        redirect_url = reverse('user:instructions')
-        err_context['msg'] = f'Your account has been verified! Click the button below to proceed to the instructions: <p><a class="btn btn-primary" style="width: 25%; min-width: 200px;" href={redirect_url}>Continue.</a></p>'
-        err_context['title'] = 'Success!'
-        err_context['title_color'] = title_color['positive']
-    elif err == 'pwd-reset-success':
-        redirect_url = reverse('user:login')
-        err_context['msg'] = f'Your password has been reset! Click the button below to proceed to the login page: <p><a class="btn btn-primary" style="width: 25%; min-width: 200px;" href={redirect_url}>Continue.</a></p>'
-        err_context['title'] = 'Hurray!'
-        err_context['title_color'] = title_color['positive']
-    elif err == 'uname-sent':
-        redirect_url = reverse('user:login')
-        err_context['msg'] = f'Your username has been sent to your email! Click the button below to proceed to the login page: <p><a class="btn btn-primary" style="width: 25%; min-width: 200px;" href={redirect_url}>Login</a></p>'
-        err_context['title'] = 'Username sent!'
-        err_context['title_color'] = title_color['positive']
-    elif err == 'long-signup':
-        redirect_url = reverse('user:home')
-        err_context['msg'] = f"Thank you for your interest in our study. We will contact you shortly. Meanwhile, you can click the button below to return to the home page: <p><a class='btn btn-primary' style='width: 25%; min-width: 200px;' href={redirect_url}>Return to home page</a></p>"
-        err_context['title'] = 'Thank you for your interest!'
-        err_context['title_color'] = title_color['positive']
-    elif err == 'long-reject':
-        err_context['msg'] = f"Thank you for you participation. You have opted out of the follow-up study. You will not be contacted for the follow-up study. You may now close this tab."
-        err_context['title'] = 'Thank you for your participation!'
-        err_context['title_color'] = title_color['positive']
-    else:
-        err_context['msg'] = 'An error has occurred. Please try again or contact us.'
-        err_context['title'] = 'Error'
+        return redirect(f'{reverse("user:error")}?err=unknown')
     
+    err = params.get('err', '')
+
+
+    # * Get the error message.
+    try:
+        err_context = messages[err]
+    except KeyError:
+        err_context = messages['unknown']
+
     return render(request, 'user/error.html', context=err_context)
 
 def deprecated_screen(request):
@@ -672,6 +670,8 @@ def directions(request):
         # return HttpResponse("Sorry you would have to wait %s until your next attempt." % rem_time)
         return redirect('user:home')
     else:
+        if user.participant.sessions_completed == 6:
+            return redirect(f"{reverse('user:error')}?err=completed-all")
         return render(request, 'user/directions.html')
 
 @screening_required_decorator()
@@ -698,58 +698,19 @@ def log_visit(request):
             if request.method == "GET":
                 return redirect(reverse('user:visit_success', args=(), kwargs={'otp': otp}))
         else:
-            return HttpResponse("You have completed all of your sessions and thus cannot attempt further tests. We thank you for your participation!")
+            return redirect(f"{reverse('user:error')}?err=completed-all")
 
 @screening_required_decorator()
 def visit_success(request, otp):
     user = request.user
-    if(user.participant.sessions_completed==1):
-        return render(request, 'user/attempt.html', {
+    try:
+        return render(request, 'user/attempt.html', context={
             'user': user,
             'otp' : otp,
-            'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=fpcam"
+            'url' : SESSION_LINKS[user.participant.sessions_completed]
         })
-    elif(user.participant.sessions_completed==2):
-        return render(request, 'user/attempt.html', {
-            'user': user,
-            'otp' : otp,
-            'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=W6bf8"
-        })
-
-    elif(user.participant.sessions_completed==3):
-        return render(request, 'user/attempt.html', {
-            'user': user,
-            'otp' : otp,
-            'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M"
-        })
-
-    elif(user.participant.sessions_completed==4):
-        return render(request, 'user/attempt.html', {
-            'user': user,
-            'otp' : otp,
-            'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9"
-        })
-
-    elif(user.participant.sessions_completed==5):
-        return render(request, 'user/attempt.html', {
-            'user': user,
-            'otp' : otp,
-            'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf"
-        })
-
-    elif(user.participant.sessions_completed==6):
-        return render(request, 'user/attempt.html', {
-            'user': user,
-            'otp' : otp,
-            'url' : "https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN"
-        })
-    else:
-        return HttpResponse("Something went wrong.")
-        # return render(request, 'user/attempt.html', {
-        #     'user': user,
-        #     'otp' : otp,
-        #     'url' : "https://www.flipkart.com"
-        # })
+    except:
+        return redirect(f"{reverse('user:error')}?err=visit-error")
 
 @screening_required_decorator()
 def long_proposal(request):
