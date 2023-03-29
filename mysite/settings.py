@@ -164,16 +164,31 @@ EMAIL_HOST_PASSWORD = env('SMTP_PWD')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom settings for app 'user'
-USER_MAX_SESSIONS = 6
-USER_SESSION_INTERVAL_DAYS = 14
+# USER_MAX_SESSIONS = 6
+# USER_SESSION_INTERVAL_DAYS = 14
+# USER_SESSION_LINKS = [
+#     None,
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=fpcam', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=W6bf8', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN', 
+# ]
+# USER_SESSION_AMOUNTS = [0, 100, 400, 600, 800, 1000, 1200]
+
+USER_MAX_SESSIONS = 4
+USER_SESSION_INTERVAL_DAYS = 28
 USER_SESSION_LINKS = [
     None,
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=fpcam', 
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=W6bf8', 
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
     'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
     'https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN', 
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
 ]
-if len(USER_SESSION_LINKS) != USER_MAX_SESSIONS + 1:
+USER_SESSION_AMOUNTS = [0, 0, 200, 400, 600]
+
+if USER_MAX_SESSIONS > 6:
+    raise Exception("USER_MAX_SESSIONS cannot be greater than 6")
+if len(USER_SESSION_LINKS) != USER_MAX_SESSIONS + 1 or len(USER_SESSION_AMOUNTS) != USER_MAX_SESSIONS + 1:
     raise Exception("USER_SESSION_LINKS must have USER_MAX_SESSIONS + 1 elements")
