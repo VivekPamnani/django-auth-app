@@ -44,6 +44,7 @@ ALLOWED_HOSTS = ['covidresearch.pythonanywhere.com', '127.0.0.1', 'imwbs.herokua
 INSTALLED_APPS = [
     'user.apps.UserConfig',
     'polls.apps.PollsConfig',
+    'adminDash.apps.AdmindashConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
