@@ -60,7 +60,7 @@ def adminDash(request):
     total_participants = 0
 
     # * Get session completion counts
-    sess_counts = [[0, 100, 100] for _ in range(6)]
+    sess_counts = [[0, 100, 100] for _ in range(7)]
     for user in users:
         # ! Superusers/admins will not have a participant object; skip them.
         if user.is_superuser is True:
@@ -71,9 +71,15 @@ def adminDash(request):
             total_participants += 1
         for sessnum in range(user_sessions_completed+1):
             sess_counts[sessnum][0] += 1
-    for sessnum in range(1, 6):
-        sess_counts[sessnum][1] = sess_counts[sessnum][0] * 100 // sess_counts[0][0] 
-        sess_counts[sessnum][2] = sess_counts[sessnum][0] * 100 // sess_counts[sessnum-1][0] 
+    for sessnum in range(1, 7):
+        try:
+            sess_counts[sessnum][1] = sess_counts[sessnum][0] * 100 // sess_counts[1][0] 
+        except:
+            sess_counts[sessnum][1] = 0
+        try:
+            sess_counts[sessnum][2] = sess_counts[sessnum][0] * 100 // sess_counts[sessnum-1][0] if sessnum > 1 else 100
+        except:
+            sess_counts[sessnum][2] = 0
 
     # * Get sessions completed last week
     last_week = timezone.now() - datetime.timedelta(days=7)
@@ -113,7 +119,7 @@ def adminDash(request):
     longitudinal_acceptance_rate = longitudinal_accepted * 100 // total_proposed
 
     return render(request, 'adminDash/adminDash.html', {
-        'sess_counts': sess_counts,
+        'sess_counts': sess_counts[1:],
         'total_participants': total_participants,
         'last_week': last_week_participants,
         'long_acceptance_rate': longitudinal_acceptance_rate,
