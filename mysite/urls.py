@@ -23,5 +23,6 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/user/login')),
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
-    path('user/', include('user.urls'))
+    path('user/', include('user.urls')),
+    path('admindash/', include('adminDash.urls')),
 ]

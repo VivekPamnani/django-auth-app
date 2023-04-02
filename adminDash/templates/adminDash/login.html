@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <!-- <meta charset="UTF-8"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+  <title>Indian Mental Wellbeing Study: Welcome back! </title>
+  {% load static %}  
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+  <link rel="stylesheet" href="{% static 'login.css' %}">
+  <link rel="stylesheet" href="{% static 'footer.css' %}">
+</head>
+
+<body>
+<!-- partial:index.partial.html -->
+<section class='login' id='login'>
+  <div class='head'>
+  <h1 class='company'>Indian Mental Wellbeing Study</h1>
+  </div>
+  <p class='msg'>Welcome back!</p>
+  <div class='form'>
+    <form action="{% url 'adminDash:login' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder='Username' class='text' id='username' autofocus required><br>
+        <input type="password" name="password" placeholder='••••••••••••••' class='password'><br>
+        <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
+        <p style="color: #FF0000;">{% autoescape off %}{{ err_msg }}{% endautoescape %}
+        </p>
+        <div style="text-align:center;">
+            <input class='btn-login' id='do-login' type="submit" value="Login"></input>
+        </div>
+        <br>
+        <div>
+          Forgot password? <a class='forgot' href="{% url 'user:reset' %}"> Reset password.</a> <br>
+          Forgot username? <a class='forgot' href="{% url 'user:forgot_username' %}"> Get username.</a> <br>
+          Don't have an account? <a class='forgot' href="{% url 'user:register' %}"> Register. </a>
+        </div>
+        <!-- <a href="#" class='forgot'>Forgot?</a> -->
+    </form>
+  </div>
+</section>
+<!-- partial -->
+
+</body>
+{% include 'user/footer.html' %}
+
+</html>

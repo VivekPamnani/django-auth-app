@@ -1,10 +1,15 @@
 __pycache__/
+.venv/
 .env
-.wslenv
-*
-script.py
+.wslenv/
+script*.py
 # user/__pycache__/
 # polls/__pycache__/
 # mysite/__pycache__/
-db.sqlite3
+db*sqlite*
 __pycache__/$
+user/static/ishi.zip
+mysite/testfile.psy
+timetest.py
+load.py
+*migrations/
