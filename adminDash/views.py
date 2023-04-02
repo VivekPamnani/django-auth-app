@@ -103,7 +103,10 @@ def adminDash(request):
             continue
         
         user_sessions_completed = user.participant.sessions_completed
-        user_longitudinal = user.participant.longitudinal_enrollment_status
+        try:
+            user_longitudinal = user.participant.longitudinal_enrollment_status
+        except:
+            user_longitudinal = 0
         if user_sessions_completed > 0:
             if user_longitudinal == 1:
                 longitudinal_accepted += 1
