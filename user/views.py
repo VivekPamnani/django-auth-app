@@ -235,6 +235,8 @@ def signout(request):
     return redirect('/user/login/')
 
 def home(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        return redirect('adminDash:adminDash')
     try:
         err_msg = request.session['proceed_err']
         del request.session['proceed_err']
