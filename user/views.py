@@ -498,7 +498,7 @@ def screen_logic(request, is_eligible: int = 0):
     try:
         entered_age = int(request.POST['age'])
         speak_english = int(request.POST['english'])
-        covid_test = int(request.POST['covid_test'])
+        infHistory = request.POST.getlist('infHistory', [])
         covid_symptoms = int(request.POST['covid_symptoms'])
     except:
         raise ValueError('Invalid input.')
@@ -507,26 +507,50 @@ def screen_logic(request, is_eligible: int = 0):
         checks: dict[str, bool] = {
             'age': False,
             'english': False,
-            'covid_test': False,
-            'covid_symptoms': False
+            # 'covid_test': False,
+            'infHistory': False, 
+            'covid_symptoms': False,
         }
 
         if entered_age >= 18 and entered_age <= 60:
             checks['age'] = True
         if speak_english == 1:
             checks['english'] = True
-        if covid_test == 1:
-            checks['covid_test'] = True
+        # if covid_test == 1:
+        #     checks['covid_test'] = True
         if covid_symptoms == 1:
             checks['covid_symptoms'] = True
+        if 'covid' in infHistory:  
+            checks['infHistory'] = True
 
-        if sum(checks.values()) == len(checks):
+
+        if sum(checks.values()) == len(checks): 
             return True
         else:
             return False
 
 @screening_required_decorator(colorBlind=False, eligible=False)
 def screen(request):
+
+    def generate_infTable_content():
+        infections = [
+            ('influenza', 'Influenza (flu)'),
+            ('pneumonia', 'Pneumonia'),
+            ('ecoli', 'E. Coli'),
+            ('covid', 'COVID-19'),
+            ('malaria', 'Malaria'),
+            ('cholera', 'Cholera'),
+            ('cold', 'Common Cold'),
+            ('tb', 'Tuberculosis (TB)'),
+        ]
+        cols = 2
+        rows = len(infections) // cols
+        infTable = []
+        for i in range(rows):
+            infTable.append(infections[i*cols:(i+1)*cols])
+        print(infTable)
+        return infTable
+
     # * If the user is already eligible, redirect to home page.
     if request.user.participant.is_eligible == 1:
         return redirect('user:home')
@@ -534,7 +558,7 @@ def screen(request):
     try:
         valid = screen_logic(request, is_eligible=request.user.participant.is_eligible)
     except ValueError:
-        return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible})
+        return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible, 'infTable': generate_infTable_content()})
 
     if valid is True:
         request.user.participant.is_eligible = 1
@@ -543,7 +567,7 @@ def screen(request):
     else:
         request.user.participant.is_eligible = 2
         request.user.participant.save()
-        return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible})
+        return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible, 'infTable': generate_infTable_content()})
 
 def freescreen(request):
     """
@@ -596,6 +620,9 @@ def get_time_until_next_session(last_visit_time, sess_completed) -> str:
 def home(request):
     if request.user.is_authenticated is False:
         return redirect('user:login')
+
+    if request.user.is_superuser is True:
+        return redirect('adminDash:adminDash')
 
     if request.user.participant.is_verified is False:
         return redirect(f"{reverse('user:error')}?err=not-verified")

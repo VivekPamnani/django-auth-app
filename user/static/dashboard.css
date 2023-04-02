@@ -46,6 +46,12 @@ img {
   max-width: 100%;
 }
 
+#inf-table th, td {
+  padding: 0.3rem;
+  vertical-align: top;
+  /* border-top: 1px solid #dee2e6; */
+}
+
 main {
     padding-top: 80px;
   }
