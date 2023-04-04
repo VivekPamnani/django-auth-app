@@ -25,8 +25,8 @@ from django.utils import timezone
 from django.views import generic
 from verify_email.email_handler import send_verification_email
 
-import user
-from user.models import codes
+from user.models import codes, participant, waitlist
+from configSolo.models import SiteConfiguration as siteConfig
 
 env = environ.Env()
 MAX_SESSIONS = settings.USER_MAX_SESSIONS
@@ -177,20 +177,24 @@ def register(request):
             allowed_emails = env('ALLOWED_EMAILS').split(',')
         except:
             allowed_emails = []
-            print("Error")
-        print(allowed_emails)
+            print("Error reading ALLOWED_EMAILS from .env file.")
         if(count_existing > 0 and entered_email not in allowed_emails):
             return render(request, 'user/registration.html', context={'err_msg': 'That email already exists! If you have already created an account, please log in instead.'})
         
         # * Create user if username does not exist, else return error
         try: 
             user = User.objects.create_user(entered_username, entered_email, entered_pwd)
+            # * If email is in allowed_emails, automatically verify and log in (for testing purposes).
+            if entered_email in allowed_emails:
+                user.participant.is_verified = True
+                user.save()
+                login(request, user=user)
+                return redirect('user:home')
         except IntegrityError:
             # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             # message = template.format(type(ex).__name__, ex.args)
             # return HttpResponse(message)
             return render(request, 'user/registration.html', context={'err_msg': 'That username already exists! If you have already created an account, please log in instead.'})
-
 
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
@@ -494,12 +498,13 @@ def deprecated_screen(request):
             request.user.participant.save()
             return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible})
 
-def screen_logic(request, is_eligible: int = 0):
+def screen_logic(request, is_eligible: int = 0) -> tuple[bool, str]:
     try:
         entered_age = int(request.POST['age'])
         speak_english = int(request.POST['english'])
         infHistory = request.POST.getlist('infHistory', [])
         covid_symptoms = int(request.POST['covid_symptoms'])
+        print(f"infHistory: {infHistory}")
     except:
         raise ValueError('Invalid input.')
         return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': is_eligible})
@@ -523,11 +528,36 @@ def screen_logic(request, is_eligible: int = 0):
         if 'covid' in infHistory:  
             checks['infHistory'] = True
 
+        if not checks['age'] or not checks['english']:
+            return False, 'ineligible'
+        
+        config = siteConfig.objects.get()
+        max_control_count = config.current_target * config.control_ratio
+        max_covid_count = config.current_target * (1 - config.control_ratio)
 
-        if sum(checks.values()) == len(checks): 
-            return True
+        print(checks)
+        
+        if checks['infHistory'] and checks['covid_symptoms']:
+            if config.covid_count < max_covid_count:
+                config.covid_count += 1
+                config.save()
+            else:
+                waitlist.objects.create(user=request.user, covid_history=True, age=entered_age)
+                return False, 'waitlist'
         else:
-            return False
+            if config.control_count < max_control_count:
+                config.control_count += 1
+                config.save()
+            else:
+                waitlist.objects.create(user=request.user, covid_history=False, age=entered_age)
+                return False, 'waitlist'
+
+        return True, 'eligible'
+
+        # if sum(checks.values()) == len(checks): 
+        #     return True, 'eligible'
+        # else:
+        #     return False, 'ineligible'
 
 @screening_required_decorator(colorBlind=False, eligible=False)
 def screen(request):
@@ -548,18 +578,25 @@ def screen(request):
         infTable = []
         for i in range(rows):
             infTable.append(infections[i*cols:(i+1)*cols])
-        print(infTable)
         return infTable
 
     # * If the user is already eligible, redirect to home page.
     if request.user.participant.is_eligible == 1:
         return redirect('user:home')
+
+    # * If the user is already on the waitlist, redirect to error page.
+    try:
+        waitlist.objects.get(user=request.user)
+    except waitlist.DoesNotExist:
+        pass
+    else:
+        return redirect(f"{reverse('user:error')}?err=waitlist")
     
     try:
-        valid = screen_logic(request, is_eligible=request.user.participant.is_eligible)
+        valid, report = screen_logic(request, is_eligible=request.user.participant.is_eligible)
     except ValueError:
         return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible, 'infTable': generate_infTable_content()})
-
+    
     if valid is True:
         request.user.participant.is_eligible = 1
         request.user.participant.save()
@@ -567,7 +604,9 @@ def screen(request):
     else:
         request.user.participant.is_eligible = 2
         request.user.participant.save()
-        return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible, 'infTable': generate_infTable_content()})
+        if report == 'waitlist':
+            return redirect(f"{reverse('user:error')}?err=waitlist")
+    return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible})
 
 def freescreen(request):
     """

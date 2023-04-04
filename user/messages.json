@@ -70,5 +70,11 @@
         "msg": "An error has occurred. Please try again or contact us.",
         "title": "Error",
         "type": "negative"
+    },
+    {
+        "code": "waitlist",
+        "msg": "You have been added to the waitlist. We will contact you when a spot opens up. Click the button below to logout: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/logout/>Logout</a></p>",
+        "title": "Thank you for your interest!",
+        "type": "positive"
     }
 ]

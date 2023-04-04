@@ -28,6 +28,14 @@ class participant(models.Model):
     longitudinal_enrollment_status = models.IntegerField(default=0) # 0 = unproposed, 1 = opt in, 2 = opt out
     ref = models.CharField(default='noref', max_length=30)
 
+class waitlist(models.Model):
+    def __str__(self) -> str:
+        return self.user.username
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    age = models.IntegerField(default=0)
+    covid_history = models.BooleanField(default=False)
+
+
 class codes(models.Model):
     def __str__(self):
         return str(self.otp)

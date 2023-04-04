@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'polls.apps.PollsConfig',
     'adminDash.apps.AdmindashConfig',
+    'configSolo.apps.ConfigsoloConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_crontab',
     "verify_email.apps.VerifyEmailConfig",
+    'solo.apps.SoloAppConfig',
 ]
 
 MIDDLEWARE = [
