@@ -161,7 +161,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Next</h5><br>
                             {% block next_content %}
-                            <p class="card-text">Click the button below to proceed to your next session.</p>
+                            <p>Your CloudResearch AID: {{user.participant.cloudresearch_aid}}</p>
+                            <p>Click the button below to proceed to your next session.</p>
                             {% endblock %}
                             <p style="color: #FF0000;">{{err_msg}}</p>
                             <div class="justify-content-center" style="display: flex;">

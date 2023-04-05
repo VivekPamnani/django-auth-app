@@ -6,7 +6,7 @@ from email.policy import default
 from logging import exception
 from random import shuffle
 from sqlite3 import IntegrityError, OperationalError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs
 
 import environ
 import pytz
@@ -25,8 +25,8 @@ from django.utils import timezone
 from django.views import generic
 from verify_email.email_handler import send_verification_email
 
-from user.models import codes, participant, waitlist
 from configSolo.models import SiteConfiguration as siteConfig
+from user.models import codes, participant, waitlist
 
 env = environ.Env()
 MAX_SESSIONS = settings.USER_MAX_SESSIONS
@@ -34,12 +34,20 @@ SESSION_INTERVAL_DAYS = settings.USER_SESSION_INTERVAL_DAYS
 SESSION_INTERVAL_DAYS_MAX = settings.USER_SESSION_INTERVAL_DAYS_MAX
 SESSION_LINKS = settings.USER_SESSION_LINKS
 SESSION_AMOUNTS = settings.USER_SESSION_AMOUNTS
+SCREEN_FAIL_REDIRECT = settings.USER_SCREEN_FAIL_REDIRECT
+QUOTA_FULL_REDIRECT = settings.USER_QUOTA_FULL_REDIRECT
+SESSION_COMPLETE_REDIRECT = settings.USER_SESSION_COMPLETE_REDIRECT
 
-def get_url(base_url, params: dict[str, str]):
+def get_url(base_url, **kwargs):
     """
     f"{base_url}?{urlencode(params)}"
     """
-    return f"{base_url}?{urlencode(params)}"
+    return f"{base_url}?{urlencode(kwargs)}"
+
+def credirect(base_url, **kwargs):
+    params = urlencode(kwargs)
+    return redirect(f"{base_url}?{params}")
+
 
 def long_or_single(func):
     @functools.wraps(func)
@@ -135,28 +143,31 @@ def verify_email(request):
         user = get_object_or_404(User, username=request.session['verif_user'])
         if(request.session['verif_code'] == entered_code):
             user.participant.is_verified = True
-            try: 
-                user.participant.ref = request.session['ref']
-            except KeyError:
-                user.participant.ref = 'keyError'
+            user.participant.ref = request.session.pop('ref', 'noKey')
+            user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
             user.save()
-            del request.session['verif_user']
-            del request.session['verif_code']
-            del request.session['attempts_left']
+            del request.session['verif_user'], request.session['verif_code'], request.session['attempts_left']
             return redirect(f"{reverse('user:error')}?err=verif-success")
-            return HttpResponse("Your account has been verified! Click here to proceed to the instructions: " + '<a href="/user/instructions"}>Continue.</a>')
         else:
             if(request.session['attempts_left'] > 1):
                 request.session['attempts_left'] -= 1
                 return render(request, 'user/verification.html', context={'left': request.session['attempts_left']})
             else:
-                del request.session['verif_user']
-                del request.session['verif_code']
-                del request.session['attempts_left']
+                del request.session['verif_user'], request.session['verif_code'], request.session['attempts_left']
                 user.delete()
-                return HttpResponse('Sorry, too many wrong attempts! Click here to proceed to the registration page to try again: ' + '<a href="/user/register">Register</a>')
+                return redirect(f"{reverse('user:error')}?err=verif-too-many")
 
 def register(request):
+    cloudAid = ''
+    if request.method == "GET":
+        cloudAid = request.GET.get('cloudAid', None)
+        # if not 'cloudAid' in request.session or request.session['cloudAid'] == '' or request.session['cloudAid'] == 'noKey':
+        if cloudAid is not None:
+            request.session['cloudAid'] = cloudAid
+        # aid = request.GET.get('aid', '')
+        # request.user.participant.cloudresearch_aid = aid
+        # request.user.save()
+
     try:
         entered_username = request.POST['username']
         entered_email = request.POST['email']
@@ -171,6 +182,15 @@ def register(request):
         if(int(entered_age) < 18):
             return render(request, 'user/registration.html', context={'err_msg': "Sorry, you must be at least " + env('AGE_CUTOFF') + " years old to continue."})
 
+        # * Check if cloudAid already exists
+        cloudAid = request.session.get('cloudAid', 'noKey')
+        if cloudAid != 'noKey':
+            count_existing = User.objects.filter(participant__cloudresearch_aid=request.session['cloudAid']).count()
+            if(count_existing > 0):
+                return render(request, 'user/registration.html', context={'err_msg': 'That cloudAid already exists! Please visit the link via CloudResearch.'})
+        else:
+            return render(request, 'user/registration.html', context={'err_msg': 'Please visit the link via CloudResearch.'})
+        
         # * Check if email already exists
         count_existing = User.objects.filter(email=entered_email).count()
         try:
@@ -186,16 +206,20 @@ def register(request):
             user = User.objects.create_user(entered_username, entered_email, entered_pwd)
             # * If email is in allowed_emails, automatically verify and log in (for testing purposes).
             if entered_email in allowed_emails:
-                user.participant.is_verified = True
+                # user.participant.is_verified = True
+                user.participant.is_eligible = True
+                user.participant.is_colorBlind = False
+                user.participant.is_colorTested = True
                 user.save()
-                login(request, user=user)
-                return redirect('user:home')
+                # login(request, user=user)
+                # return redirect('user:home')
         except IntegrityError:
             # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             # message = template.format(type(ex).__name__, ex.args)
             # return HttpResponse(message)
             return render(request, 'user/registration.html', context={'err_msg': 'That username already exists! If you have already created an account, please log in instead.'})
 
+        # * Proceed to verification
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
         send_mail('Verify your email address for participation.',
@@ -206,15 +230,8 @@ def register(request):
         request.session['verif_code'] = verification_code
         request.session['verif_user'] = user.username
         request.session['attempts_left'] = 3
+
         return redirect('user:verify')
-    #     user.save()
-    #     user_init(user)
-    # user = authenticate(request, username=entered_username, password=entered_pwd)
-    # if user is not None:
-    #     login(request, user=user)
-    #     return redirect("/user/home/")
-    # else:
-    #     return HttpResponse("Something went wrong.")
 
 def forgot_username(request):
     try:
@@ -403,6 +420,40 @@ def screening_required_decorator(colorBlind=True, eligible=True):
         return wrapper
     return screening_required
 
+@screening_required_decorator()
+def session_complete(request):
+    psytoolkit_aid = request.GET.get('aid', None) if request.method == 'GET' else None
+    psytoolkit_code = request.GET.get('code', None) if request.method == 'GET' else None
+    cloudAid = request.user.participant.cloudresearch_aid
+
+    # * Check if the aid and code are present.
+    if psytoolkit_aid is None or psytoolkit_code is None:
+        return redirect(f"{reverse('user:error')}?err=completion-missing-aid-code")
+    
+    # * Check if the aid is valid.
+    if cloudAid != psytoolkit_aid:
+        return redirect(f"{reverse('user:error')}?err=completion-aid-mismatch")
+    
+    # * Check if the code exists and if it has been marked as complete.
+    try:
+        session_code = codes.objects.get(otp=psytoolkit_code)
+        code_exist = True
+    except codes.DoesNotExist:
+        session_code = None
+        code_exist = False
+    if code_exist is False:
+        return redirect(f"{reverse('user:error')}?err=completion-code-not-found")
+    if session_code.is_complete is True:
+        return redirect(f"{reverse('user:error')}?err=completion-code-already-used")
+    else:
+        session_code.is_complete = True
+        session_code.save()
+
+    # if SESSION_COMPLETE_REDIRECT != '':
+    #     return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={cloudAid}")
+    # return redirect(f"{reverse('user:error')}?err=completion-success")
+    return redirect('user:long_proposal')
+
 def error(request):
     class message:
         """
@@ -504,7 +555,6 @@ def screen_logic(request, is_eligible: int = 0) -> tuple[bool, str]:
         speak_english = int(request.POST['english'])
         infHistory = request.POST.getlist('infHistory', [])
         covid_symptoms = int(request.POST['covid_symptoms'])
-        print(f"infHistory: {infHistory}")
     except:
         raise ValueError('Invalid input.')
         return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': is_eligible})
@@ -535,7 +585,6 @@ def screen_logic(request, is_eligible: int = 0) -> tuple[bool, str]:
         max_control_count = config.current_target * config.control_ratio
         max_covid_count = config.current_target * (1 - config.control_ratio)
 
-        print(checks)
         
         if checks['infHistory'] and checks['covid_symptoms']:
             if config.covid_count < max_covid_count:
@@ -605,7 +654,10 @@ def screen(request):
         request.user.participant.is_eligible = 2
         request.user.participant.save()
         if report == 'waitlist':
+            if QUOTA_FULL_REDIRECT != '':
+                return redirect(f"{QUOTA_FULL_REDIRECT}?aid={request.user.participant.cloudresearch_aid}")
             return redirect(f"{reverse('user:error')}?err=waitlist")
+        return redirect(f"{SCREEN_FAIL_REDIRECT}?aid={request.user.participant.cloudresearch_aid}")
     return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible})
 
 def freescreen(request):
@@ -778,18 +830,24 @@ def log_visit(request):
 @screening_required_decorator()
 def visit_success(request, otp):
     user = request.user
+    next_link = SESSION_LINKS[user.participant.sessions_completed].split('?')
+    next_link_base = next_link[0]
+    next_link_params = parse_qs(next_link[1]) if len(next_link) > 1 else {}
+    next_link_params['code'] = [otp]
+    next_link_params['aid'] = [user.participant.cloudresearch_aid]
     try:
         return render(request, 'user/attempt.html', context={
             'user': user,
             'otp' : otp,
-            'url' : SESSION_LINKS[user.participant.sessions_completed]
+            # 'url' : f"{SESSION_LINKS[user.participant.sessions_completed]}&code={otp}&aid={user.participant.cloudresearch_aid}",
+            'url': f"{next_link_base}?{urlencode(next_link_params, doseq=True)}",
         })
     except:
         return redirect(f"{reverse('user:error')}?err=visit-error")
 
 @screening_required_decorator()
 def long_proposal(request):
-    if request.user.participant.sessions_completed == 0:
+    if request.user.participant.sessions_completed == 0 or request.user.participant.longitudinal_enrollment_status != 0:
         return redirect('user:home')
 
     user = request.user
@@ -797,12 +855,28 @@ def long_proposal(request):
         if 'signup' in request.POST:
             user.participant.longitudinal_enrollment_status = 1
             user.save()
+
+            msg_greet = "Hi " + user.username + "! <br><br> Thank you for showing an interest in our research. You have received this email because you have opted to participate in the longitudinal study."
+            msg_contact = "You will be contacted by the research team in about 4 weeks for your follow-up session."
+            msg_link = "Here is the link to participate in the study: https://www.imwbs.org/"
+            auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
+            send_mail('[Indian Mental Wellbeing Study] Longitudinal Study Signup',
+                '',
+                str(env('SMTP_MAIL')),
+                [user.email],
+                html_message=msg_greet + "<br>" + msg_contact + "<br>" + msg_link + "<br><br>" + auto_note,
+                fail_silently=True)
+
+            if SESSION_COMPLETE_REDIRECT != '':
+                return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
             return redirect(f"{reverse('user:error')}?err=long-signup")
         elif 'reject' in request.POST:
             user.participant.longitudinal_enrollment_status = 2
             user.is_active = False
             user.save()
             logout(request)
+            if SESSION_COMPLETE_REDIRECT != '':
+                return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
             return redirect(f"{reverse('user:error')}?err=long-reject")
         else:
             raise Exception("Invalid form submission.")

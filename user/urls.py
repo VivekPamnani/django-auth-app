@@ -24,6 +24,7 @@ urlpatterns = [
     path('msg/', views.error, name='error'),
     path('getname/', views.forgot_username, name='forgot_username'),
     path('continue/', views.long_proposal, name='long_proposal'),
+    path('complete/', views.session_complete, name='session_complete'),
     # path('verification/', include('verify_email.urls')),
     # path('login/', views.login, name='login'),
     # path('logout/', views.vote, name='logout')

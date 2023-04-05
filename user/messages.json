@@ -1,14 +1,20 @@
 [
     {
-        "code": "not-eligible",
-        "msg": "You are not eligible to participate in this study.",
-        "title": "Not Eligible",
-        "type": "negative"
-    },
-    {
         "code": "not-verified",
         "msg": "There seems to be something wrong with your registration. Please register using a different email or contact us.",
         "title": "Not Verified",
+        "type": "negative"
+    },
+    {
+        "code": "verif-success",
+        "msg": "Your account has been verified! Click the button below to proceed to the instructions: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/instructions/>Continue.</a></p>",
+        "title": "Success!",
+        "type": "positive"
+    },
+    {
+        "code": "verif-too-many",
+        "msg": "Sorry, too many wrong attempts! Click the button below to proceed to the registration page to try again: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/register/>Register</a></p>",
+        "title": "Too Many Attempts!",
         "type": "negative"
     },
     {
@@ -18,16 +24,16 @@
         "type": "negative"
     },
     {
+        "code": "not-eligible",
+        "msg": "You are not eligible to participate in this study.",
+        "title": "Not Eligible",
+        "type": "negative"
+    },
+    {
         "code": "colorblind",
         "msg": "You seem to be color blind. Please contact us if you think this is a mistake.",
         "title": "Suspected Color Blindness",
         "type": "negative"
-    },
-    {
-        "code": "verif-success",
-        "msg": "Your account has been verified! Click the button below to proceed to the instructions: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/instructions/>Continue.</a></p>",
-        "title": "Success!",
-        "type": "positive"
     },
     {
         "code": "pwd-reset-success",
@@ -60,9 +66,45 @@
         "type": "negative"
     },
     {
+        "code": "completion-success",
+        "msg": "You have completed this session. Click the button below to proceed to the home page: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/home/>Return to home page</a></p>",
+        "title": "Thank you for your participation!",
+        "type": "positive"
+    },
+    {
+        "code": "completion-missing-aid-code",
+        "msg": "Missing aid and/or code.",
+        "title": "Error",
+        "type": "negative"
+    },
+    {
+        "code": "completion-aid-mismatch",
+        "msg": "Your aid does not match the aid for this session.",
+        "title": "Error",
+        "type": "negative"
+    },
+    {
+        "code": "completion-code-not-found",
+        "msg": "The validation code was not found.",
+        "title": "Error",
+        "type": "negative"
+    },
+    {
+        "code": "completion-code-already-used",
+        "msg": "This session has already been completed.",
+        "title": "Error",
+        "type": "negative"
+    },
+    {
         "code": "completed-all",
         "msg": "You have completed all the sessions. Thank you for your participation! Click the buttow below to logout: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/logout/>Logout</a></p>",
         "title": "Thank you for your participation!",
+        "type": "positive"
+    },
+    {
+        "code": "waitlist",
+        "msg": "You have been added to the waitlist. We will contact you when a spot opens up. Click the button below to logout: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/logout/>Logout</a></p>",
+        "title": "Thank you for your interest!",
         "type": "positive"
     },
     {
@@ -70,11 +112,5 @@
         "msg": "An error has occurred. Please try again or contact us.",
         "title": "Error",
         "type": "negative"
-    },
-    {
-        "code": "waitlist",
-        "msg": "You have been added to the waitlist. We will contact you when a spot opens up. Click the button below to logout: <p><a class=\"btn btn-primary\" style=\"width: 25%; min-width: 200px;\" href=/user/logout/>Logout</a></p>",
-        "title": "Thank you for your interest!",
-        "type": "positive"
     }
 ]
