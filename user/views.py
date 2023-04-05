@@ -160,7 +160,7 @@ def verify_email(request):
 def register(request):
     cloudAid = ''
     if request.method == "GET":
-        cloudAid = request.GET.get('cloudAid', None)
+        cloudAid = request.GET.get('aid', None)
         # if not 'cloudAid' in request.session or request.session['cloudAid'] == '' or request.session['cloudAid'] == 'noKey':
         if cloudAid is not None:
             request.session['cloudAid'] = cloudAid
