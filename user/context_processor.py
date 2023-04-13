@@ -1,7 +1,10 @@
 from django.conf import settings
 
+from configSolo.models import SiteConfiguration
+
 
 def user_settings(request):
+    siteconfig = SiteConfiguration.objects.get()
     return {
         'MAX_SESSIONS': settings.USER_MAX_SESSIONS,
         'SESSION_INTERVAL_DAYS': settings.USER_SESSION_INTERVAL_DAYS,
@@ -9,4 +12,5 @@ def user_settings(request):
         'SESSION_LINKS': settings.USER_SESSION_LINKS,
         'SESSION_AMOUNTS': settings.USER_SESSION_AMOUNTS,
         'MAX_AMOUNT': sum(settings.USER_SESSION_AMOUNTS),
+        'SITE_URL': siteconfig.site_url,
     }

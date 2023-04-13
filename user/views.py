@@ -25,7 +25,7 @@ from django.utils import timezone
 from django.views import generic
 from verify_email.email_handler import send_verification_email
 
-from configSolo.models import SiteConfiguration as siteConfig
+from configSolo.models import SiteConfiguration
 from user.models import codes, participant, waitlist
 
 env = environ.Env()
@@ -93,7 +93,7 @@ def welcome(request):
             except KeyError:
                 ref = 'err'
             msg_greet = "Hi " + entered_email.split('@')[0] + "! <br><br> Thank you for showing an interest in our research. You have received this email because you opted for it on our welcome page. To know more about the study, simply click the link below. "
-            msg_link = "Here is the link to participate in the study: https://www.imwbs.org/user/welcome/?ref=" + ref
+            msg_link = f"Here is the link to participate in the study: {SiteConfiguration.objects.get().site_url}/user/welcome/?ref={ref}"
             msg_req = "Please note that the study requires you to have a laptop/desktop with a physical keyboard. iPads will not work."
             auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
             send_mail('[Indian Mental Wellbeing Study] Link for participation',
@@ -205,14 +205,14 @@ def register(request):
         try: 
             user = User.objects.create_user(entered_username, entered_email, entered_pwd)
             # * If email is in allowed_emails, automatically verify and log in (for testing purposes).
-            if entered_email in allowed_emails:
-                # user.participant.is_verified = True
-                user.participant.is_eligible = True
-                user.participant.is_colorBlind = False
-                user.participant.is_colorTested = True
-                user.save()
-                # login(request, user=user)
-                # return redirect('user:home')
+            # if entered_email in allowed_emails:
+            #     user.participant.is_verified = True
+            #     user.participant.is_eligible = True
+            #     user.participant.is_colorBlind = False
+            #     user.participant.is_colorTested = True
+            #     user.save()
+            #     login(request, user=user)
+            #     return redirect('user:home')
         except IntegrityError:
             # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             # message = template.format(type(ex).__name__, ex.args)
@@ -434,15 +434,14 @@ def session_complete(request):
     if cloudAid != psytoolkit_aid:
         return redirect(f"{reverse('user:error')}?err=completion-aid-mismatch")
     
-    # * Check if the code exists and if it has been marked as complete.
+    # * Check if the code exists.
     try:
         session_code = codes.objects.get(otp=psytoolkit_code)
-        code_exist = True
     except codes.DoesNotExist:
         session_code = None
-        code_exist = False
-    if code_exist is False:
         return redirect(f"{reverse('user:error')}?err=completion-code-not-found")
+    
+    # * Check if the code is already used.
     if session_code.is_complete is True:
         return redirect(f"{reverse('user:error')}?err=completion-code-already-used")
     else:
@@ -581,7 +580,7 @@ def screen_logic(request, is_eligible: int = 0) -> tuple[bool, str]:
         if not checks['age'] or not checks['english']:
             return False, 'ineligible'
         
-        config = siteConfig.objects.get()
+        config = SiteConfiguration.objects.get()
         max_control_count = config.current_target * config.control_ratio
         max_covid_count = config.current_target * (1 - config.control_ratio)
 
@@ -858,7 +857,7 @@ def long_proposal(request):
 
             msg_greet = "Hi " + user.username + "! <br><br> Thank you for showing an interest in our research. You have received this email because you have opted to participate in the longitudinal study."
             msg_contact = "You will be contacted by the research team in about 4 weeks for your follow-up session."
-            msg_link = "Here is the link to participate in the study: https://www.imwbs.org/"
+            msg_link = f"Here is the link to participate in the study: {SiteConfiguration.objects.get().site_url}"
             auto_note = '<br><br>Note that this is an automated email message. Please do not reply.'
             send_mail('[Indian Mental Wellbeing Study] Longitudinal Study Signup',
                 '',

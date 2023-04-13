@@ -181,22 +181,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ]
 # USER_SESSION_AMOUNTS = [0, 100, 400, 600, 800, 1000, 1200]
 
+# TODO: Redirect should only be done for the first session.
 USER_SCREEN_FAIL_REDIRECT = 'https://app.cloudresearch.com/Router/ThankYouNotQualified'
 USER_QUOTA_FULL_REDIRECT = 'https://app.cloudresearch.com/Router/QuotaFull'
 USER_SESSION_COMPLETE_REDIRECT = 'https://app.cloudresearch.com/Router/End'
 USER_LONGITUDINAL_OPT_IN = True
-USER_MAX_SESSIONS = 4
+USER_MAX_SESSIONS = 3
 USER_SESSION_INTERVAL_DAYS = 28
 USER_SESSION_INTERVAL_DAYS_MAX = 35
 USER_SESSION_LINKS = [
     None,
-    # 'https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO',
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO',
     'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
     'https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN', 
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
+    # 'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
+    # 'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
 ]
-USER_SESSION_AMOUNTS = [0, 0, 200, 200, 200]
+USER_SESSION_AMOUNTS = [0, 0, 200, 200]
 
 if USER_MAX_SESSIONS > 6:
     raise Exception("USER_MAX_SESSIONS cannot be greater than 6")

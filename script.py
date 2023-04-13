@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.utils import timezone
+from configSolo.models import SiteConfiguration
 
 MAX_SESSIONS = settings.USER_MAX_SESSIONS
 SESSION_INTERVAL_DAYS = settings.USER_SESSION_INTERVAL_DAYS
@@ -25,6 +26,7 @@ db.connections.close_all()
 db.close_old_connections()
 
 env = environ.Env()
+site_url = SiteConfiguration.objects.get().site_url
 
 def auto_email():
     user_list = User.objects.all()
@@ -39,7 +41,7 @@ def auto_email():
             # if(delta_last_email > datetime.timedelta(days=14)):
             #     if(rem_time <= datetime.timedelta() and user.participant.sessions_completed < 6):
             #         to_addr.append(user.email)
-            #         body.append("Hi, " + user.username + "! <br><br>This is an email reminder for the follow-up survey. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Your reward for completing your next session is ₹" + SESSION_AMOUNTS[user.participant.sessions_completed+1] + "! Please visit the website to earn and participate: https://www.imwbs.org/user/login/")
+            #         body.append("Hi, " + user.username + "! <br><br>This is an email reminder for the follow-up survey. You have completed " + str(user.participant.sessions_completed) + " out of 6 sessions. Your reward for completing your next session is ₹" + SESSION_AMOUNTS[user.participant.sessions_completed+1] + "! Please visit the website to earn and participate: {site_url}")
             #         user.participant.last_email = timezone.now()
             #         user.save()
             #         send_mail('Reminder for your next session.',
@@ -56,7 +58,7 @@ def auto_email():
             #     delta_last_email > datetime.timedelta(days=2)
             # ):
             #     to_addr.append(user.email)
-            #     body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website AFTER 2 days to earn and participate: https://www.imwbs.org/user/login/ . We suggest you block your calendar about 2 days from now for a 30 minute slot.")
+            #     body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website AFTER 2 days to earn and participate: {site_url} . We suggest you block your calendar about 2 days from now for a 30 minute slot.")
             #     user.participant.last_email = timezone.now()
             #     user.save()
             #     send_mail('[Indian Mental Wellbeing Study] Your next session is 2 days away.',
@@ -73,7 +75,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(days=1)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website TOMORROW to earn and participate: https://www.imwbs.org/user/login/ . We suggest you block your calendar for a 30 minute slot tomorrow. <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website TOMORROW to earn and participate: {site_url} . We suggest you block your calendar for a 30 minute slot tomorrow. <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is tomorrow.',
@@ -90,7 +92,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=3)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website TODAY to earn and participate: https://www.imwbs.org/user/login/ . <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the upcoming follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website TODAY to earn and participate: {site_url} . <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
@@ -107,7 +109,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=23)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: https://www.imwbs.org/user/login/ <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: {site_url} <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
@@ -124,7 +126,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=23)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: https://www.imwbs.org/user/login/ <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: {site_url} <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
@@ -141,7 +143,7 @@ def auto_email():
             #     delta_last_email > datetime.timedelta(hours=23)
             # ):
             #     to_addr.append(user.email)
-            #     body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: https://www.imwbs.org/user/login/ <p>You username is :{user.username}.<p>")
+            #     body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: {site_url} <p>You username is :{user.username}.<p>")
             #     user.participant.last_email = timezone.now()
             #     user.save()
             #     send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
@@ -158,7 +160,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=23)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: https://www.imwbs.org/user/login/ <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: {site_url} <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
@@ -175,7 +177,7 @@ def auto_email():
                 delta_last_email > datetime.timedelta(hours=23)
             ):
                 to_addr.append(user.email)
-                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: https://www.imwbs.org/user/login/ . Note that is the last email reminder from our side. <p>You username is :{user.username}.<p>")
+                body.append(f"Hi, {user.username}! <br><br>This is an email reminder for the missed follow-up session. You have completed {user.participant.sessions_completed} out of {MAX_SESSIONS} sessions. Your reward for completing your next session is ₹{SESSION_AMOUNTS[user.participant.sessions_completed+1]}! Please visit the website any time TODAY to earn and participate: {site_url} . Note that is the last email reminder from our side. <p>You username is :{user.username}.<p>")
                 user.participant.last_email = timezone.now()
                 user.save()
                 send_mail('[Indian Mental Wellbeing Study] Your next session is TODAY.',
