@@ -36,7 +36,7 @@ SECRET_KEY = env('S_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['covidresearch.pythonanywhere.com', '127.0.0.1', 'imwbs.herokuapp.com', 'imwbs.pythonanywhere.com', 'www.imwbs.org']
+ALLOWED_HOSTS = ['covidresearch.pythonanywhere.com', '127.0.0.1', 'imwbs.herokuapp.com', 'imwbs.pythonanywhere.com', 'www.imwbs.org', 'www.imwbs.cloud']
 
 
 # Application definition
