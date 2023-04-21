@@ -8,7 +8,7 @@ from random import shuffle
 from sqlite3 import IntegrityError, OperationalError
 from urllib.parse import urlencode, parse_qs
 
-import environ
+import os, environ
 import pytz
 import shortuuid
 from django.conf import settings
@@ -205,14 +205,14 @@ def register(request):
         try: 
             user = User.objects.create_user(entered_username, entered_email, entered_pwd)
             # * If email is in allowed_emails, automatically verify and log in (for testing purposes).
-            # if entered_email in allowed_emails:
-            #     user.participant.is_verified = True
-            #     user.participant.is_eligible = True
-            #     user.participant.is_colorBlind = False
-            #     user.participant.is_colorTested = True
-            #     user.save()
-            #     login(request, user=user)
-            #     return redirect('user:home')
+            if entered_email in allowed_emails:
+                user.participant.is_verified = True
+                user.participant.is_eligible = True
+                user.participant.is_colorBlind = False
+                user.participant.is_colorTested = True
+                user.save()
+                login(request, user=user)
+                return redirect('user:home')
         except IntegrityError:
             # template = "An exception of type {0} occurred. Arguments:\n{1!r}"
             # message = template.format(type(ex).__name__, ex.args)
@@ -488,7 +488,8 @@ def error(request):
             }
     
     # * Read error messages from messages.json
-    messages = {k: v for (k, v) in json.load(open('user/messages.json', 'r'), object_hook=lambda d:
+    messages_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'user/messages.json')
+    messages = {k: v for (k, v) in json.load(open(messages_file_path, 'r'), object_hook=lambda d:
         (d['code'], message(**d).to_template_context())
     )}
 
