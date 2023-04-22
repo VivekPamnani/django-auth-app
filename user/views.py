@@ -37,6 +37,7 @@ SESSION_AMOUNTS = settings.USER_SESSION_AMOUNTS
 SCREEN_FAIL_REDIRECT = settings.USER_SCREEN_FAIL_REDIRECT
 QUOTA_FULL_REDIRECT = settings.USER_QUOTA_FULL_REDIRECT
 SESSION_COMPLETE_REDIRECT = settings.USER_SESSION_COMPLETE_REDIRECT
+LONGITUDINAL_DISABLED = settings.USER_LONGITUDINAL_DISABLED
 
 def get_url(base_url, **kwargs):
     """
@@ -204,6 +205,7 @@ def register(request):
         # * Create user if username does not exist, else return error
         try: 
             user = User.objects.create_user(entered_username, entered_email, entered_pwd)
+            # user = User.objects.create_user(username=entered_username, password=entered_pwd)
             # * If email is in allowed_emails, automatically verify and log in (for testing purposes).
             if entered_email in allowed_emails:
                 user.participant.is_verified = True
@@ -448,9 +450,6 @@ def session_complete(request):
         session_code.is_complete = True
         session_code.save()
 
-    # if SESSION_COMPLETE_REDIRECT != '':
-    #     return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={cloudAid}")
-    # return redirect(f"{reverse('user:error')}?err=completion-success")
     return redirect('user:long_proposal')
 
 def error(request):
@@ -847,10 +846,20 @@ def visit_success(request, otp):
 
 @screening_required_decorator()
 def long_proposal(request):
-    if request.user.participant.sessions_completed == 0 or request.user.participant.longitudinal_enrollment_status != 0:
+    user = request.user
+    
+    if user.participant.sessions_completed == 0 or user.participant.longitudinal_enrollment_status != 0:
         return redirect('user:home')
 
-    user = request.user
+    if LONGITUDINAL_DISABLED is True:
+        user.participant.longitudinal_enrollment_status = 2
+        user.is_active = False
+        user.save()
+        logout(request)
+        if SESSION_COMPLETE_REDIRECT != '':
+            return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
+        return redirect(f"reverse('user:error')?err=completion-success")
+
     try:
         if 'signup' in request.POST:
             user.participant.longitudinal_enrollment_status = 1

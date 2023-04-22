@@ -34,7 +34,7 @@ SECRET_KEY = env('S_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['covidresearch.pythonanywhere.com', '127.0.0.1', 'imwbs.herokuapp.com', 'imwbs.pythonanywhere.com', 'www.imwbs.org', 'www.imwbs.cloud']
 
@@ -140,18 +140,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 if env('SERVER')=='PROD':
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
+    # STATIC_URL = '/static/'
+    # STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
     EMAIL_HOST = 'smtp.gmail.com'
 else:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
-    STATICFILES_DIRS = [
-        # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
-        BASE_DIR/"/user/static",
-    ]
+    # STATIC_URL = '/static/'
+    # STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
+    # STATICFILES_DIRS = [
+    #     # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
+    #     BASE_DIR/"/user/static",
+    # ]
     EMAIL_HOST = 'smtp-mail.outlook.com'
+
 # BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, 'user/static/')
+STATIC_URL = 'static/'
+# STATICFILES_DIRS = [
+#     BASE_DIR / "user/static",
+# ]
 
 
 
@@ -186,6 +192,7 @@ USER_SCREEN_FAIL_REDIRECT = 'https://app.cloudresearch.com/Router/ThankYouNotQua
 USER_QUOTA_FULL_REDIRECT = 'https://app.cloudresearch.com/Router/QuotaFull'
 USER_SESSION_COMPLETE_REDIRECT = 'https://app.cloudresearch.com/Router/End'
 USER_LONGITUDINAL_OPT_IN = True
+USER_LONGITUDINAL_DISABLED = True
 USER_MAX_SESSIONS = 3
 USER_SESSION_INTERVAL_DAYS = 28
 USER_SESSION_INTERVAL_DAYS_MAX = 35

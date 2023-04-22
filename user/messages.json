@@ -72,6 +72,12 @@
         "type": "positive"
     },
     {
+        "code": "complete-thanks",
+        "msg": "Thank you for your participation! You may now close this tab. Please refer our study to your friends and family. If they are not on CloudResearch, they can either register on CloudResearch or on our independent registration page: <a href=\"https://www.imwbs.org/\">www.imwbs.org</a>",
+        "title": "Thank you for your participation!",
+        "type": "positive"
+    },
+    {
         "code": "completion-missing-aid-code",
         "msg": "Missing aid and/or code.",
         "title": "Error",
