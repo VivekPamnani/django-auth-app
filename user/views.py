@@ -38,6 +38,7 @@ SCREEN_FAIL_REDIRECT = settings.USER_SCREEN_FAIL_REDIRECT
 QUOTA_FULL_REDIRECT = settings.USER_QUOTA_FULL_REDIRECT
 SESSION_COMPLETE_REDIRECT = settings.USER_SESSION_COMPLETE_REDIRECT
 LONGITUDINAL_DISABLED = settings.USER_LONGITUDINAL_DISABLED
+COLLECT_EMAILS = settings.USER_COLLECT_EMAILS
 
 def get_url(base_url, **kwargs):
     """
@@ -171,13 +172,19 @@ def register(request):
 
     try:
         entered_username = request.POST['username']
-        entered_email = request.POST['email']
+        if COLLECT_EMAILS is True:
+            entered_email = request.POST['email']
         entered_pwd = request.POST['password']
+        entered_pwd_again = request.POST['password-again']
         entered_age = request.POST['age']
         # user = User.objects.create_user(entered_username, entered_email, entered_pwd)
     except:
         return render(request, 'user/registration.html', context={'err_msg': ''})
     else:
+        # * Check if passwords match
+        if entered_pwd != entered_pwd_again:
+            return render(request, 'user/registration.html', context={'err_msg': "Passwords do not match."})
+        
         # * Check if age is above cutoff
         # if(int(entered_age)<int(env('AGE_CUTOFF'))):
         if(int(entered_age) < 18):
@@ -193,21 +200,24 @@ def register(request):
             return render(request, 'user/registration.html', context={'err_msg': 'Please visit the link via CloudResearch.'})
         
         # * Check if email already exists
-        count_existing = User.objects.filter(email=entered_email).count()
-        try:
-            allowed_emails = env('ALLOWED_EMAILS').split(',')
-        except:
-            allowed_emails = []
-            print("Error reading ALLOWED_EMAILS from .env file.")
-        if(count_existing > 0 and entered_email not in allowed_emails):
-            return render(request, 'user/registration.html', context={'err_msg': 'That email already exists! If you have already created an account, please log in instead.'})
+        if COLLECT_EMAILS is True:
+            count_existing = User.objects.filter(email=entered_email).count()
+            try:
+                allowed_emails = env('ALLOWED_EMAILS').split(',')
+            except:
+                allowed_emails = []
+                print("Error reading ALLOWED_EMAILS from .env file.")
+            if(count_existing > 0 and entered_email not in allowed_emails):
+                return render(request, 'user/registration.html', context={'err_msg': 'That email already exists! If you have already created an account, please log in instead.'})
         
         # * Create user if username does not exist, else return error
         try: 
-            user = User.objects.create_user(entered_username, entered_email, entered_pwd)
-            # user = User.objects.create_user(username=entered_username, password=entered_pwd)
+            if COLLECT_EMAILS is True:
+                user = User.objects.create_user(username=entered_username, email=entered_email, password=entered_pwd)
+            else:
+                user = User.objects.create_user(username=entered_username, password=entered_pwd)
             # * If email is in allowed_emails, automatically verify and log in (for testing purposes).
-            if entered_email in allowed_emails:
+            if COLLECT_EMAILS is True and entered_email in allowed_emails:
                 user.participant.is_verified = True
                 user.participant.is_eligible = True
                 user.participant.is_colorBlind = False
@@ -222,6 +232,14 @@ def register(request):
             return render(request, 'user/registration.html', context={'err_msg': 'That username already exists! If you have already created an account, please log in instead.'})
 
         # * Proceed to verification
+        if COLLECT_EMAILS is False:
+            # * If we are not collecting emails, automatically verify and log in.
+            user.participant.is_verified = True
+            user.participant.ref = request.session.pop('ref', 'noKey')
+            user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
+            user.save()
+            return redirect(f"{reverse('user:error')}?err=verif-success")
+
         verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
         msg = "Please enter the following OTP to verify your email: " + str(verification_code)
         send_mail('Verify your email address for participation.',

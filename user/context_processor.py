@@ -12,5 +12,6 @@ def user_settings(request):
         'SESSION_LINKS': settings.USER_SESSION_LINKS,
         'SESSION_AMOUNTS': settings.USER_SESSION_AMOUNTS,
         'MAX_AMOUNT': sum(settings.USER_SESSION_AMOUNTS),
+        'COLLECT_EMAILS': settings.USER_COLLECT_EMAILS,
         'SITE_URL': siteconfig.site_url,
     }
