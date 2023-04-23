@@ -6,6 +6,12 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
+.card-footer {
+  background: #fff;
+  border: 0px;
+  padding: 0px;
+}
+
 .navbar-custom {
   /* background-color: #009688; */
   background: #136a8a;
@@ -25,8 +31,25 @@ body {
   background-color: #136a8a;
 }
 
+.btn-secondary {
+  /* background-color: #6B7280; */
+  background-color: #71717A;
+  /* width: 25%;
+  min-width: 200px; */
+  /* padding: 3px; */
+}
+.btn-secondary:hover {
+  background-color: #52525B;
+}
+
 img {
   max-width: 100%;
+}
+
+#inf-table th, td {
+  padding: 0.3rem;
+  vertical-align: top;
+  /* border-top: 1px solid #dee2e6; */
 }
 
 main {
@@ -49,159 +72,4 @@ main .card {
 }
 .card .content {
     border-radius: 2%;
-}
-
-
-#progress_widget {
-    position: absolute;
-    /* top:200px; */
-    left: 80px;
-    width: 200px;
-    height: 200px;
-    border-style: groove;
-    border-color: black;
-    border-width: 5px;
-}
-.progress {
-  width: 105px;
-  height: 105px;
-  line-height: 100px;
-  background: none;
-  margin: 0 auto;
-  box-shadow: none;
-  position: relative;
-}
-.progress:after {
-  content: "";
-  width: 100%;
-  height: 100%;
-  border-radius: 100%;
-  border: 7px solid #efefef;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-.progress > span {
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  z-index: 1;
-}
-.progress .progress-left {
-  left: 0;
-}
-.progress .progress-bar {
-  width: 100%;
-  height: 100%;
-  background: none;
-  border-width: 7px;
-  border-style: solid;
-  position: absolute;
-  top: 0;
-  border-color: #1D717E;
-}
-.progress .progress-left .progress-bar {
-  left: 100%;
-  border-top-right-radius: 80px;
-  border-bottom-right-radius: 80px;
-  border-left: 0;
-  -webkit-transform-origin: center left;
-  transform-origin: center left;
-}
-.progress .progress-right {
-  right: 0;
-}
-.progress .progress-right .progress-bar {
-  left: -100%;
-  border-top-left-radius: 80px;
-  border-bottom-left-radius: 80px;
-  border-right: 0;
-  -webkit-transform-origin: center right;
-  transform-origin: center right;
-}
-.progress .progress-value {
-  display: flex;
-  border-radius: 50%;
-  font-size: 1rem;
-  text-align: center;
-  line-height: 20px;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  font-weight: 200;
-}
-.progress .progress-value span {
-  font-size: 12px;
-  text-transform: uppercase;
-}
-.progress.blue .progress-right[data-rightnum="0"] .progress-bar {
-  animation: loading-0 0s linear forwards;
-}
-.progress.blue .progress-right[data-rightnum="1"] .progress-bar {
-  animation: loading-1 0.5s linear forwards;
-}
-.progress.blue .progress-right[data-rightnum="2"] .progress-bar {
-  animation: loading-2 1s linear forwards;
-}
-.progress.blue .progress-right[data-rightnum="3"] .progress-bar {
-  animation: loading-3 1.5s linear forwards;
-}
-.progress.blue .progress-left[data-leftnum="0"] .progress-bar {
-  animation: loading-0 0s linear forwards 1.5s;
-}
-.progress.blue .progress-left[data-leftnum="1"] .progress-bar {
-  animation: loading-1 0.5s linear forwards 1.5s;
-}
-.progress.blue .progress-left[data-leftnum="2"] .progress-bar {
-  animation: loading-2 1s linear forwards 1.5s;
-}
-.progress.blue .progress-left[data-leftnum="3"] .progress-bar {
-  animation: loading-3 1.5s linear forwards 1.5s;
-}
-.progress.blue .progress-left .progress-bar {
-  animation: loading-2 1.5s linear forwards 1.8s;
-}
-
-@keyframes loading-0 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-}
-@keyframes loading-1 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(60deg);
-    transform: rotate(60deg);
-  }
-}
-@keyframes loading-2 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(120deg);
-    transform: rotate(120deg);
-  }
-}
-@keyframes loading-3 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(180deg);
-    transform: rotate(180deg);
-  }
 }

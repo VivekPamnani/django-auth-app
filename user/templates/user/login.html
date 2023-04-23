@@ -20,7 +20,7 @@
   <div class='form'>
     <form action="{% url 'user:login' %}" method="post">
         {% csrf_token %}
-        <input type="text" name="username" placeholder='Username' class='text' id='username' required><br>
+        <input type="text" name="username" placeholder='Username' class='text' id='username' autofocus required><br>
         <input type="password" name="password" placeholder='••••••••••••••' class='password'><br>
         <!-- <a href="#" class='btn-login' id='do-login' type="submit">Login</a> -->
         <p style="color: #FF0000;">{% autoescape off %}{{ err_msg }}{% endautoescape %}
@@ -31,6 +31,7 @@
         <br>
         <div>
           Forgot password? <a class='forgot' href="{% url 'user:reset' %}"> Reset password.</a> <br>
+          Forgot username? <a class='forgot' href="{% url 'user:forgot_username' %}"> Get username.</a> <br>
           Don't have an account? <a class='forgot' href="{% url 'user:register' %}"> Register. </a>
         </div>
         <!-- <a href="#" class='forgot'>Forgot?</a> -->

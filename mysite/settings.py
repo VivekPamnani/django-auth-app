@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 import environ
 
 env = environ.Env(
@@ -35,7 +36,7 @@ SECRET_KEY = env('S_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['covidresearch.pythonanywhere.com', '127.0.0.1', 'imwbs.herokuapp.com', 'imwbs.pythonanywhere.com', 'www.imwbs.org']
+ALLOWED_HOSTS = ['covidresearch.pythonanywhere.com', '127.0.0.1', 'imwbs.herokuapp.com', 'imwbs.pythonanywhere.com', 'www.imwbs.org', 'www.imwbs.cloud']
 
 
 # Application definition
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'polls.apps.PollsConfig',
     'adminDash.apps.AdmindashConfig',
+    'configSolo.apps.ConfigsoloConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_crontab',
     "verify_email.apps.VerifyEmailConfig",
+    'solo.apps.SoloAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'user.context_processor.user_settings',
             ],
         },
     },
@@ -136,18 +140,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 if env('SERVER')=='PROD':
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
+    # STATIC_URL = '/static/'
+    # STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
     EMAIL_HOST = 'smtp.gmail.com'
 else:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
-    STATICFILES_DIRS = [
-        # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
-        BASE_DIR/"/user/static",
-    ]
+    # STATIC_URL = '/static/'
+    # STATIC_ROOT = os.path.join(BASE_DIR,"user/static")
+    # STATICFILES_DIRS = [
+    #     # "D:/IIIT Hyderabad/S22/Data Foundation Systems/1_assignment/2018111032_dfs_assign1/django-app/mysite/user/static"
+    #     BASE_DIR/"/user/static",
+    # ]
     EMAIL_HOST = 'smtp-mail.outlook.com'
+
 # BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+STATIC_ROOT = os.path.join(BASE_DIR, 'user/static/')
+STATIC_URL = 'static/'
+# STATICFILES_DIRS = [
+#     BASE_DIR / "user/static",
+# ]
 
 
 
@@ -162,3 +172,42 @@ EMAIL_HOST_PASSWORD = env('SMTP_PWD')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom settings for app 'user'
+# USER_MAX_SESSIONS = 6
+# USER_SESSION_INTERVAL_DAYS = 14
+# USER_SESSION_LINKS = [
+#     None,
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=fpcam', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=W6bf8', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
+#     'https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN', 
+# ]
+# USER_SESSION_AMOUNTS = [0, 100, 400, 600, 800, 1000, 1200]
+
+# TODO: Redirect should only be done for the first session.
+USER_SCREEN_FAIL_REDIRECT = 'https://app.cloudresearch.com/Router/ThankYouNotQualified'
+USER_QUOTA_FULL_REDIRECT = 'https://app.cloudresearch.com/Router/QuotaFull'
+USER_SESSION_COMPLETE_REDIRECT = 'https://app.cloudresearch.com/Router/End'
+USER_LONGITUDINAL_OPT_IN = True
+USER_LONGITUDINAL_DISABLED = True
+USER_COLLECT_EMAILS = False
+USER_MAX_SESSIONS = 3
+USER_SESSION_INTERVAL_DAYS = 28
+USER_SESSION_INTERVAL_DAYS_MAX = 35
+USER_SESSION_LINKS = [
+    None,
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO',
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN', 
+    # 'https://www.psytoolkit.org/c/3.4.2/survey?s=uBY8M', 
+    # 'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
+]
+USER_SESSION_AMOUNTS = [0, 0, 200, 200]
+
+if USER_MAX_SESSIONS > 6:
+    raise Exception("USER_MAX_SESSIONS cannot be greater than 6")
+if len(USER_SESSION_LINKS) != USER_MAX_SESSIONS + 1 or len(USER_SESSION_AMOUNTS) != USER_MAX_SESSIONS + 1:
+    raise Exception("USER_SESSION_LINKS must have USER_MAX_SESSIONS + 1 elements")

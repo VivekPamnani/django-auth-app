@@ -25,6 +25,12 @@ from django.utils import timezone
 from django.views import generic
 from verify_email.email_handler import send_verification_email
 
+MAX_SESSIONS = settings.USER_MAX_SESSIONS
+SESSION_INTERVAL_DAYS = settings.USER_SESSION_INTERVAL_DAYS
+SESSION_INTERVAL_DAYS_MAX = settings.USER_SESSION_INTERVAL_DAYS_MAX
+SESSION_LINKS = settings.USER_SESSION_LINKS
+SESSION_AMOUNTS = settings.USER_SESSION_AMOUNTS
+
 # Create your views here.
 def index(request):
     return HttpResponse("Hello, world. You're at the adminDash index.")

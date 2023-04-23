@@ -98,6 +98,8 @@
                         <div class="row align-items-left" id="r1_1">
                             <h5 class="card-title">Progress</h5> 
                         </div>
+                        {% if MAX_SESSIONS == 6 %}
+                        <link rel="stylesheet" href="{% static 'progress_circular.css' %}">
                         <div class="card-body">
                             <!-- Row 1.2 -->
                             <div class="row align-items-center" id="r1_2"r>
@@ -112,18 +114,42 @@
                                         </span> 
                                         <div class="progress-value">
                                             <div class="text-center">
-                                                {{user.participant.sessions_completed}}/6<br>
+                                                {{completed}}/6<br>
                                                 <span>completed</span>
                                             </div>
                                         </div> 
-                                    </div>
+                                    </div>`
                                 </div>
                                 <!-- (R1.2, C2) -->
                                 <div class="col-md-auto text-center">
-                                    <h5>₹{{earned}}/1200 earned!</h5>
+                                    <h5>₹{{earned}}/{{MAX_AMOUNT}} earned!</h5>
                                 </div>
+                            </div>
+                        </div> 
+                        {% else %}
+                        <div class="card-body">
+                            <link rel="stylesheet" href="{% static 'progress_flat.css' %}">
+                            <div class="row align-items-center" id="r1_2"r>
+                                <!-- (R1.2, C1) -->
+                                <div class="col-md-auto text-center">
+                                        {{completed}}/{{MAX_SESSIONS}}<br>
+                                        <span>completed</span>
+                                </div>
+                                <!-- (R1.2, C2) -->
+                                <div class="col-md-auto `text-center">
+                                    ₹{{earned}}/{{MAX_AMOUNT}}<br>
+                                    <span>earned!</span>
+                                </div>
+                            </div>
                         </div>
-                        </div>
+                        <!-- <div class="card-footer"> -->
+                            <!-- <div class="row"> -->
+                            <div class="progress">
+                                <span class="progress-bar" role="progressbar" style="width: {{percentage}}%" aria-valuenow={{completed}} aria-valuemin="0" aria-valuemax={{MAX_SESSIONS}}></span>
+                            </div>
+                            <!-- </div> -->
+                            {% endif %}
+                        <!-- </div> -->
                     </div>
                 </div>
                 {% endblock %}
@@ -135,7 +161,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Next</h5><br>
                             {% block next_content %}
-                            <p class="card-text">Click the button below to proceed to your next session.</p>
+                            <p>Your CloudResearch AID: {{user.participant.cloudresearch_aid}}</p>
+                            <p>Click the button below to proceed to your next session.</p>
                             {% endblock %}
                             <p style="color: #FF0000;">{{err_msg}}</p>
                             <div class="justify-content-center" style="display: flex;">

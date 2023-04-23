@@ -1,0 +1,32 @@
+.progress {
+    /* background-color: #1D717E; */
+    bottom: 0px;
+    left: 0px;
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    position: relative;
+}
+
+.progress .progress-bar {
+    background-color: #1D717E;
+    bottom: 0px;
+    left: 0px;
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+}
+
+.card-footer {
+    /* background-color: #1D717E; */
+    color: #fefafe;
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    bottom: 0px;
+    padding-bottom: 0%;
+    margin-bottom: 0%;
+    border-radius: 2%;
+    border: 0%;
+    position: relative;
+}

@@ -25,8 +25,14 @@ For crontab, make sure the `cron` and `atd` services are running.
 1. sudo service cron start
 2. sudo service atd start
 
+## Config Instructions
+The default mode for study design is 'opt-in'. That is, participants are required to opt-in to the longitudinal study. If you want to change this so it is 'opt-in' by default, set `USER_LONGITUDINAL_OPT_IN` to `False` in `mysite/settings.py`
+
+If you want to set up custom redirects for success/fail events, set the following variables in `mysite/settings.py`:
+1. `USER_SCREEN_FAIL_REDIRECT`
+1. `USER_QUOTA_FULL_REDIRECT` 
+1. `USER_SESSION_COMPLETE_REDIRECT` 
+
 ### To do:
-1. instructions
-2. email verification
-3. testing
-4. hosting
+1. now to adjust the times (4 weeks instead of 2).. and we're done with developemnt
+2. make sure to adjust reminder script.py accordingly.

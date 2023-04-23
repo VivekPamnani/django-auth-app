@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import participant, codes
+from .models import codes, participant, waitlist
+
 
 @admin.action(description='Mark paid')
 def mark_paid(modeladmin, request, queryset):
@@ -12,7 +13,7 @@ def mark_notBlind(modeladmin, request, queryset):
     queryset.update(is_colorBlind=False, is_colorTested=True)
 
 class CodesAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'is_paid', 'session_num']
+    list_display = ['__str__', 'is_paid', 'session_num', 'is_complete']
     # ordering = ['title']
     actions = [mark_paid]
 
@@ -20,5 +21,9 @@ class ParticipantsAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'sessions_completed', 'last_visit', 'last_email', 'ref']
     actions = [mark_notBlind]
 
+class WaitlistAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'age', 'covid_history']
+
 admin.site.register(participant, ParticipantsAdmin)
 admin.site.register(codes, CodesAdmin)
+admin.site.register(waitlist, WaitlistAdmin)
