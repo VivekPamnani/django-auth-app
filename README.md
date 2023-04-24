@@ -38,4 +38,4 @@ If you want to set up custom redirects for success/fail events, set the followin
    1. Checking django-migrations table.
    2. Running makemigrations.
 2. Mark all old users as inactive.
-3. Send email to all old users.
+3. Use send_mass_mail.py and send email to all old users.
