@@ -146,7 +146,7 @@ def verify_email(request):
         if(request.session['verif_code'] == entered_code):
             user.participant.is_verified = True
             user.participant.ref = request.session.pop('ref', 'noKey')
-            user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
+            # user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
             user.save()
             del request.session['verif_user'], request.session['verif_code'], request.session['attempts_left']
             return redirect(f"{reverse('user:error')}?err=verif-success")
@@ -160,15 +160,15 @@ def verify_email(request):
                 return redirect(f"{reverse('user:error')}?err=verif-too-many")
 
 def register(request):
-    cloudAid = ''
-    if request.method == "GET":
-        cloudAid = request.GET.get('aid', None)
-        # if not 'cloudAid' in request.session or request.session['cloudAid'] == '' or request.session['cloudAid'] == 'noKey':
-        if cloudAid is not None:
-            request.session['cloudAid'] = cloudAid
-        # aid = request.GET.get('aid', '')
-        # request.user.participant.cloudresearch_aid = aid
-        # request.user.save()
+    # cloudAid = ''
+    # if request.method == "GET":
+    #     cloudAid = request.GET.get('aid', None)
+    #     # if not 'cloudAid' in request.session or request.session['cloudAid'] == '' or request.session['cloudAid'] == 'noKey':
+    #     if cloudAid is not None:
+    #         request.session['cloudAid'] = cloudAid
+    #     # aid = request.GET.get('aid', '')
+    #     # request.user.participant.cloudresearch_aid = aid
+    #     # request.user.save()
 
     try:
         entered_username = request.POST['username']
@@ -191,13 +191,13 @@ def register(request):
             return render(request, 'user/registration.html', context={'err_msg': "Sorry, you must be at least " + env('AGE_CUTOFF') + " years old to continue."})
 
         # * Check if cloudAid already exists
-        cloudAid = request.session.get('cloudAid', 'noKey')
-        if cloudAid != 'noKey':
-            count_existing = User.objects.filter(participant__cloudresearch_aid=request.session['cloudAid']).count()
-            if(count_existing > 0):
-                return render(request, 'user/registration.html', context={'err_msg': 'That cloudAid already exists! Please visit the link via CloudResearch.'})
-        else:
-            return render(request, 'user/registration.html', context={'err_msg': 'Please visit the link via CloudResearch.'})
+        # cloudAid = request.session.get('cloudAid', 'noKey')
+        # if cloudAid != 'noKey':
+        #     count_existing = User.objects.filter(participant__cloudresearch_aid=request.session['cloudAid']).count()
+        #     if(count_existing > 0):
+        #         return render(request, 'user/registration.html', context={'err_msg': 'That cloudAid already exists! Please visit the link via CloudResearch.'})
+        # else:
+        #     return render(request, 'user/registration.html', context={'err_msg': 'Please visit the link via CloudResearch.'})
         
         # * Check if email already exists
         if COLLECT_EMAILS is True:
@@ -236,7 +236,7 @@ def register(request):
             # * If we are not collecting emails, automatically verify and log in.
             user.participant.is_verified = True
             user.participant.ref = request.session.pop('ref', 'noKey')
-            user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
+            # user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
             user.save()
             return redirect(f"{reverse('user:error')}?err=verif-success")
 
@@ -366,10 +366,20 @@ def user_login_failed_callback(sender, credentials, request, **kwargs):
     try:
         user = User.objects.get(username=credentials['username'])
     except User.DoesNotExist:
-        pass
-    else:
-        if user.is_active is False:
-            request.session['long_reject_login_attempted'] = True
+        return None
+    
+    if user.is_active is False:
+        try:
+            waitlist.objects.get(user=user)
+        except waitlist.DoesNotExist:
+            if user.participant.longitudinal_enrollment_status == 2:
+                request.session['inactive_user_login_reason'] = 'long-reject'
+            else:
+                request.session['inactive_user_login_reason'] = 'old-user'
+        else:
+            request.session['inactive_user_login_reason'] = 'waitlist'
+    
+    return None
 
 def signin(request):
     # if env('MAINTENANCE_MODE') == 1:
@@ -387,19 +397,24 @@ def signin(request):
             return render(request, 'user/login.html', context={
                 'err_msg': 'There seems to be an error. Have you tried registering first?',
                 'maintenance': ''
-                })
+            })
         if user is not None:
             login(request, user=user)
             return redirect('user:home')
         else:
-            if request.session.get('long_reject_login_attempted', False):
-                del request.session['long_reject_login_attempted']
+            inactive_user_login_reason = request.session.get('inactive_user_login_reason', None)
+            del request.session['long_reject_login_attempted']
+            if inactive_user_login_reason == 'waitlist':
+                return redirect(f'{reverse("user:error")}?err=waitlist')
+            elif inactive_user_login_reason == 'long-reject':
                 return redirect(f'{reverse("user:error")}?err=long-reject')
-
+            elif inactive_user_login_reason == 'old-user':
+                return redirect(f'{reverse("user:error")}?err=old-user')
+            
             return render(request, 'user/login.html', context={
                 'err_msg': 'Incorrect username or password, please try again.',
                 'maintenance': ''
-                })
+            })
 
 def signout(request):
     logout(request)
@@ -444,15 +459,15 @@ def screening_required_decorator(colorBlind=True, eligible=True):
 def session_complete(request):
     psytoolkit_aid = request.GET.get('aid', None) if request.method == 'GET' else None
     psytoolkit_code = request.GET.get('code', None) if request.method == 'GET' else None
-    cloudAid = request.user.participant.cloudresearch_aid
+    # cloudAid = request.user.participant.cloudresearch_aid
 
     # * Check if the aid and code are present.
     if psytoolkit_aid is None or psytoolkit_code is None:
         return redirect(f"{reverse('user:error')}?err=completion-missing-aid-code")
     
     # * Check if the aid is valid.
-    if cloudAid != psytoolkit_aid:
-        return redirect(f"{reverse('user:error')}?err=completion-aid-mismatch")
+    # if cloudAid != psytoolkit_aid:
+    #     return redirect(f"{reverse('user:error')}?err=completion-aid-mismatch")
     
     # * Check if the code exists.
     try:
@@ -671,10 +686,10 @@ def screen(request):
         request.user.participant.is_eligible = 2
         request.user.participant.save()
         if report == 'waitlist':
-            if QUOTA_FULL_REDIRECT != '':
-                return redirect(f"{QUOTA_FULL_REDIRECT}?aid={request.user.participant.cloudresearch_aid}")
+            # if QUOTA_FULL_REDIRECT != '':
+            #     return redirect(f"{QUOTA_FULL_REDIRECT}?aid={request.user.participant.cloudresearch_aid}")
             return redirect(f"{reverse('user:error')}?err=waitlist")
-        return redirect(f"{SCREEN_FAIL_REDIRECT}?aid={request.user.participant.cloudresearch_aid}")
+        # return redirect(f"{SCREEN_FAIL_REDIRECT}?aid={request.user.participant.cloudresearch_aid}")
     return render(request, 'user/screen.html', context={'err_msg': '', 'eligible': request.user.participant.is_eligible})
 
 def freescreen(request):
@@ -726,6 +741,35 @@ def get_time_until_next_session(last_visit_time, sess_completed) -> str:
     return time_until_next, last_visit_time
 
 def home(request):
+    if request.user.is_authenticated is False:
+        return redirect('user:login')
+
+    if request.user.is_superuser is True:
+        return redirect('adminDash:adminDash')
+
+    if request.user.participant.is_verified is False:
+        return redirect(f"{reverse('user:error')}?err=not-verified")
+    
+    if request.user.participant.sessions_completed > 0 and request.user.participant.is_eligible != 1:
+        request.user.participant.is_eligible = 1
+        request.user.participant.save()
+
+    if request.user.participant.is_eligible != 1:
+        return redirect('user:screen')
+
+    if request.user.participant.is_colorTested is False:
+        return redirect('user:ishihara')
+    else:
+        if request.user.participant.is_colorBlind is True:
+            return redirect(f"{reverse('user:error')}?err=colorblind")
+
+    if request.user.participant.sessions_completed == 1 and request.user.participant.longitudinal_enrollment_status == 0:
+        return redirect('user:long_proposal')
+    
+    if request.user.participant.sessions_completed > 1 and request.user.participant.longitudinal_enrollment_status != 1:
+        request.user.participant.longitudinal_enrollment_status = 1
+        request.user.participant.save()
+
     try:
         err_msg = request.session['proceed_err']
         del request.session['proceed_err']
@@ -822,7 +866,7 @@ def visit_success(request, otp):
     next_link_base = next_link[0]
     next_link_params = parse_qs(next_link[1]) if len(next_link) > 1 else {}
     next_link_params['code'] = [otp]
-    next_link_params['aid'] = [user.participant.cloudresearch_aid]
+    # next_link_params['aid'] = [user.participant.cloudresearch_aid]
     try:
         return render(request, 'user/attempt.html', context={
             'user': user,
@@ -845,8 +889,8 @@ def long_proposal(request):
         user.is_active = False
         user.save()
         logout(request)
-        if SESSION_COMPLETE_REDIRECT != '':
-            return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
+        # if SESSION_COMPLETE_REDIRECT != '':
+        #     return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
         return redirect(f"reverse('user:error')?err=completion-success")
 
     try:
@@ -865,16 +909,16 @@ def long_proposal(request):
                 html_message=msg_greet + "<br>" + msg_contact + "<br>" + msg_link + "<br><br>" + auto_note,
                 fail_silently=True)
 
-            if SESSION_COMPLETE_REDIRECT != '':
-                return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
+            # if SESSION_COMPLETE_REDIRECT != '':
+            #     return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
             return redirect(f"{reverse('user:error')}?err=long-signup")
         elif 'reject' in request.POST:
             user.participant.longitudinal_enrollment_status = 2
             user.is_active = False
             user.save()
             logout(request)
-            if SESSION_COMPLETE_REDIRECT != '':
-                return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
+            # if SESSION_COMPLETE_REDIRECT != '':
+            #     return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
             return redirect(f"{reverse('user:error')}?err=long-reject")
         else:
             raise Exception("Invalid form submission.")

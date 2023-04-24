@@ -28,7 +28,7 @@ class participant(models.Model):
     is_colorTested = models.BooleanField(default=False)
     longitudinal_enrollment_status = models.IntegerField(default=0) # 0 = unproposed, 1 = opt in, 2 = opt out
     ref = models.CharField(default='noref', max_length=30)
-    cloudresearch_aid = models.CharField(default='', max_length=30)
+    # cloudresearch_aid = models.CharField(default='', max_length=30)
 
 class waitlist(models.Model):
     def __str__(self) -> str:
@@ -36,7 +36,6 @@ class waitlist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(default=0)
     covid_history = models.BooleanField(default=False)
-
 
 class codes(models.Model):
     def __str__(self):

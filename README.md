@@ -34,5 +34,8 @@ If you want to set up custom redirects for success/fail events, set the followin
 1. `USER_SESSION_COMPLETE_REDIRECT` 
 
 ### To do:
-1. now to adjust the times (4 weeks instead of 2).. and we're done with developemnt
-2. make sure to adjust reminder script.py accordingly.
+1. Ensure the old data is preserved by:
+   1. Checking django-migrations table.
+   2. Running makemigrations.
+2. Mark all old users as inactive.
+3. Send email to all old users.

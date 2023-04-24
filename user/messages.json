@@ -114,6 +114,12 @@
         "type": "positive"
     },
     {
+        "code": "old-user",
+        "msg": "You cannot login because participate in this study because you have already participated in the previous study.",
+        "title": "Already participated",
+        "type": "negative"
+    },
+    {
         "code": "unknown",
         "msg": "An error has occurred. Please try again or contact us.",
         "title": "Error",

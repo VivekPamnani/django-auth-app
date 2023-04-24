@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('user', '0014_participant_is_colortested'),
+        ('user', '0014_no_change'),
     ]
 
     operations = [

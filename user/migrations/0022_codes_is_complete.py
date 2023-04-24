@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('user', '0021_participant_cloudresearch_aid'),
+        ('user', '0021_no_change'),
     ]
 
     operations = [
