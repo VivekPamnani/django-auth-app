@@ -1,14 +1,15 @@
 import datetime
 import functools
 import json
+import os
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
 from random import shuffle
 from sqlite3 import IntegrityError, OperationalError
-from urllib.parse import urlencode, parse_qs
+from urllib.parse import parse_qs, urlencode
 
-import os, environ
+import environ
 import pytz
 import shortuuid
 from django.conf import settings
@@ -246,7 +247,7 @@ def register(request):
             msg,
             str(env('SMTP_MAIL')),
             [entered_email],
-            fail_silently=True)
+            fail_silently=False)
         request.session['verif_code'] = verification_code
         request.session['verif_user'] = user.username
         request.session['attempts_left'] = 3
@@ -730,7 +731,7 @@ def get_time_until_next_session(last_visit_time, sess_completed) -> str:
         # Show the last visit time in a more nautural language
         last_visit_time = last_visit_time.strftime("%A, %B %d, %Y at %I:%M %p")
 
-    if(sess_completed == MAX_SESSIONS):
+    if(sess_completed >= MAX_SESSIONS):
         time_until_next = "N/A" 
     elif(over_time < datetime.timedelta() and sess_completed != 0):
         time_until_next = f"Ineligible (over {SESSION_INTERVAL_DAYS_MAX} days since last session)"

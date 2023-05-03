@@ -55,18 +55,20 @@ site_config = SiteConfiguration.objects.get()
 
 # ! Message of stopping participation.
 subject = "[Indian Mental Wellbeing Study] Thank you for your participation."
+# We hope that you found the study interesting and that you learned something new about yourself.
 message_body = f"""
 <p>
     Thank you for your participation in the Indian Mental Wellbeing Study. We would like to inform you about the latest developments in the study. We have decided to revise the study design and will be conducting the study in a different manner. While we are revising the design, it is not a revamp of the study, but rather a change in the way we are conducting the study. 
 </p>
 <p>
-    For this reason, you will not be able to continue participating in the study. However, you will still be compensated for the sessions that you have already completed. The website will be updated to reflect this change. It is because of your participation that we are able to conduct this study, and your data has provided insights into the mental well-being of the Indian population. We would like to thank you for your contribution to science. We hope that you will continue to support us in our research.
+    For this reason, you will not be able to continue participating in the study. However, you will still be compensated for the sessions that you have already completed. The website will be updated to reflect this change. It is because of your participation that we are able to conduct this study, and your data has provided insights into the mental well-being of the Indian population. We would like to thank you for your contribution to science. We hope that you will continue to support us in our research. 
+    We hope that you found the study interesting and that you learned something new about yourself.
 </p>
 <p>
-    With your response data and the data from the revised study, we will be able to better understand the mental well-being of the Indian population. We are currently working on a paper that will be published in a peer-reviewed journal. We will share the link to the paper with you once it is published.
+    With your response data and the data from the revised study, we will be able to better understand the mental well-being of the Indian population. We are currently working on a paper that will be published in a peer-reviewed journal. We will share the link to the paper with you once it is published. 
 </p>
 <p>
-    We request you to please refer our website to your friends and family, so that they can participate in the revised study and help us in our research. New participants can register on: {site_config.site_url}/user/register/.
+    We request you to please refer our website to your friends and family, so that they can participate in the revised study and help us in our research. New participants can register on: {site_config.site_url}/user/register/. 
 </p>
 """
 
