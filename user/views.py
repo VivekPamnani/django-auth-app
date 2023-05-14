@@ -403,7 +403,7 @@ def signin(request):
             return redirect('user:home')
         else:
             inactive_user_login_reason = request.session.get('inactive_user_login_reason', None)
-            del request.session['long_reject_login_attempted']
+            request.session.pop('long_reject_login_attempted', None)
             if inactive_user_login_reason == 'waitlist':
                 return redirect(f'{reverse("user:error")}?err=waitlist')
             elif inactive_user_login_reason == 'long-reject':
@@ -457,17 +457,23 @@ def screening_required_decorator(colorBlind=True, eligible=True):
 
 @screening_required_decorator()
 def session_complete(request):
+    CLOUDRESEARCH_PLATFORM_ENABLED = False
+
     psytoolkit_aid = request.GET.get('aid', None) if request.method == 'GET' else None
     psytoolkit_code = request.GET.get('code', None) if request.method == 'GET' else None
-    # cloudAid = request.user.participant.cloudresearch_aid
 
     # * Check if the aid and code are present.
-    if psytoolkit_aid is None or psytoolkit_code is None:
-        return redirect(f"{reverse('user:error')}?err=completion-missing-aid-code")
-    
-    # * Check if the aid is valid.
-    # if cloudAid != psytoolkit_aid:
-    #     return redirect(f"{reverse('user:error')}?err=completion-aid-mismatch")
+    if CLOUDRESEARCH_PLATFORM_ENABLED is True:
+        # cloudAid = request.user.participant.cloudresearch_aid
+        if psytoolkit_aid is None or psytoolkit_code is None:
+            return redirect(f"{reverse('user:error')}?err=completion-missing-aid-code")
+        # * Check if the aid is valid.
+        # if cloudAid != psytoolkit_aid:
+        #     return redirect(f"{reverse('user:error')}?err=completion-aid-mismatch")
+            
+    else:
+        if psytoolkit_code is None:
+            return redirect(f"{reverse('user:error')}?err=completion-missing-code")
     
     # * Check if the code exists.
     try:
@@ -891,7 +897,7 @@ def long_proposal(request):
         logout(request)
         # if SESSION_COMPLETE_REDIRECT != '':
         #     return redirect(f"{SESSION_COMPLETE_REDIRECT}?aid={user.participant.cloudresearch_aid}")
-        return redirect(f"reverse('user:error')?err=completion-success")
+        return redirect(f"{reverse('user:error')}?err=completion-success")
 
     try:
         if 'signup' in request.POST:
