@@ -1,14 +1,15 @@
 import datetime
 import functools
 import json
+import os
 from dataclasses import dataclass
 from email.policy import default
 from logging import exception
 from random import shuffle
 from sqlite3 import IntegrityError, OperationalError
-from urllib.parse import urlencode, parse_qs
+from urllib.parse import parse_qs, urlencode
 
-import os, environ
+import environ
 import pytz
 import shortuuid
 from django.conf import settings
@@ -26,7 +27,14 @@ from django.views import generic
 from verify_email.email_handler import send_verification_email
 
 from configSolo.models import SiteConfiguration
-from user.models import codes, participant, waitlist
+from user.models import codes, participant, screen_profile, waitlist
+
+try:
+    SiteConfiguration.objects.create()
+except IntegrityError:
+    pass
+except Exception as e:
+    print(f"Error creating SiteConfiguration: {e}")
 
 env = environ.Env()
 MAX_SESSIONS = settings.USER_MAX_SESSIONS
@@ -49,7 +57,6 @@ def get_url(base_url, **kwargs):
 def credirect(base_url, **kwargs):
     params = urlencode(kwargs)
     return redirect(f"{base_url}?{params}")
-
 
 def long_or_single(func):
     @functools.wraps(func)
@@ -579,8 +586,7 @@ def screen_logic(request, is_eligible: int = 0) -> tuple[bool, str]:
         checks: dict[str, bool] = {
             'age': False,
             'english': False,
-            # 'covid_test': False,
-            'infHistory': False, 
+            'covid_testPositive': False,
             'covid_symptoms': False,
         }
 
@@ -588,27 +594,48 @@ def screen_logic(request, is_eligible: int = 0) -> tuple[bool, str]:
             checks['age'] = True
         if speak_english == 1:
             checks['english'] = True
-        # if covid_test == 1:
-        #     checks['covid_test'] = True
         if covid_symptoms == 1:
             checks['covid_symptoms'] = True
         if 'covid' in infHistory:  
-            checks['infHistory'] = True
+            checks['covid_testPositive'] = True
 
+            
         if not checks['age'] or not checks['english']:
             return False, 'ineligible'
         
-        config = SiteConfiguration.objects.get()
-        max_control_count = config.current_target * config.control_ratio
-        max_covid_count = config.current_target * (1 - config.control_ratio)
-
+        try:
+            screen_profile.objects.create(user=request.user, **checks)
+        except error as e:
+            print(f"Error in creating screen_profile for user {request.user.username}: {e}")
         
-        if checks['infHistory'] and checks['covid_symptoms']:
+        config = SiteConfiguration.objects.get()
+        max_covid_count = config.current_target * config.group_ratio['covid']
+        max_suspect_count = config.current_target * config.group_ratio['suspect']
+        max_noise_count = config.current_target * config.group_ratio['noise']
+        max_control_count = config.current_target * config.group_ratio['control']
+        
+        if checks['covid_symptoms'] and checks['covid_testPositive']:
             if config.covid_count < max_covid_count:
                 config.covid_count += 1
                 config.save()
             else:
                 waitlist.objects.create(user=request.user, covid_history=True, age=entered_age)
+                return False, 'waitlist'
+
+        elif checks['covid_symptoms'] and not checks['covid_testPositive']:
+            if config.suspect_count < max_suspect_count:
+                config.suspect_count += 1
+                config.save()
+            else:
+                waitlist.objects.create(user=request.user, covid_history=True, age=entered_age)
+                return False, 'waitlist'
+
+        elif not checks['covid_symptoms'] and checks['covid_testPositive']:
+            if config.noise_count < max_noise_count:
+                config.noise_count += 1
+                config.save()
+            else:
+                waitlist.objects.create(user=request.user, covid_history=False, age=99)
                 return False, 'waitlist'
         else:
             if config.control_count < max_control_count:
@@ -632,8 +659,8 @@ def screen(request):
         infections = [
             ('influenza', 'Influenza (flu)'),
             ('pneumonia', 'Pneumonia'),
-            ('ecoli', 'E. Coli'),
             ('covid', 'COVID-19'),
+            ('ecoli', 'E. Coli'),
             ('malaria', 'Malaria'),
             ('cholera', 'Cholera'),
             ('cold', 'Common Cold'),

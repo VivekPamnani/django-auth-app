@@ -208,6 +208,12 @@ USER_SESSION_LINKS = [
 ]
 # USER_SESSION_AMOUNTS = [0, 0, 200, 200]
 USER_SESSION_AMOUNTS = [0, 0]
+USER_GROUP_RATIO = {
+    'covid': 0.3,
+    'suspect': 0.3,
+    'noise': 0.0,
+    'control': 0.4
+}
 
 if USER_MAX_SESSIONS > 6:
     raise Exception("USER_MAX_SESSIONS cannot be greater than 6")
