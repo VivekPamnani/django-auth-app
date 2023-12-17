@@ -435,7 +435,7 @@ def passwordless_login(request):
     try:
         user = User.objects.get(email=entered_email)
     except User.DoesNotExist:
-        user = User.objects.create(email=entered_email)
+        user = User.objects.create(email=entered_email, username=entered_email)
     except User.MultipleObjectsReturned:
         return render(request, 'user/passwordless_login.html', context={'err_msg': 'Multiple users with that email exist!'})
 
