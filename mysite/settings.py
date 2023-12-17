@@ -199,7 +199,7 @@ USER_SESSION_INTERVAL_DAYS = 28
 USER_SESSION_INTERVAL_DAYS_MAX = 35
 USER_SESSION_LINKS = [
     None,
-    'https://www.psytoolkit.org/c/3.4.2/survey?s=gCtSN'
+    'https://www.psytoolkit.org/c/3.4.2/survey?s=49wDd'
     # 'https://www.psytoolkit.org/c/3.4.2/survey?s=WTkWO',
     # 'https://www.psytoolkit.org/c/3.4.2/survey?s=gZxRf', 
     # 'https://www.psytoolkit.org/c/3.4.2/survey?s=e4STN', 
