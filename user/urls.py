@@ -6,8 +6,8 @@ app_name = 'user'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('register/', views.register, name='register'),
-    path('login/', views.signin, name='login'),
+    path('register/', views.passwordless_login, name='register'),
+    path('login/', views.passwordless_login, name='login'),
     path('home/', views.home, name='home'),
     path('visit/', views.log_visit, name='visit'),
     path('visit/<str:otp>/success/', views.visit_success, name='visit_success'),

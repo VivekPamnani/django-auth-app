@@ -150,12 +150,15 @@ def verify_email(request):
         return render(request, 'user/verification.html', context={'left': request.session['attempts_left']})
     else:
         user = get_object_or_404(User, username=request.session['verif_user'])
+        if user.is_active is False:
+            return redirect(f"{reverse('user:error')}?err=completion-success")
         if(request.session['verif_code'] == entered_code):
             user.participant.is_verified = True
             user.participant.ref = request.session.pop('ref', 'noKey')
             # user.participant.cloudresearch_aid = request.session.pop('cloudAid', 'noKey')
             user.save()
             del request.session['verif_user'], request.session['verif_code'], request.session['attempts_left']
+            login(request, user=user)
             return redirect(f"{reverse('user:error')}?err=verif-success")
         else:
             if(request.session['attempts_left'] > 1):
@@ -422,6 +425,32 @@ def signin(request):
                 'err_msg': 'Incorrect username or password, please try again.',
                 'maintenance': ''
             })
+
+def passwordless_login(request):
+    try:
+        entered_email = request.POST['email']
+    except:
+        return render(request, 'user/passwordless_login.html', context={'err_msg': ''})
+    
+    try:
+        user = User.objects.get(email=entered_email)
+    except User.DoesNotExist:
+        user = User.objects.create(email=entered_email)
+    except User.MultipleObjectsReturned:
+        return render(request, 'user/passwordless_login.html', context={'err_msg': 'Multiple users with that email exist!'})
+
+    verification_code = shortuuid.ShortUUID(alphabet="0123456789").random(length=4)
+    msg = "Please enter the following OTP to verify your email: " + str(verification_code)
+    
+    send_mail('Verify your email address for participation.',
+        msg,
+        str(env('SMTP_MAIL')),
+        [entered_email],
+        fail_silently=True)
+    request.session['verif_code'] = verification_code
+    request.session['verif_user'] = user.username
+    request.session['attempts_left'] = 3
+    return redirect('user:verify')
 
 def signout(request):
     logout(request)
