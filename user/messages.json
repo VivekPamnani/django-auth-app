@@ -84,6 +84,12 @@
         "type": "negative"
     },
     {
+        "code": "completion-missing-code",
+        "msg": "Missing code. Are you sure you were redirected from the survey? <br>If you think this is a mistake, please contact <a href='mailto:vivek.pamnani@research.iiit.ac.in'>vivek.pamnani@research.iiit.ac.in</a>.",
+        "title": "Error",
+        "type": "negative"
+    },
+    {
         "code": "completion-aid-mismatch",
         "msg": "Your aid does not match the aid for this session.",
         "title": "Error",

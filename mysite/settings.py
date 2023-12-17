@@ -207,7 +207,7 @@ USER_SESSION_LINKS = [
     # 'https://www.psytoolkit.org/c/3.4.2/survey?s=jeph9', 
 ]
 # USER_SESSION_AMOUNTS = [0, 0, 200, 200]
-USER_SESSION_AMOUNTS = [0, 0]
+USER_SESSION_AMOUNTS = [0, 400]
 USER_GROUP_RATIO = {
     'covid': 0.4,
     'suspect': 0.3,
