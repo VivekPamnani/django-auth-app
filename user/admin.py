@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import codes, participant, waitlist
+from .models import codes, participant, screen_profile, waitlist
 
 
 @admin.action(description='Mark paid')
@@ -24,6 +24,10 @@ class ParticipantsAdmin(admin.ModelAdmin):
 class WaitlistAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'age', 'covid_history']
 
+class ScreenProfileAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'age', 'english', 'covid_testPositive', 'covid_symptoms']
+
 admin.site.register(participant, ParticipantsAdmin)
 admin.site.register(codes, CodesAdmin)
 admin.site.register(waitlist, WaitlistAdmin)
+admin.site.register(screen_profile, ScreenProfileAdmin)

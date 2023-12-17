@@ -37,6 +37,15 @@ class waitlist(models.Model):
     age = models.IntegerField(default=0)
     covid_history = models.BooleanField(default=False)
 
+class screen_profile(models.Model):
+    def __str__(self) -> str:
+        return self.user.username
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    age = models.BooleanField(default=False)
+    english = models.BooleanField(default=False)
+    covid_testPositive = models.BooleanField(default=False)
+    covid_symptoms = models.BooleanField(default=False)
+
 class codes(models.Model):
     def __str__(self):
         return str(self.otp)

@@ -17,6 +17,18 @@ Note:
 5. `python3 manage.py makemigrations user`
 6. `python3 manage.py migrate`
 7. `python3 manage.py runserver`
+8. Initialize SiteConfiguration
+
+### Initializing SiteConfiguration
+1. `python3 maange.py shell`
+2. While in shell:
+```python
+from django.contrib import admin
+from solo.admin import SingletonModelAdmin
+from config.models import SiteConfiguration
+SiteConfiguration.get_solo()
+```
+3. Exit
 
 *Note that you need Python3.10 for it to work.*
 
